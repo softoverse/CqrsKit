@@ -11,7 +11,7 @@ public abstract class ApprovalFlowAcceptFilterBase : IApprovalFlowAcceptFilter
     public abstract Task<Response> OnAcceptedAsync(string approvalFlowId, CqrsContext context, CancellationToken ct = default);
 }
 
-public class ApprovalFlowAcceptFilter : ApprovalFlowAcceptFilterBase
+internal class ApprovalFlowAcceptFilter : ApprovalFlowAcceptFilterBase
 {
     public override Task<Response> OnAcceptingAsync(string approvalFlowId, CqrsContext context, CancellationToken ct = default) => ResponseDefaults.DefaultResponse();
 

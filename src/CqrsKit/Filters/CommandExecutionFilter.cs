@@ -13,7 +13,7 @@ public abstract class CommandExecutionFilterBase<TCommand, TResponse> : IExecuti
     public abstract Task<Response<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
 }
 
-public class CommandExecutionFilter<TCommand, TResponse> : CommandExecutionFilterBase<TCommand, TResponse>
+internal class CommandExecutionFilter<TCommand, TResponse> : CommandExecutionFilterBase<TCommand, TResponse>
     where TCommand : ICommand
 {
     public override Task<Response<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default) => ResponseDefaults.DefaultResponse<TResponse>();

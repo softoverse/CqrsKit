@@ -13,7 +13,7 @@ public abstract class QueryExecutionFilterBase<TQuery, TResponse> : IExecutionFi
     public abstract Task<Response<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
 }
 
-public class QueryExecutionFilter<TQuery, TResponse> : QueryExecutionFilterBase<TQuery, TResponse>
+internal class QueryExecutionFilter<TQuery, TResponse> : QueryExecutionFilterBase<TQuery, TResponse>
     where TQuery : IQuery
 {
     public override Task<Response<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default) => ResponseDefaults.DefaultResponse<TResponse>();

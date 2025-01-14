@@ -11,7 +11,7 @@ public abstract class ApprovalFlowRejectFilterBase : IApprovalFlowRejectFilter
     public abstract Task<Response> OnRejectedAsync(string approvalFlowId, CqrsContext context, CancellationToken ct = default);
 }
 
-public class ApprovalFlowRejectFilter : ApprovalFlowRejectFilterBase
+internal class ApprovalFlowRejectFilter : ApprovalFlowRejectFilterBase
 {
     public override Task<Response> OnRejectingAsync(string approvalFlowId, CqrsContext context, CancellationToken ct = default) => ResponseDefaults.DefaultResponse();
 
