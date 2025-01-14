@@ -1,9 +1,11 @@
-﻿using CqrsKit.Filters;
+﻿using CqrsKit.Attributes;
+using CqrsKit.Filters;
 using CqrsKit.Model;
 using CqrsKit.Model.Utility;
 
 namespace CqrsKit.TestConsole.CQRS.Filters.ApprovalFlow;
 
+[ScopedLifetime]
 public class ApprovalFlowAcceptFilter : ApprovalFlowAcceptFilterBase
 {
     public override Task<Response> OnAcceptingAsync(string approvalFlowId, CqrsContext context, CancellationToken ct = default)

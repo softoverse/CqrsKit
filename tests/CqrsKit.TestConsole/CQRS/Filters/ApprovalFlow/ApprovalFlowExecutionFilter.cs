@@ -1,4 +1,5 @@
-﻿using CqrsKit.Filters;
+﻿using CqrsKit.Attributes;
+using CqrsKit.Filters;
 using CqrsKit.Model;
 using CqrsKit.Model.Abstraction;
 using CqrsKit.Model.Utility;
@@ -6,6 +7,7 @@ using CqrsKit.Services;
 
 namespace CqrsKit.TestConsole.CQRS.Filters.ApprovalFlow;
 
+[ScopedLifetime]
 public class ApprovalFlowExecutionFilter<TCommand, TResponse> : ApprovalFlowExecutionFilterBase<TCommand, TResponse>
     where TCommand : ICommand
 {
