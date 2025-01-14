@@ -1,0 +1,15 @@
+using Softoverse.CqrsKit.Model;
+using Softoverse.CqrsKit.Model.Abstraction;
+using Softoverse.CqrsKit.Model.Utility;
+
+namespace Softoverse.CqrsKit.Abstraction.Filters;
+
+public interface IExecutionFilterMarker;
+
+public interface IExecutionFilter<in TRequest, TResponse> : IExecutionFilterMarker
+    where TRequest : IRequest
+{
+    public Task<Response<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default);
+
+    public Task<Response<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
+}
