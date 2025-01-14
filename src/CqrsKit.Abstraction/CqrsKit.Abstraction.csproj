@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Title>CqrsKit for maintaining CQRS design pattern</Title>
+		<Authors>Abir Mahmud</Authors>
+		<Description>CqrsKit is a package that can be used for maintaining CQRS design pattern in any kind of project with dependency injection.
+Proper documentation is coming soon...
+		</Description>
+		<RepositoryUrl>https://github.com/softoverse/CqrsKit</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>.NET 9.0</PackageTags>
+		<PackAsTool>False</PackAsTool>
+		<IncludeSymbols>True</IncludeSymbols>
+		<SymbolPackageFormat>symbols.nupkg</SymbolPackageFormat>
+		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+		<Version>1.0.1.0</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\CqrsKit.Model\CqrsKit.Model.csproj" />
+	</ItemGroup>
+
+</Project>
