@@ -18,7 +18,7 @@ Proper documentation is coming soon...
 		<IncludeSymbols>True</IncludeSymbols>
 		<SymbolPackageFormat>symbols.nupkg</SymbolPackageFormat>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-		<Version>1.0.1.0</Version>
+		<Version>1.0.0</Version>
 	</PropertyGroup>
 
 </Project>
