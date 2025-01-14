@@ -20,3 +20,5 @@ dotnet add package Softoverse.CqrsKit
         <strong>We are planning to implement a feature like when you want to different execution filter from the common execution filters, user can explicitly implement it by declaring execution filter for any command explicitly.</strong> 
     </li>
 </ul>
+
+# Proper documentation is coming soon...
