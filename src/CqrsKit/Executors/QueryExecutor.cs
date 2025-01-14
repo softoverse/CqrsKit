@@ -3,7 +3,7 @@
 using CqrsKit.Abstraction.Executors;
 using CqrsKit.Abstraction.Filters;
 using CqrsKit.Abstraction.Handlers;
-
+using CqrsKit.Extensions;
 using CqrsKit.Model;
 using CqrsKit.Model.Abstraction;
 using CqrsKit.Model.Utility;
@@ -47,6 +47,8 @@ public sealed class QueryExecutor<TQuery, TResponse> : IQueryExecutor<TQuery, TR
     private async Task<Response<TResponse>> ExecuteStepsAsync(HandlerStep<TResponse>[] steps)
     {
         Context.Request = Query;
+        Context.SetApprovalFlowPendingTaskContextData(typeof(TQuery), typeof(IQueryHandler<TQuery, TResponse>), typeof(TResponse), null);
+        
         var response = await SequentialStepExecutor.ExecuteStepsAsync(steps, Context);
         Context.Response = response;
         return response ?? Response<TResponse>.Error()

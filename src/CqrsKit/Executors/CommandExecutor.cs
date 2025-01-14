@@ -119,7 +119,7 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
     private async Task<Response<TResponse>> ExecuteStepsAsync(HandlerStep<TResponse>[] steps)
     {
         Context.Request = Command;
-        Context.SetApprovalFlowPendingTaskContextData(typeof(TCommand), CommandHandler.GetType(), typeof(TResponse), ApprovalFlowHandler?.GetType());
+        Context.SetApprovalFlowPendingTaskContextData(typeof(TCommand), typeof(ICommandHandler<TCommand, TResponse>), typeof(TResponse), typeof(IApprovalFlowHandler<TCommand, TResponse>));
 
         var response = await SequentialStepExecutor.ExecuteStepsAsync(steps, Context);
         Context.Response = response;

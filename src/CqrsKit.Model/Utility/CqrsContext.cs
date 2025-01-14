@@ -29,9 +29,9 @@ public class CqrsContext
     public bool IsApprovalFlowEnabled { get; set; }
     public bool IsCustomApprovalFlowHandler { get; set; }
 
-    public string CommandName { get; set; }
-    public string CommandFullName { get; set; }
-    public string CommandNamespace { get; set; }
+    public string RequestName { get; set; }
+    public string RequestFullName { get; set; }
+    public string RequestNamespace { get; set; }
 
     public string ResponseName { get; set; }
     public string ResponseFullName { get; set; }
