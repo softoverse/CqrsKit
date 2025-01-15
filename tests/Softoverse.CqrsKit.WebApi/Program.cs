@@ -1,4 +1,4 @@
-using Scalar.AspNetCore;
+using Softoverse.CqrsKit.WebApi.Extensions;
 
 namespace Softoverse.CqrsKit.WebApi;
 
@@ -13,6 +13,11 @@ public class Program
         builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
+        builder.AddSwagger();
+
+        builder.AddDatabaseConfiguration();
+        builder.AddAuthorizationConfiguration();
+
 
         var app = builder.Build();
 
@@ -20,15 +25,18 @@ public class Program
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
-            app.MapScalarApiReference();
+            app.UseSwaggerUi();
         }
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
 
         app.MapControllers();
+        
+        app.MapGet("/", () => "Hello world").RequireAuthorization();
 
         app.Run();
     }
