@@ -143,67 +143,65 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public async Task<TResult> ExecuteInTransactionAsync<TResult>(Func<IDbContextTransaction, Task<TResult>> operation, CancellationToken ct = default) where TResult : class, new()
     {
         IExecutionStrategy strategy = Database.CreateExecutionStrategy();
-        TResult response = await strategy.ExecuteAsync(
-                                                       async () =>
-                                                       {
-                                                           using IDbContextTransaction transaction = await Database.BeginTransactionAsync(ct);
-                                                           try
-                                                           {
-                                                               var response = await operation(transaction);
+        TResult response = await strategy.ExecuteAsync(async () =>
+        {
+            using IDbContextTransaction transaction = await Database.BeginTransactionAsync(ct);
+            try
+            {
+                var response = await operation(transaction);
 
-                                                               DbTransaction? dbTransaction = transaction.GetDbTransaction();
+                DbTransaction? dbTransaction = transaction.GetDbTransaction();
 
-                                                               if (dbTransaction != null! && !IsTransactionCommitted())
-                                                               {
-                                                                   await transaction.CommitAsync(ct);
-                                                               }
-                                                               return response;
-                                                           }
-                                                           catch (Exception ex)
-                                                           {
-                                                               DbTransaction? dbTransaction = transaction.GetDbTransaction();
-                                                               
-                                                               if (dbTransaction != null! && !IsTransactionCommitted())
-                                                               {
-                                                                   await transaction.RollbackAsync(ct);
-                                                               }
+                if (dbTransaction != null! && !IsTransactionCommitted())
+                {
+                    await transaction.CommitAsync(ct);
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                DbTransaction? dbTransaction = transaction.GetDbTransaction();
 
-                                                               throw;
-                                                           }
-                                                       });
+                if (dbTransaction != null! && !IsTransactionCommitted())
+                {
+                    await transaction.RollbackAsync(ct);
+                }
+
+                throw;
+            }
+        });
         return response;
     }
 
     public Task ExecuteInTransactionAsync(Func<IDbContextTransaction, Task> operation, CancellationToken ct = default)
     {
         IExecutionStrategy strategy = Database.CreateExecutionStrategy();
-        var task = strategy.ExecuteAsync(
-                                         async () =>
-                                         {
-                                             await using IDbContextTransaction transaction = await Database.BeginTransactionAsync(ct);
-                                             try
-                                             {
-                                                 await operation(transaction);
+        var task = strategy.ExecuteAsync(async () =>
+        {
+            await using IDbContextTransaction transaction = await Database.BeginTransactionAsync(ct);
+            try
+            {
+                await operation(transaction);
 
-                                                 DbTransaction? dbTransaction = transaction.GetDbTransaction();
-                                                 
-                                                 if (dbTransaction != null! && !IsTransactionCommitted())
-                                                 {
-                                                     await transaction.CommitAsync(ct);
-                                                 }
-                                             }
-                                             catch (Exception ex)
-                                             {
-                                                 DbTransaction? dbTransaction = transaction.GetDbTransaction();
-                                                 
-                                                 if (dbTransaction != null! && !IsTransactionCommitted())
-                                                 {
-                                                     await transaction.RollbackAsync(ct);
-                                                 }
+                DbTransaction? dbTransaction = transaction.GetDbTransaction();
 
-                                                 throw;
-                                             }
-                                         });
+                if (dbTransaction != null! && !IsTransactionCommitted())
+                {
+                    await transaction.CommitAsync(ct);
+                }
+            }
+            catch (Exception ex)
+            {
+                DbTransaction? dbTransaction = transaction.GetDbTransaction();
+
+                if (dbTransaction != null! && !IsTransactionCommitted())
+                {
+                    await transaction.RollbackAsync(ct);
+                }
+
+                throw;
+            }
+        });
 
         return task;
     }
