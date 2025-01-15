@@ -13,10 +13,8 @@ public class Program
         builder.Services.AddControllers();
 
         builder.AddSwaggerConfiguration();
-
         builder.AddDatabaseConfiguration();
         builder.AddAuthorizationConfiguration();
-
 
         var app = builder.Build();
 
@@ -30,7 +28,6 @@ public class Program
 
         app.UseAuthentication();
         app.UseAuthorization();
-
 
         app.MapControllers();
         
