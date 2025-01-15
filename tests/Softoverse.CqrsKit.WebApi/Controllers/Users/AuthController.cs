@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
 using System.Security.Claims;
@@ -10,9 +9,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
-using Softoverse.CqrsKit.WebApi.ViewModels;
+using Softoverse.CqrsKit.WebApi.Models.ViewModels;
 
-namespace Softoverse.CqrsKit.WebApi.Controllers;
+namespace Softoverse.CqrsKit.WebApi.Controllers.Users;
 
 [Route("api/[controller]")]
 [ApiController]

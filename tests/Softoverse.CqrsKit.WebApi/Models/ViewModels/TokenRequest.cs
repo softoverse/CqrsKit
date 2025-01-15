@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace Softoverse.CqrsKit.WebApi.ViewModels
+namespace Softoverse.CqrsKit.WebApi.Models.ViewModels
 {
     public class TokenRequest
     {

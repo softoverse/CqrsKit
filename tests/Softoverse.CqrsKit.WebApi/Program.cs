@@ -1,10 +1,13 @@
+using FluentValidation;
+
+using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Extensions;
 
 namespace Softoverse.CqrsKit.WebApi;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +18,13 @@ public class Program
         builder.AddSwaggerConfiguration();
         builder.AddDatabaseConfiguration();
         builder.AddAuthorizationConfiguration();
+        
+        // FluentValidation validators needs to be registered as singleton
+        builder.Services.AddValidatorsFromAssemblyContaining<Program>(ServiceLifetime.Singleton);
 
         var app = builder.Build();
+        
+        await app.SeedApplicationBaseDataAsync();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -33,6 +41,6 @@ public class Program
         
         app.MapGet("/", () => "Hello world").RequireAuthorization();
 
-        app.Run();
+        await app.RunAsync();
     }
 }

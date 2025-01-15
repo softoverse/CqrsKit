@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using Softoverse.CqrsKit.Model;
-using Softoverse.CqrsKit.WebApi.ViewModels;
+using Softoverse.CqrsKit.WebApi.Models.ViewModels;
 
-namespace Softoverse.CqrsKit.WebApi.Controllers;
+namespace Softoverse.CqrsKit.WebApi.Controllers.Users;
 
 [Route("api/[controller]")]
 [ApiController]

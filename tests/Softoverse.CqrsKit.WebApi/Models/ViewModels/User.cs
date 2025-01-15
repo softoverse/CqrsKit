@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Softoverse.CqrsKit.WebApi.ViewModels;
+namespace Softoverse.CqrsKit.WebApi.Models.ViewModels;
 
 public class User
 {
