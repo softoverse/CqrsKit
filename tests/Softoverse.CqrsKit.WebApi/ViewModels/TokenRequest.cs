@@ -12,10 +12,6 @@ namespace Softoverse.CqrsKit.WebApi.ViewModels
         [FromForm(Name = "password")]
         public string? Password { get; set; }
         
-        [FromForm(Name = "grant_type")]
-        [RegularExpression("^(password|refresh_token)$", ErrorMessage = "Invalid grant type.")]
-        public string? GrantType { get; set; } = "password";
-        
         [FromForm(Name = "refresh_token")]
         public string? RefreshToken { get; set; }
 
@@ -27,5 +23,9 @@ namespace Softoverse.CqrsKit.WebApi.ViewModels
         
         [FromForm(Name = "client_secret")]
         public string? ClientSecret { get; set; }
+        
+        [FromForm(Name = "grant_type")]
+        [RegularExpression("^(password|refresh_token)$", ErrorMessage = "Invalid grant type.")]
+        public string? GrantType { get; set; } = "password";
     }
 }

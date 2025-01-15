@@ -1,11 +1,16 @@
 ﻿using Microsoft.OpenApi.Models;
 
+using Scalar.AspNetCore;
+
 namespace Softoverse.CqrsKit.WebApi.Extensions;
 
 public static class SwaggerConfigurationExtension
 {
-    public static void AddSwagger(this WebApplicationBuilder builder)
+    public static void AddSwaggerConfiguration(this WebApplicationBuilder builder)
     {
+        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+        builder.Services.AddOpenApi();
+
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
 
@@ -23,8 +28,12 @@ public static class SwaggerConfigurationExtension
                         RefreshUrl = new Uri($"{builder.Configuration["JWT:TokenRefreshUrl"]}"),
                         Scopes = new Dictionary<string, string>
                         {
-                            { "apiScope", "Access your API" },
-                            { "uiScope", "Access your UI" }
+                            {
+                                "apiScope", "Access your API"
+                            },
+                            {
+                                "uiScope", "Access your UI"
+                            }
                         }
                     }
                 }
@@ -50,6 +59,9 @@ public static class SwaggerConfigurationExtension
 
     public static void UseSwaggerUi(this WebApplication app)
     {
+        app.MapOpenApi();
+        app.MapScalarApiReference();
+
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
