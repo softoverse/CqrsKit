@@ -28,7 +28,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ApprovalFlowConfiguration> ApprovalFlowConfigurations { get; set; }
     public DbSet<ApprovalFlowConfigurationStep> ApprovalFlowConfigurationSteps { get; set; }
     
-    private DbSet<Student> Students { get; set; }
+    public DbSet<Student> Students { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -115,7 +115,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 UserName = "superadmin",
                 NormalizedUserName = "SUPERADMIN",
                 Email = "superadmin@gmail.com",
-                NormalizedEmail = "SUPERADMIN@GMAIL.COM"
+                NormalizedEmail = "SUPERADMIN@GMAIL.COM",
+                PasswordHash = "AQAAAAIAAYagAAAAEL++WXwo+LwK5uZdFmR5By0Y3eenLFum2Wc5wMIRlyJMJYsfyhkXaIvfRdTkaizy9Q=="
             },
             new()
             {
@@ -125,17 +126,19 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 UserName = "admin",
                 NormalizedUserName = "ADMIN",
                 Email = "admin@gmail.com",
-                NormalizedEmail = "ADMIN@GMAIL.COM"
+                NormalizedEmail = "ADMIN@GMAIL.COM",
+                PasswordHash = "AQAAAAIAAYagAAAAEAmMzPLYXKCkk2TPO9QqywIKAApEBxQ4sBJdqLLNeePZ0o3Ix30ObawpxOGW3/OrcQ=="
             },
             new()
             {
-                Id = "94df2b00-1fed-4067-a2c4-dfac4c192135",
+                Id = "f5bb9bf9-10a8-4e32-8054-3dd9a9d320d7",
                 ConcurrencyStamp = "0cc18343-0e52-4443-a563-a7a4def78282",
                 SecurityStamp = "af5f60a2-9171-48bc-8ca3-5c4e64f5a354",
                 UserName = "admin2",
                 NormalizedUserName = "ADMIN2",
                 Email = "admin2@gmail.com",
-                NormalizedEmail = "ADMIN2@GMAIL.COM"
+                NormalizedEmail = "ADMIN2@GMAIL.COM",
+                PasswordHash = "AQAAAAIAAYagAAAAEOFgFuyU/Tg0MYk+JuXydSf/FLhIxAGHN1+crUOGE6yUBK6Q81IDmSg5sg3G5gwglQ=="
             },
             new()
             {
@@ -145,15 +148,16 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 UserName = "user",
                 NormalizedUserName = "USER",
                 Email = "user@gmail.com",
-                NormalizedEmail = "USER@GMAIL.COM"
+                NormalizedEmail = "USER@GMAIL.COM",
+                PasswordHash = "AQAAAAIAAYagAAAAEP1mOA2ZPOYDCwE8/NchGK5wDsE76sPexTcKYryAw7nHeT1PUWlK8P7HQwMxR6Xlkg=="
             },
         };
 
-        var passwordHasher = new PasswordHasher<IdentityUser>();
-        foreach (var user in users)
-        {
-            user.PasswordHash = passwordHasher.HashPassword(user, user.UserName + "@12");
-        }
+        // var passwordHasher = new PasswordHasher<IdentityUser>();
+        // foreach (var user in users)
+        // {
+        //     user.PasswordHash = passwordHasher.HashPassword(user, user.UserName + "@12");
+        // }
 
         UserGroup[] userGroups =
         [
@@ -196,7 +200,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             },
             new()
             {
-                Id = 3,
+                Id = 4,
                 UserGroupId = userGroups[2].Id,
                 UserId = users[3].Id
             }

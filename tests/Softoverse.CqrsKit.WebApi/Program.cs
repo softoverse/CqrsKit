@@ -12,18 +12,20 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(options =>
+        {
+            options.ModelValidatorProviders.Clear(); // Disable default asp.net core model state validation
+        });
 
         builder.AddSwaggerConfiguration();
         builder.AddDatabaseConfiguration();
         builder.AddAuthorizationConfiguration();
-        
+
         // FluentValidation validators needs to be registered as singleton
         builder.Services.AddValidatorsFromAssemblyContaining<Program>(ServiceLifetime.Singleton);
 
         var app = builder.Build();
-        
+
         await app.SeedApplicationBaseDataAsync();
 
         // Configure the HTTP request pipeline.
@@ -38,8 +40,9 @@ public class Program
         app.UseAuthorization();
 
         app.MapControllers();
-        
-        app.MapGet("/", () => "Hello world").RequireAuthorization();
+
+        app.MapGet("/", () => "Hello world")
+           .RequireAuthorization();
 
         await app.RunAsync();
     }
