@@ -6,15 +6,15 @@ namespace Softoverse.CqrsKit.Executors;
 
 internal static class SequentialStepExecutor
 {
-    public static async Task<Response<TResponse>> ExecuteStepsAsync<TResponse>(HandlerStep<TResponse>[] steps, CqrsContext context)
+    public static async Task<Result<TResponse>> ExecuteStepsAsync<TResponse>(HandlerStep<TResponse>[] steps, CqrsContext context)
     {
         Validate(steps);
 
         return await ExecuteStepsCoreAsync(context,
                                            steps,
                                            step => step.Delegate(),
-                                           result => Response<TResponse>.Error().WithMessage(result.Message!),
-                                           Response<TResponse>.Error);
+                                           result => Result<TResponse>.Error().WithMessage(result.Message!),
+                                           Result<TResponse>.Error);
     }
 
     private static async Task<TResponse> ExecuteStepsCoreAsync<TStep, TResponse>(CqrsContext context,
@@ -23,7 +23,7 @@ internal static class SequentialStepExecutor
                                                                                  Func<TResponse, TResponse> createErrorResponse,
                                                                                  Func<TResponse> createDefaultErrorResponse)
         where TStep : HandlerStepBase
-        where TResponse : Response
+        where TResponse : Result
     {
         TResponse? finalOutputResponse = null;
 

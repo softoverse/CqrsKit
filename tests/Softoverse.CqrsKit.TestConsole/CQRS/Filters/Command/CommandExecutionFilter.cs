@@ -11,13 +11,13 @@ namespace Softoverse.CqrsKit.TestConsole.CQRS.Filters.Command;
 public class CommandExecutionFilter<TCommand, TResponse> : CommandExecutionFilterBase<TCommand, TResponse>
     where TCommand : ICommand
 {
-    public override Task<Response<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task<Result<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)}");
         return ResponseDefaults.DefaultResponse<TResponse>();
     }
 
-    public override Task<Response<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutedAsync)}");
         return ResponseDefaults.DefaultResponse<TResponse>();

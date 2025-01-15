@@ -28,27 +28,27 @@ public sealed class ApprovalFlowExecutor<T> : IApprovalFlowExecutor<T>
 
     public CqrsContext Context { get; init; }
 
-    public async Task<Response> AcceptAsync(CancellationToken ct = default)
+    public async Task<Result> AcceptAsync(CancellationToken ct = default)
     {
-        Response beforeApprovalFlowAcceptResponse = await ApprovalFlowAcceptFilter.OnAcceptingAsync(ApprovalFlowPendingTaskId, Context, ct);
-        if (!beforeApprovalFlowAcceptResponse.IsSuccessful) return beforeApprovalFlowAcceptResponse;
+        Result beforeApprovalFlowAcceptResult = await ApprovalFlowAcceptFilter.OnAcceptingAsync(ApprovalFlowPendingTaskId, Context, ct);
+        if (!beforeApprovalFlowAcceptResult.IsSuccessful) return beforeApprovalFlowAcceptResult;
 
         var commandExecutorResponse = await GetCommandApprovalFlowExecutor(ct);
         if (!commandExecutorResponse.IsSuccessful) return commandExecutorResponse;
         ICommandApprovalFlowEventExecutor commandExecutor = commandExecutorResponse.Payload;
 
-        Response commandResponse = await commandExecutor.ExecuteDynamicAsync(ct) as Response ?? Response.Error();
+        Result commandResult = await commandExecutor.ExecuteDynamicAsync(ct) as Result ?? Result.Error();
 
-        var afterAcceptResponse = await commandExecutor.AfterAcceptAsync(ct) as Response ?? Response.Success();
+        var afterAcceptResponse = await commandExecutor.AfterAcceptAsync(ct) as Result ?? Result.Success();
         if (!afterAcceptResponse.IsSuccessful) return afterAcceptResponse;
 
-        Response afterApprovalFlowAcceptResponse = await ApprovalFlowAcceptFilter.OnAcceptedAsync(ApprovalFlowPendingTaskId, Context, ct);
-        if (!afterApprovalFlowAcceptResponse.IsSuccessful) return afterApprovalFlowAcceptResponse;
+        Result afterApprovalFlowAcceptResult = await ApprovalFlowAcceptFilter.OnAcceptedAsync(ApprovalFlowPendingTaskId, Context, ct);
+        if (!afterApprovalFlowAcceptResult.IsSuccessful) return afterApprovalFlowAcceptResult;
 
-        return commandResponse;
+        return commandResult;
     }
 
-    public async Task<Response> RejectAsync(CancellationToken ct = default)
+    public async Task<Result> RejectAsync(CancellationToken ct = default)
     {
         var onRejectResponse = await ApprovalFlowRejectFilter.OnRejectingAsync(ApprovalFlowPendingTaskId, Context, ct);
         if (!onRejectResponse.IsSuccessful) return onRejectResponse;
@@ -57,36 +57,36 @@ public sealed class ApprovalFlowExecutor<T> : IApprovalFlowExecutor<T>
         if (!commandExecutorResponse.IsSuccessful) return commandExecutorResponse;
         ICommandApprovalFlowEventExecutor commandExecutor = commandExecutorResponse.Payload;
 
-        Response afterRejectResponse = await commandExecutor.AfterRejectAsync(ct) as Response ?? Response.Success();
-        if (!afterRejectResponse.IsSuccessful) return afterRejectResponse;
+        Result afterRejectResult = await commandExecutor.AfterRejectAsync(ct) as Result ?? Result.Success();
+        if (!afterRejectResult.IsSuccessful) return afterRejectResult;
 
-        Response afterApprovalFlowRejectResponse = await ApprovalFlowRejectFilter.OnRejectedAsync(ApprovalFlowPendingTaskId, Context, ct);
-        if (!afterApprovalFlowRejectResponse.IsSuccessful) return afterApprovalFlowRejectResponse;
+        Result afterApprovalFlowRejectResult = await ApprovalFlowRejectFilter.OnRejectedAsync(ApprovalFlowPendingTaskId, Context, ct);
+        if (!afterApprovalFlowRejectResult.IsSuccessful) return afterApprovalFlowRejectResult;
 
-        return afterRejectResponse;
+        return afterRejectResult;
     }
 
-    private async Task<Response<ICommandApprovalFlowEventExecutor>> GetCommandApprovalFlowExecutor(CancellationToken ct = default)
+    private async Task<Result<ICommandApprovalFlowEventExecutor>> GetCommandApprovalFlowExecutor(CancellationToken ct = default)
     {
         T? pendingTask = await ApprovalFlowService.GetApprovalFlowTaskAsync<T>(ApprovalFlowPendingTaskId, Context, ct);
         if (pendingTask is null)
         {
-            return Response<ICommandApprovalFlowEventExecutor>.Error(ApprovalFlowPendingTaskErrors.NotFound(ApprovalFlowPendingTaskId));
+            return Result<ICommandApprovalFlowEventExecutor>.Error(ApprovalFlowPendingTaskErrors.NotFound(ApprovalFlowPendingTaskId));
         }
 
         Type? commandType = CqrsHelper.GetType(pendingTask.CommandFullName);
         if (commandType == null)
         {
-            return Response<ICommandApprovalFlowEventExecutor>.Error(CommandErrors.NotFound(pendingTask.CommandName));
+            return Result<ICommandApprovalFlowEventExecutor>.Error(CommandErrors.NotFound(pendingTask.CommandName));
         }
 
-        Response<object> payloadParseResponse = ParsePayload(commandType, pendingTask);
-        if (!payloadParseResponse.IsSuccessful)
-            return Response<ICommandApprovalFlowEventExecutor>.Error()
-                                                              .WithMessage(payloadParseResponse.Message!)
-                                                              .WithErrors(payloadParseResponse.Errors!);
+        Result<object> payloadParseResult = ParsePayload(commandType, pendingTask);
+        if (!payloadParseResult.IsSuccessful)
+            return Result<ICommandApprovalFlowEventExecutor>.Error()
+                                                              .WithMessage(payloadParseResult.Message!)
+                                                              .WithErrors(payloadParseResult.Errors!);
 
-        object commandObjectInType = payloadParseResponse.Payload;
+        object commandObjectInType = payloadParseResult.Payload;
 
         var commandExecutor = CommandExecutorDynamicBuilder.Initialize(Services)
                                                            .BuildCommandExecutor(Context,
@@ -96,11 +96,11 @@ public sealed class ApprovalFlowExecutor<T> : IApprovalFlowExecutor<T>
                                                                                  pendingTask.ApprovalFlowHandlerFullName!,
                                                                                  commandObjectInType);
 
-        return Response<ICommandApprovalFlowEventExecutor>.Success()
+        return Result<ICommandApprovalFlowEventExecutor>.Success()
                                                           .WithPayload(commandExecutor);
     }
 
-    private static Response<object> ParsePayload(Type commandType, T pendingTask)
+    private static Result<object> ParsePayload(Type commandType, T pendingTask)
     {
         JsonSerializerOptions serializerOptions = CqrsHelper.GetDefaultSerializerOption();
         var payloadInString = Encoding.ASCII.GetString(pendingTask.Payload ?? []);
@@ -108,10 +108,10 @@ public sealed class ApprovalFlowExecutor<T> : IApprovalFlowExecutor<T>
 
         if (commandObjectInType != null)
         {
-            return Response<object>.Success()
+            return Result<object>.Success()
                                    .WithPayload(commandObjectInType);
         }
 
-        return Response<object>.Error(ApprovalFlowPendingTaskErrors.InvalidPayload(commandType.Name));
+        return Result<object>.Error(ApprovalFlowPendingTaskErrors.InvalidPayload(commandType.Name));
     }
 }

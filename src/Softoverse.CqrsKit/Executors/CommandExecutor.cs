@@ -31,7 +31,7 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
     public required bool IsApprovalFlowEnabled { get; init; }
 
 
-    public async Task<Response<TResponse>> ExecuteDefaultAsync(CancellationToken ct = default)
+    public async Task<Result<TResponse>> ExecuteDefaultAsync(CancellationToken ct = default)
     {
         return await CommandExecutorBuilder<TCommand, TResponse>.Initialize(Services)
                                                                 .WithCommand(Command).WithDefaultHandler()
@@ -41,7 +41,7 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
                                                                 .ExecuteAsync(ct);
     }
 
-    public async Task<Response<TResponse>> ExecuteAsync(CancellationToken ct = default)
+    public async Task<Result<TResponse>> ExecuteAsync(CancellationToken ct = default)
     {
         bool isApprovalFlowRequired = false;
         if (IsApprovalFlowEnabled)
@@ -63,7 +63,7 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
         return await ExecuteStepsAsync(steps);
     }
 
-    private async Task<Response<TResponse>> ExecuteApprovalFlowAsync(CancellationToken ct = default)
+    private async Task<Result<TResponse>> ExecuteApprovalFlowAsync(CancellationToken ct = default)
     {
         bool isApprovalFlowSkipped = ApprovalFlowHandler == null;
         HandlerStep<TResponse>[] steps =
@@ -80,16 +80,16 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
         return await ExecuteStepsAsync(steps);
     }
 
-    private async Task<Response<TResponse>> IsApprovalFlowPendingTaskUniqueAsync(CancellationToken ct = default)
+    private async Task<Result<TResponse>> IsApprovalFlowPendingTaskUniqueAsync(CancellationToken ct = default)
     {
         if (Context.State == CurrentState.ApprovalFlowExecution)
-            return Response<TResponse>.Success();
+            return Result<TResponse>.Success();
         
         bool isApprovalFlowPendingTaskUnique = await ApprovalFlowService.IsApprovalFlowPendingTaskUniqueAsync(Command, Context, ct);
-        var approvalFlowUniqueResponse = Response<TResponse>.Create(isApprovalFlowPendingTaskUnique)
+        var approvalFlowUniqueResponse = Result<TResponse>.Create(isApprovalFlowPendingTaskUnique)
                                                             .WithErrorMessage("This command is already in approval flow");
         
-        return !approvalFlowUniqueResponse.IsSuccessful ? approvalFlowUniqueResponse : Response<TResponse>.Success();
+        return !approvalFlowUniqueResponse.IsSuccessful ? approvalFlowUniqueResponse : Result<TResponse>.Success();
     }
 
     public async Task<object> ExecuteDynamicAsync(CancellationToken ct)
@@ -116,14 +116,14 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
             : await ResponseDefaults.DefaultResponse();
     }
 
-    private async Task<Response<TResponse>> ExecuteStepsAsync(HandlerStep<TResponse>[] steps)
+    private async Task<Result<TResponse>> ExecuteStepsAsync(HandlerStep<TResponse>[] steps)
     {
         Context.Request = Command;
         Context.SetApprovalFlowPendingTaskContextData(typeof(TCommand), typeof(ICommandHandler<TCommand, TResponse>), typeof(TResponse), typeof(IApprovalFlowHandler<TCommand, TResponse>));
 
         var response = await SequentialStepExecutor.ExecuteStepsAsync(steps, Context);
         Context.Response = response;
-        return response ?? Response<TResponse>.Error()
+        return response ?? Result<TResponse>.Error()
                                               .WithMessage("An error occurred.");
     }
 }

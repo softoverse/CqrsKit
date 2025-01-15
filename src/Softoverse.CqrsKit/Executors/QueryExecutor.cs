@@ -21,7 +21,7 @@ public sealed class QueryExecutor<TQuery, TResponse> : IQueryExecutor<TQuery, TR
     public required TQuery Query { get; init; }
     public CqrsContext Context { get; init; }
 
-    public async Task<Response<TResponse>> ExecuteDefaultAsync(CancellationToken ct = default)
+    public async Task<Result<TResponse>> ExecuteDefaultAsync(CancellationToken ct = default)
     {
         return await QueryExecutorBuilder<TQuery, TResponse>.Initialize(Services)
                                                             .WithQuery(Query).WithDefaultHandler()
@@ -30,7 +30,7 @@ public sealed class QueryExecutor<TQuery, TResponse> : IQueryExecutor<TQuery, TR
                                                             .ExecuteAsync(ct);
     }
 
-    public async Task<Response<TResponse>> ExecuteAsync(CancellationToken ct = default)
+    public async Task<Result<TResponse>> ExecuteAsync(CancellationToken ct = default)
     {
         HandlerStep<TResponse>[] steps =
         [
@@ -44,14 +44,14 @@ public sealed class QueryExecutor<TQuery, TResponse> : IQueryExecutor<TQuery, TR
         return await ExecuteStepsAsync(steps);
     }
 
-    private async Task<Response<TResponse>> ExecuteStepsAsync(HandlerStep<TResponse>[] steps)
+    private async Task<Result<TResponse>> ExecuteStepsAsync(HandlerStep<TResponse>[] steps)
     {
         Context.Request = Query;
         Context.SetApprovalFlowPendingTaskContextData(typeof(TQuery), typeof(IQueryHandler<TQuery, TResponse>), typeof(TResponse), null);
         
         var response = await SequentialStepExecutor.ExecuteStepsAsync(steps, Context);
         Context.Response = response;
-        return response ?? Response<TResponse>.Error()
+        return response ?? Result<TResponse>.Error()
                                               .WithMessage("An error occurred.");
     }
 }

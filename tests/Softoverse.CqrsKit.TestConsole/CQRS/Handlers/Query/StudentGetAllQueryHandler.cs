@@ -12,14 +12,14 @@ public class StudentGetAllQueryHandler : QueryHandler<StudentGetAllQuery, List<S
 {
     private readonly List<Student> _studentStore = Program.StudentStore;
 
-    public override async Task<Response<List<Student>>> OnStartAsync(StudentGetAllQuery query, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<List<Student>>> OnStartAsync(StudentGetAllQuery query, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
-        return await Task.FromResult(Response<List<Student>>.Success()
+        return await Task.FromResult(Result<List<Student>>.Success()
                                                             .WithMessage("Before execution Student"));
     }
 
-    public override async Task<Response<List<Student>>> HandleAsync(StudentGetAllQuery query, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<List<Student>>> HandleAsync(StudentGetAllQuery query, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
 
@@ -29,16 +29,16 @@ public class StudentGetAllQueryHandler : QueryHandler<StudentGetAllQuery, List<S
                                                (x.Age is not null && x.Age == query.Age)
                                           ).ToList();
 
-        return await Task.FromResult(Response<List<Student>>.Create(students.Count > 0)
+        return await Task.FromResult(Result<List<Student>>.Create(students.Count > 0)
                                                             .WithPayload(students)
                                                             .WithSuccessMessage("Found Student data")
                                                             .WithErrorMessage("No data found"));
     }
 
-    public override async Task<Response<List<Student>>> OnEndAsync(StudentGetAllQuery query, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<List<Student>>> OnEndAsync(StudentGetAllQuery query, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
-        return await Task.FromResult(Response<List<Student>>.Success()
+        return await Task.FromResult(Result<List<Student>>.Success()
                                                             .WithMessage("After execution Student"));
     }
 }

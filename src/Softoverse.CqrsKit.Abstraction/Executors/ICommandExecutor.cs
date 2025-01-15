@@ -18,7 +18,7 @@ public interface ICommandExecutor<TCommand, TResponse> where TCommand : ICommand
     ICommandHandler<TCommand, TResponse> CommandHandler { get; init; }
     IApprovalFlowHandler<TCommand, TResponse> ApprovalFlowHandler { get; init; }
 
-    Task<Response<TResponse>> ExecuteAsync(CancellationToken ct = default);
+    Task<Result<TResponse>> ExecuteAsync(CancellationToken ct = default);
 
-    Task<Response<TResponse>> ExecuteDefaultAsync(CancellationToken ct = default);
+    Task<Result<TResponse>> ExecuteDefaultAsync(CancellationToken ct = default);
 }

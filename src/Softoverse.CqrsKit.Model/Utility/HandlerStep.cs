@@ -7,14 +7,14 @@ public class HandlerStepBase(StepBehavior behavior = StepBehavior.Mandatory, str
     public bool IsTraversed { get; set; } = false;
 }
 
-public class HandlerStep(Func<Task<Response>> @delegate, StepBehavior behavior = StepBehavior.Mandatory, string? message = null)
+public class HandlerStep(Func<Task<Result>> @delegate, StepBehavior behavior = StepBehavior.Mandatory, string? message = null)
     : HandlerStepBase(behavior, message)
 {
-    public Func<Task<Response>> Delegate { get; } = @delegate;
+    public Func<Task<Result>> Delegate { get; } = @delegate;
 }
 
-public class HandlerStep<TResponse>(Func<Task<Response<TResponse>>> @delegate, StepBehavior behavior = StepBehavior.Mandatory, string? message = null)
+public class HandlerStep<TResponse>(Func<Task<Result<TResponse>>> @delegate, StepBehavior behavior = StepBehavior.Mandatory, string? message = null)
     : HandlerStepBase(behavior, message)
 {
-    public Func<Task<Response<TResponse>>> Delegate { get; } = @delegate;
+    public Func<Task<Result<TResponse>>> Delegate { get; } = @delegate;
 }

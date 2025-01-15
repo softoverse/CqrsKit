@@ -14,7 +14,7 @@ public interface IQueryExecutor<TQuery, TResponse> where TQuery : IQuery
 
     CqrsContext Context { get; }
 
-    Task<Response<TResponse>> ExecuteAsync(CancellationToken ct = default);
+    Task<Result<TResponse>> ExecuteAsync(CancellationToken ct = default);
 
-    Task<Response<TResponse>> ExecuteDefaultAsync(CancellationToken ct = default);
+    Task<Result<TResponse>> ExecuteDefaultAsync(CancellationToken ct = default);
 }

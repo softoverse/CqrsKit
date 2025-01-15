@@ -10,7 +10,7 @@ public interface IApprovalFlowExecutor<T> where T : BaseApprovalFlowPendingTask
 
     CqrsContext Context { get; }
 
-    Task<Response> AcceptAsync(CancellationToken ct = default);
+    Task<Result> AcceptAsync(CancellationToken ct = default);
 
-    Task<Response> RejectAsync(CancellationToken ct = default);
+    Task<Result> RejectAsync(CancellationToken ct = default);
 }

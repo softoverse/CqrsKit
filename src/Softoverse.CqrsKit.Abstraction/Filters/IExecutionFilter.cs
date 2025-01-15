@@ -9,7 +9,7 @@ public interface IExecutionFilterMarker;
 public interface IExecutionFilter<in TRequest, TResponse> : IExecutionFilterMarker
     where TRequest : IRequest
 {
-    public Task<Response<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default);
+    public Task<Result<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default);
 
-    public Task<Response<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
+    public Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
 }

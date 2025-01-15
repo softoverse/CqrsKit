@@ -11,13 +11,13 @@ namespace Softoverse.CqrsKit.TestConsole.CQRS.Filters.Query;
 [ScopedLifetime]
 public class StudentGetAllQueryExecutionFilter : QueryExecutionFilterBase<StudentGetAllQuery, List<Student>>
 {
-    public override Task<Response<List<Student>>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task<Result<List<Student>>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)} - (Custom)");
         return ResponseDefaults.DefaultResponse<List<Student>>();
     }
 
-    public override Task<Response<List<Student>>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task<Result<List<Student>>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)} - (Custom)");
         return ResponseDefaults.DefaultResponse<List<Student>>();

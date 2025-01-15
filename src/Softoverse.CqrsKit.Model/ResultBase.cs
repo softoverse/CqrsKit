@@ -1,6 +1,6 @@
 ﻿namespace Softoverse.CqrsKit.Model;
 
-public class ResponseBase
+public class ResultBase
 {
     public string? Message { get; set; }
     public bool IsSuccessful { get; set; } = true;
@@ -14,9 +14,9 @@ public static class ResponseDefaults
 
     public static Task<T> DefaultValueResponse<T>(T value) => Task.FromResult(value);
 
-    public static Task<Response> DefaultResponse() => Task.FromResult(Response.Success());
+    public static Task<Result> DefaultResponse() => Task.FromResult(Result.Success());
 
-    public static Task<Response<TResponse>> DefaultResponse<TResponse>() => Task.FromResult(Response<TResponse>.Success());
+    public static Task<Result<TResponse>> DefaultResponse<TResponse>() => Task.FromResult(Result<TResponse>.Success());
 
     #endregion Static Methods
 }

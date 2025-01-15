@@ -13,7 +13,7 @@ public class StudentCreateCommandHandler : CommandHandler<StudentCreateCommand, 
 {
     private readonly List<Student> _studentStore = Program.StudentStore;
 
-    public override async Task<Response<Student>> ValidateAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> ValidateAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.ValidateAsync)}");
 
@@ -23,40 +23,40 @@ public class StudentCreateCommandHandler : CommandHandler<StudentCreateCommand, 
 
             IDictionary<string, string[]> errors = new Dictionary<string, string[]>().AddError("Name", errorMessage);
 
-            return await Task.FromResult(Response<Student>.Error()
+            return await Task.FromResult(Result<Student>.Error()
                                                                .WithMessage(errorMessage)
                                                                .WithPayload(command.Payload)
                                                                .WithErrors(errors));
         }
 
-        return await Task.FromResult(Response<Student>.Success()
+        return await Task.FromResult(Result<Student>.Success()
                                                            .WithMessage("Valid Student")
                                                            .WithPayload(command.Payload));
     }
 
-    public override async Task<Response<Student>> OnStartAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnStartAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
-        return await Task.FromResult(Response<Student>.Success()
+        return await Task.FromResult(Result<Student>.Success()
                                                            .WithMessage("Before execution Student")
                                                            .WithPayload(command.Payload));
     }
 
-    public override async Task<Response<Student>> HandleAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> HandleAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
         Student student = command.Payload;
         _studentStore.Add(student);
 
-        return await Task.FromResult(Response<Student>.Success()
+        return await Task.FromResult(Result<Student>.Success()
                                                       .WithMessage("Successfully Created")
                                                       .WithPayload(student));
     }
 
-    public override async Task<Response<Student>> OnEndAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnEndAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
-        return await Task.FromResult(Response<Student>.Success()
+        return await Task.FromResult(Result<Student>.Success()
                                                       .WithMessage("After execution Student")
                                                       .WithPayload(command.Payload));
     }

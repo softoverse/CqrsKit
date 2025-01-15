@@ -12,28 +12,28 @@ public class StudentGetByIdQueryHandler : QueryHandler<StudentGetByIdQuery, Stud
 {
     private readonly List<Student> _studentStore = Program.StudentStore;
 
-    public override async Task<Response<Student>> OnStartAsync(StudentGetByIdQuery query, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnStartAsync(StudentGetByIdQuery query, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
-        return await Task.FromResult(Response<Student>.Success()
+        return await Task.FromResult(Result<Student>.Success()
                                                       .WithMessage("Before execution Student"));
     }
 
-    public override async Task<Response<Student>> HandleAsync(StudentGetByIdQuery query, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> HandleAsync(StudentGetByIdQuery query, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
         var student = _studentStore.FirstOrDefault(x => x.Id == query.Id);
 
-        return await Task.FromResult(Response<Student>.Create(student != null)
+        return await Task.FromResult(Result<Student>.Create(student != null)
                                                       .WithPayload(student!)
                                                       .WithSuccessMessage("Found Student data")
                                                       .WithErrorMessage("No data found"));
     }
 
-    public override async Task<Response<Student>> OnEndAsync(StudentGetByIdQuery query, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnEndAsync(StudentGetByIdQuery query, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
-        return await Task.FromResult(Response<Student>.Success()
+        return await Task.FromResult(Result<Student>.Success()
                                                       .WithMessage("After execution Student"));
     }
 }

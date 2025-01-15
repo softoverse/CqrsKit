@@ -7,7 +7,7 @@ public interface IApprovalFlowRejectFilterMarker;
     
 public interface IApprovalFlowRejectFilter: IApprovalFlowRejectFilterMarker
 {
-    Task<Response> OnRejectingAsync(string approvalFlowId, CqrsContext context, CancellationToken ct = default);
+    Task<Result> OnRejectingAsync(string approvalFlowId, CqrsContext context, CancellationToken ct = default);
 
-    Task<Response> OnRejectedAsync(string approvalFlowId, CqrsContext context, CancellationToken ct = default);
+    Task<Result> OnRejectedAsync(string approvalFlowId, CqrsContext context, CancellationToken ct = default);
 }

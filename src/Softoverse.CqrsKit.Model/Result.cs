@@ -4,14 +4,14 @@ using Softoverse.CqrsKit.Model.Utility;
 
 namespace Softoverse.CqrsKit.Model;
 
-public class Response : ResponseBase
+public class Result : ResultBase
 {
     private string _errorMessage;
     private string _successMessage;
 
-    private Response() : this(false, "", new Dictionary<string, object>(), new Dictionary<string, string[]>()) { }
+    private Result() : this(false, "", new Dictionary<string, object>(), new Dictionary<string, string[]>()) { }
 
-    internal Response(bool isSuccessful = true, string? message = "", IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
+    internal Result(bool isSuccessful = true, string? message = "", IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
     {
         Message = message;
         IsSuccessful = isSuccessful;
@@ -19,25 +19,25 @@ public class Response : ResponseBase
         Errors = errors ?? new Dictionary<string, string[]>();
     }
 
-    public Response WithMessage(string message)
+    public Result WithMessage(string message)
     {
         this.Message = message;
         return this;
     }
 
-    public Response WithAdditionalProperties(IDictionary<string, object> additionalProperties)
+    public Result WithAdditionalProperties(IDictionary<string, object> additionalProperties)
     {
         this.AdditionalProperties = additionalProperties;
         return this;
     }
 
-    public Response AddAdditionalProperty(KeyValuePair<string, object> additionalProperty)
+    public Result AddAdditionalProperty(KeyValuePair<string, object> additionalProperty)
     {
         this.AdditionalProperties?.Add(additionalProperty.Key, additionalProperty.Value);
         return this;
     }
 
-    public Response AddAdditionalProperties(IDictionary<string, object> additionalProperties)
+    public Result AddAdditionalProperties(IDictionary<string, object> additionalProperties)
     {
         foreach (var additionalProperty in additionalProperties)
         {
@@ -46,12 +46,12 @@ public class Response : ResponseBase
         return this;
     }
 
-    public Response WithError(KeyValuePair<string, string[]> error)
+    public Result WithError(KeyValuePair<string, string[]> error)
     {
         return AddError(error);
     }
 
-    public Response WithErrors(IDictionary<string, string[]> errors)
+    public Result WithErrors(IDictionary<string, string[]> errors)
     {
         foreach (var error in errors)
         {
@@ -60,14 +60,14 @@ public class Response : ResponseBase
         return this;
     }
 
-    public Response AddError(KeyValuePair<string, string[]> error)
+    public Result AddError(KeyValuePair<string, string[]> error)
     {
         this.Errors ??= new Dictionary<string, string[]>();
         this.Errors.AddError(error.Key, error.Value);
         return this;
     }
 
-    public Response AddErrors(IDictionary<string, string[]> errors)
+    public Result AddErrors(IDictionary<string, string[]> errors)
     {
         foreach (var error in errors)
         {
@@ -76,43 +76,43 @@ public class Response : ResponseBase
         return this;
     }
 
-    public Response WithSuccessMessage(string message)
+    public Result WithSuccessMessage(string message)
     {
         _successMessage = message;
         return WithMessage(IsSuccessful ? _successMessage : _errorMessage);
     }
 
-    public Response WithErrorMessage(string message)
+    public Result WithErrorMessage(string message)
     {
         _errorMessage = message;
         return WithMessage(IsSuccessful ? _successMessage : _errorMessage);
     }
 
-    public static Response Success()
+    public static Result Success()
     {
         return Create(true);
     }
 
-    public static Response Error()
+    public static Result Error()
     {
         return Create(false);
     }
 
-    public static Response Error(CqrsError error)
+    public static Result Error(CqrsError error)
     {
         return Error().WithMessage(error.Message)
                       .WithErrors(error.Errors);
     }
 
-    public static Response Create(bool isSuccessful, string? successMessage = null, string? errorMessage = null)
+    public static Result Create(bool isSuccessful, string? successMessage = null, string? errorMessage = null)
     {
         return Create(isSuccessful, null, null, null)
                .WithSuccessMessage(successMessage!)
                .WithErrorMessage(errorMessage!);
     }
 
-    private static Response Create(bool isSuccessful, string? message, IDictionary<string, object>? additionalProperties, IDictionary<string, string[]>? errors)
+    private static Result Create(bool isSuccessful, string? message, IDictionary<string, object>? additionalProperties, IDictionary<string, string[]>? errors)
     {
-        return new Response(isSuccessful, message, additionalProperties, errors);
+        return new Result(isSuccessful, message, additionalProperties, errors);
     }
 }
