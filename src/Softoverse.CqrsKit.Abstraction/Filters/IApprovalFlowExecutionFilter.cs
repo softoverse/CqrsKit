@@ -9,9 +9,9 @@ public interface IApprovalFlowExecutionFilterMarker;
 public interface IApprovalFlowExecutionFilter<in TCommand, TResponse> : IApprovalFlowExecutionFilterMarker
     where TCommand : ICommand
 {
-    public Task<Result<TResponse>> OnExecutingAsync(TCommand command, CqrsContext context, CancellationToken ct = default);
+    public Task<Result<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default);
     
-    public Task<Result<TResponse>> ExecuteAsync(TCommand command, CqrsContext context, CancellationToken ct = default);
+    public Task<Result<TResponse>> ExecuteAsync(CqrsContext context, CancellationToken ct = default);
     
-    public Task<Result<TResponse>> OnExecutedAsync(TCommand command, CqrsContext context, CancellationToken ct = default);
+    public Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
 }

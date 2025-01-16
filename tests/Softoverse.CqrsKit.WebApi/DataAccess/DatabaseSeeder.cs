@@ -15,57 +15,55 @@ public static class DatabaseSeeder
             return;
         }
 
-        using (var scope = app.Services.CreateScope())
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+        try
         {
-            var services = scope.ServiceProvider;
-            var loggerFactory = services.GetRequiredService<ILoggerFactory>();
-            try
+            //Auto migrate if database exists
+            var dbContext = services.GetRequiredService<ApplicationDbContext>();
+            if (await dbContext.Database.CanConnectAsync())
             {
-                //Auto migrate if database exists
-                var dbContext = services.GetRequiredService<ApplicationDbContext>();
-                if (await dbContext.Database.CanConnectAsync())
+                var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
+                if (pendingMigrations.Any())
                 {
-                    var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
-                    if (pendingMigrations.Any())
-                    {
-                        //Migrate Database as the database is already there
-                        await dbContext.Database.MigrateAsync();
-                    }
+                    //Migrate Database as the database is already there
+                    await dbContext.Database.MigrateAsync();
                 }
-                else
-                {
-                    var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
-                    if (pendingMigrations.Any())
-                    {
-                        //First Migrate then ensure Created to avoid database errors
-                        await dbContext.Database.MigrateAsync();
-
-                        //Ensures that Database is created
-                        await dbContext.Database.EnsureCreatedAsync();
-                    }
-                }
-
-                services.SeedCQRSData();
             }
-            catch (Exception ex)
+            else
             {
-                var logger = loggerFactory.CreateLogger<Program>();
-                logger.LogError(ex, "An error occurred seeding the DB.");
+                var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
+                if (pendingMigrations.Any())
+                {
+                    //First Migrate then ensure Created to avoid database errors
+                    await dbContext.Database.MigrateAsync();
+
+                    //Ensures that Database is created
+                    await dbContext.Database.EnsureCreatedAsync();
+                }
             }
+
+            services.SeedCqrsData();
+        }
+        catch (Exception ex)
+        {
+            var logger = loggerFactory.CreateLogger<Program>();
+            logger.LogError(ex, "An error occurred seeding the DB.");
         }
     }
 
-    public static void SeedCQRSData(this IServiceProvider services)
+    public static void SeedCqrsData(this IServiceProvider services)
     {
         ApplicationDbContext dbContext = services.GetRequiredService<ApplicationDbContext>();
-        SeedCQRSCommandQueries(dbContext);
+        SeedCqrsCommandQueries(dbContext);
     }
 
     /// <summary>
     /// Use this method if you want only to save queries into the database
     /// </summary>
     /// <param name="dbContext"></param>
-    private static void SeedCQRSCommandQueries(ApplicationDbContext dbContext)
+    private static void SeedCqrsCommandQueries(ApplicationDbContext dbContext)
     {
         try
         {

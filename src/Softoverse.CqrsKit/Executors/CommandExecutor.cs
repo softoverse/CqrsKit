@@ -71,9 +71,9 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
             new(() => CommandHandler.ValidateAsync(Command, Context, ct)),
             new(() => IsApprovalFlowPendingTaskUniqueAsync(ct)),
             new(() => isApprovalFlowSkipped ? ResponseDefaults.DefaultResponse<TResponse>() : ApprovalFlowHandler!.OnStartAsync(Command, Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory),
-            new(() => ApprovalFlowExecutionFilter.OnExecutingAsync(Command, Context, ct)),
-            new(() => ApprovalFlowExecutionFilter.ExecuteAsync(Command, Context, ct), StepBehavior.FinalOutput),
-            new(() => ApprovalFlowExecutionFilter.OnExecutedAsync(Command, Context, ct)),
+            new(() => ApprovalFlowExecutionFilter.OnExecutingAsync(Context, ct)),
+            new(() => ApprovalFlowExecutionFilter.ExecuteAsync(Context, ct), StepBehavior.FinalOutput),
+            new(() => ApprovalFlowExecutionFilter.OnExecutedAsync(Context, ct)),
             new(() => isApprovalFlowSkipped ? ResponseDefaults.DefaultResponse<TResponse>() : ApprovalFlowHandler!.OnEndAsync(Command, Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory)
         ];
 

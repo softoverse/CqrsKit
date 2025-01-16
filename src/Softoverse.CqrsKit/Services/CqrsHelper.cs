@@ -174,7 +174,7 @@ public static class CqrsHelper
         }
     }
 
-    public static TChild? ToChildOfBaseCommandQuery<TChild>(BaseCommandQuery baseCommandQuery) where TChild : BaseCommandQuery, new()
+    public static TChild ToChildOfBaseCommandQuery<TChild>(BaseCommandQuery baseCommandQuery) where TChild : BaseCommandQuery, new()
     {
         try
         {
@@ -196,7 +196,7 @@ public static class CqrsHelper
         }
         catch (Exception ex)
         {
-            return null;
+            return null!;
         }
     }
 
