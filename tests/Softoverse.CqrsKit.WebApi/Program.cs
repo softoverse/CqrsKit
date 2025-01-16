@@ -2,6 +2,7 @@ using FluentValidation;
 
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Extensions;
+using Softoverse.CqrsKit.WebApi.Models;
 
 namespace Softoverse.CqrsKit.WebApi;
 
