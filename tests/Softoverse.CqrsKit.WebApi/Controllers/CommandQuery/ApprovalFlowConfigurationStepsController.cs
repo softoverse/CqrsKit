@@ -8,26 +8,26 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ApprovalFlowConfigurationDetailsController(ApplicationDbContext dbContext) : ControllerBase
+    public class ApprovalFlowConfigurationStepsController(ApplicationDbContext dbContext) : ControllerBase
     {
-        // GET: api/ApprovalFlowConfigurationDetails
+        // GET: api/ApprovalFlowConfigurationSteps
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ApprovalFlowConfigurationStep>>> GetApprovalFlowConfigurationDetails(CancellationToken ct = default)
+        public async Task<ActionResult<IEnumerable<ApprovalFlowConfigurationStep>>> GetApprovalFlowConfigurationSteps(CancellationToken ct = default)
         {
             return Ok(await dbContext.ApprovalFlowConfigurationSteps.ToListAsync(ct));
         }
 
-        // GET: api/ApprovalFlowConfigurationDetails/5
+        // GET: api/ApprovalFlowConfigurationSteps/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ApprovalFlowConfigurationStep>> GetApprovalFlowConfigurationDetail(long id, CancellationToken ct = default)
+        public async Task<ActionResult<ApprovalFlowConfigurationStep>> GetApprovalFlowConfigurationStep(long id, CancellationToken ct = default)
         {
             return Ok(await dbContext.ApprovalFlowConfigurationSteps.FindAsync(id, ct));
         }
 
-        // PUT: api/ApprovalFlowConfigurationDetails/5
+        // PUT: api/ApprovalFlowConfigurationSteps/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutApprovalFlowConfigurationDetail(long id, ApprovalFlowConfigurationStep data, CancellationToken ct = default)
+        public async Task<IActionResult> PutApprovalFlowConfigurationStep(long id, ApprovalFlowConfigurationStep data, CancellationToken ct = default)
         {
             if (id != data.Id) return BadRequest();
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -38,10 +38,10 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
             return Ok();
         }
 
-        // POST: api/ApprovalFlowConfigurationDetails
+        // POST: api/ApprovalFlowConfigurationSteps
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ApprovalFlowConfigurationStep>> PostApprovalFlowConfigurationDetail(ApprovalFlowConfigurationStep data, CancellationToken ct = default)
+        public async Task<ActionResult<ApprovalFlowConfigurationStep>> PostApprovalFlowConfigurationStep(ApprovalFlowConfigurationStep data, CancellationToken ct = default)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -51,9 +51,9 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
             return Ok();
         }
 
-        // DELETE: api/ApprovalFlowConfigurationDetails/5
+        // DELETE: api/ApprovalFlowConfigurationSteps/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteApprovalFlowConfigurationDetail(long id, CancellationToken ct = default)
+        public async Task<IActionResult> DeleteApprovalFlowConfigurationStep(long id, CancellationToken ct = default)
         {
             await dbContext.ApprovalFlowConfigurationSteps.Where(x => x.Id == id).ExecuteDeleteAsync(ct);
             await dbContext.SaveChangesAsync(ct);
