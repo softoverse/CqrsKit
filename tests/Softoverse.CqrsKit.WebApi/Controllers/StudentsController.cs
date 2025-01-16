@@ -9,8 +9,7 @@ namespace Softoverse.CqrsKit.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class StudentsController(ApplicationDbContext dbContext)
-    : ControllerBase
+public class StudentsController(ApplicationDbContext dbContext) : ControllerBase
 {
     // GET: api/Students
     [HttpGet]

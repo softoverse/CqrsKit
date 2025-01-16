@@ -36,8 +36,8 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
             var approvalFlowConfigurationDetailIdsToKeepInDb = data.ApprovalFlowConfigurationSteps.Where(x => x.Id != 0).Select(x => x.Id).ToList();
 
             await dbContext.ApprovalFlowConfigurationSteps
-                                                    .Where(x => x.ApprovalFlowConfigurationId == id && !approvalFlowConfigurationDetailIdsToKeepInDb.Contains(x.Id))
-                                                    .ExecuteDeleteAsync(ct);
+                           .Where(x => x.ApprovalFlowConfigurationId == id && !approvalFlowConfigurationDetailIdsToKeepInDb.Contains(x.Id))
+                           .ExecuteDeleteAsync(ct);
 
             dbContext.ApprovalFlowConfigurations.Update(data);
 

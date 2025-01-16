@@ -9,7 +9,7 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserGroupUsersController(ApplicationDbContext context, ICacheService cacheService) : ControllerBase
+    public class UserGroupUsersController(ApplicationDbContext dbContext, ICacheService cacheService) : ControllerBase
     {
         // GET: api/UserGroupUsers
         [HttpGet]
@@ -17,20 +17,16 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users
         {
             if (userGroupId == null || userGroupId == 0)
             {
-                return Ok(await context.UserGroupUsers.ToListAsync());
+                return Ok(await dbContext.UserGroupUsers.ToListAsync());
             }
-            return Ok(await context.UserGroupUsers.Where(x => x.UserGroupId == userGroupId).ToListAsync());
+            return Ok(await dbContext.UserGroupUsers.Where(x => x.UserGroupId == userGroupId).ToListAsync());
         }
 
         // GET: api/UserGroupUsers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserGroupUser>> GetUserGroupUser(long id)
         {
-            if (context.UserGroupUsers == null)
-            {
-                return NotFound();
-            }
-            var userGroupUser = await context.UserGroupUsers.FindAsync(id);
+            var userGroupUser = await dbContext.UserGroupUsers.FindAsync(id);
 
             if (userGroupUser == null)
             {
@@ -50,11 +46,11 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users
                 return BadRequest();
             }
 
-            context.Entry(userGroupUser).State = EntityState.Modified;
+            dbContext.Entry(userGroupUser).State = EntityState.Modified;
 
             try
             {
-                await context.SaveChangesAsync();
+                await dbContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -78,16 +74,15 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users
         [HttpPost]
         public async Task<ActionResult<UserGroupUser>> PostUserGroupUser(UserGroupUser userGroupUser)
         {
-            if (context.UserGroupUsers == null)
-            {
-                return Problem("Entity set 'ApplicationDbContext.UserGroupUsers'  is null.");
-            }
-            context.UserGroupUsers.Add(userGroupUser);
-            await context.SaveChangesAsync();
+            dbContext.UserGroupUsers.Add(userGroupUser);
+            await dbContext.SaveChangesAsync();
 
             await cacheService.ClearAllCacheAsync();
 
-            return CreatedAtAction("GetUserGroupUser", new { id = userGroupUser.Id }, userGroupUser);
+            return CreatedAtAction("GetUserGroupUser", new
+            {
+                id = userGroupUser.Id
+            }, userGroupUser);
         }
 
         [HttpPost("range")]
@@ -97,10 +92,10 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users
 
             var userGroupUserIdsToKeepInDb = userGroupUsers.Where(x => x.Id != 0).Select(x => x.Id).ToList();
 
-            await context.UserGroupUsers.Where(x => !userGroupUserIdsToKeepInDb.Contains(x.Id) && userGroupIds.Contains(x.UserGroupId)).ExecuteDeleteAsync();
+            await dbContext.UserGroupUsers.Where(x => !userGroupUserIdsToKeepInDb.Contains(x.Id) && userGroupIds.Contains(x.UserGroupId)).ExecuteDeleteAsync();
 
-            await context.UserGroupUsers.AddRangeAsync(userGroupUsers.Where(x => x.Id == 0));
-            await context.SaveChangesAsync();
+            await dbContext.UserGroupUsers.AddRangeAsync(userGroupUsers.Where(x => x.Id == 0));
+            await dbContext.SaveChangesAsync();
 
             await cacheService.ClearAllCacheAsync();
 
@@ -111,18 +106,18 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUserGroupUser(long id)
         {
-            if (context.UserGroupUsers == null)
+            if (dbContext.UserGroupUsers == null)
             {
                 return NotFound();
             }
-            var userGroupUser = await context.UserGroupUsers.FindAsync(id);
+            var userGroupUser = await dbContext.UserGroupUsers.FindAsync(id);
             if (userGroupUser == null)
             {
                 return NotFound();
             }
 
-            context.UserGroupUsers.Remove(userGroupUser);
-            await context.SaveChangesAsync();
+            dbContext.UserGroupUsers.Remove(userGroupUser);
+            await dbContext.SaveChangesAsync();
 
             await cacheService.ClearAllCacheAsync();
 
@@ -131,7 +126,7 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users
 
         private bool UserGroupUserExists(long id)
         {
-            return (context.UserGroupUsers?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (dbContext.UserGroupUsers?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -9,8 +9,7 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UsersController(UserManager<IdentityUser> userManager)
-    : ControllerBase
+public class UsersController(UserManager<IdentityUser> userManager) : ControllerBase
 {
     // GET: api/Users
     [HttpGet]
@@ -30,7 +29,7 @@ public class UsersController(UserManager<IdentityUser> userManager)
     public async Task<IActionResult> Get(string id)
     {
         IdentityUser? user = await userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
-        
+
         var result = Result<IdentityUser?>.Success()
                                           .WithPayload(user)
                                           .WithMessage("User retrieved successfully");
@@ -53,11 +52,11 @@ public class UsersController(UserManager<IdentityUser> userManager)
 
 
         IdentityResult updateResult = await userManager.UpdateAsync(identityUser);
-        
+
         var result = Result<IdentityResult>.Success()
                                            .WithPayload(updateResult)
                                            .WithMessage("User updated successfully");
-        
+
         return Ok(result);
     }
 
@@ -67,11 +66,11 @@ public class UsersController(UserManager<IdentityUser> userManager)
     {
         IdentityUser? user = await userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
         IdentityResult deleteResult = await userManager.DeleteAsync(user!);
-        
+
         var result = Result<IdentityResult>.Success()
                                            .WithPayload(deleteResult)
                                            .WithMessage("User deleted successfully");
-        
+
         return Ok(result);
     }
 }

@@ -1,34 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 
 namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CommandQueriesController(ApplicationDbContext context) : ControllerBase
+    public class CommandQueriesController(ApplicationDbContext dbContext) : ControllerBase
     {
         // GET: api/CommandQueries
         [HttpGet]
         public async Task<IActionResult> GetCommandQueries()
         {
-            if (context.CommandQueries == null)
-            {
-                return NotFound();
-            }
-            return Ok(await context.CommandQueries.ToListAsync());
+            var commandQueries = await dbContext.CommandQueries.ToListAsync();
+            return Ok(commandQueries);
         }
 
         // GET: api/CommandQueries/Commands
         [HttpGet("Commands")]
         public async Task<IActionResult> GetCommands()
         {
-            if (context.CommandQueries == null)
-            {
-                return NotFound();
-            }
-            var commands = await context.CommandQueries.Where(x => x.IsCommand).ToListAsync();
+            var commands = await dbContext.CommandQueries.Where(x => x.IsCommand).ToListAsync();
             return Ok(commands);
         }
 
@@ -36,11 +30,7 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
         [HttpGet("Queries")]
         public async Task<IActionResult> GetQueries()
         {
-            if (context.CommandQueries == null)
-            {
-                return NotFound();
-            }
-            var queries = await context.CommandQueries.Where(x => !x.IsCommand).ToListAsync();
+            var queries = await dbContext.CommandQueries.Where(x => !x.IsCommand).ToListAsync();
             return Ok(queries);
         }
 
@@ -48,23 +38,10 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCommandQuery(long id)
         {
-            if (context.CommandQueries == null)
-            {
-                return NotFound();
-            }
-            var command = await context.CommandQueries.Include(x => x.CommandApprovalFlowConfiguration).FirstOrDefaultAsync(x => x.Id == id);
+            var command = await dbContext.CommandQueries.Include(x => x.CommandApprovalFlowConfiguration).FirstOrDefaultAsync(x => x.Id == id);
 
-            if (command == null)
-            {
-                return NotFound();
-            }
-
+            if (command == null) return NotFound();
             return Ok(command);
-        }
-
-        private bool CommandExists(long id)
-        {
-            return (context.CommandQueries?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

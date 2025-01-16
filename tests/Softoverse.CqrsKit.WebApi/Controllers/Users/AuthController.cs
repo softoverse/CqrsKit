@@ -15,8 +15,7 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IConfiguration configuration)
-    : ControllerBase
+public class AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IConfiguration configuration) : ControllerBase
 {
     public static ConcurrentDictionary<string, string> RefreshTokens = new ConcurrentDictionary<string, string>();
 
