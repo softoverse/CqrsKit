@@ -17,7 +17,7 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users;
 [ApiController]
 public class AuthController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IConfiguration configuration) : ControllerBase
 {
-    public static ConcurrentDictionary<string, string> RefreshTokens = new ConcurrentDictionary<string, string>();
+    private static readonly ConcurrentDictionary<string, string> RefreshTokens = new ConcurrentDictionary<string, string>();
 
     [HttpPost("token")]
     public async Task<IActionResult> Token([FromForm] TokenRequest request)

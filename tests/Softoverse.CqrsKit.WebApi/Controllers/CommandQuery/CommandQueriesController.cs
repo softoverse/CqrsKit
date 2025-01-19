@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.WebApi.DataAccess;
+using Softoverse.CqrsKit.WebApi.Models.ViewModels;
 
 namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
 {
@@ -12,9 +12,16 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
     {
         // GET: api/CommandQueries
         [HttpGet]
-        public async Task<IActionResult> GetCommandQueries()
+        public async Task<IActionResult> GetCommandQueries([FromQuery] RequestType type = RequestType.Both)
         {
-            var commandQueries = await dbContext.CommandQueries.ToListAsync();
+            IQueryable<Models.CQRS.CommandQuery> query = (type) switch
+            {
+                RequestType.Command => dbContext.CommandQueries.Where(x => x.IsCommand),
+                RequestType.Query => dbContext.CommandQueries.Where(x => !x.IsCommand),
+                _ => dbContext.CommandQueries
+            };
+
+            var commandQueries = await query.ToListAsync();
             return Ok(commandQueries);
         }
 
@@ -22,6 +29,7 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
         [HttpGet("Commands")]
         public async Task<IActionResult> GetCommands()
         {
+            return await GetCommandQueries(RequestType.Command);
             var commands = await dbContext.CommandQueries.Where(x => x.IsCommand).ToListAsync();
             return Ok(commands);
         }
@@ -30,6 +38,7 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
         [HttpGet("Queries")]
         public async Task<IActionResult> GetQueries()
         {
+            return await GetCommandQueries(RequestType.Query);
             var queries = await dbContext.CommandQueries.Where(x => !x.IsCommand).ToListAsync();
             return Ok(queries);
         }

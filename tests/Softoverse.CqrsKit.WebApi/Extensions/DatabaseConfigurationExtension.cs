@@ -7,7 +7,7 @@ namespace Softoverse.CqrsKit.WebApi.Extensions;
 
 public static class DatabaseConfigurationExtension
 {
-    public static void AddDatabaseConfiguration(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddDatabaseConfiguration(this WebApplicationBuilder builder)
     {
         builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -19,5 +19,7 @@ public static class DatabaseConfigurationExtension
         {
             options.UseSqlite(connectionString);
         });
+        
+        return builder;
     }
 }

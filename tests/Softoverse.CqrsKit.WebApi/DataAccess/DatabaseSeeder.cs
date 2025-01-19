@@ -53,7 +53,7 @@ public static class DatabaseSeeder
         }
     }
 
-    public static void SeedCqrsData(this IServiceProvider services)
+    private static void SeedCqrsData(this IServiceProvider services)
     {
         ApplicationDbContext dbContext = services.GetRequiredService<ApplicationDbContext>();
         SeedCqrsCommandQueries(dbContext);
@@ -78,7 +78,7 @@ public static class DatabaseSeeder
                 if (!hasInDb)
                 {
                     CommandQuery command = CqrsHelper.ToChildOfBaseCommandQuery<CommandQuery>(baseCommandQuery);
-                    // Set extra values extra property of command object if needed
+                    // Set extra values property of command object if needed
                     commandQueriesToInsert.Add(command);
                 }
             }

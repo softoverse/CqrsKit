@@ -7,7 +7,7 @@ namespace Softoverse.CqrsKit.WebApi.Extensions;
 
 public static class AuthorizationConfigurationExtension
 {
-    public static void AddAuthorizationConfiguration(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddAuthorizationConfiguration(this WebApplicationBuilder builder)
     {
         // Add builder.Services to the container.
         builder.Services.AddAuthorization();
@@ -36,5 +36,7 @@ public static class AuthorizationConfigurationExtension
                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!))
                    };
                });
+        
+        return builder;
     }
 }

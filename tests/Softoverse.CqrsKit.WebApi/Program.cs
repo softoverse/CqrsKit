@@ -18,9 +18,9 @@ public class Program
             options.ModelValidatorProviders.Clear(); // Disable default asp.net core model state validation
         });
 
-        builder.AddSwaggerConfiguration();
-        builder.AddDatabaseConfiguration();
-        builder.AddAuthorizationConfiguration();
+        builder.AddSwaggerConfiguration()
+               .AddDatabaseConfiguration()
+               .AddAuthorizationConfiguration();
 
         // FluentValidation validators needs to be registered as singleton
         builder.Services.AddValidatorsFromAssemblyContaining<Program>(ServiceLifetime.Singleton);

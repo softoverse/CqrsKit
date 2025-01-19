@@ -6,7 +6,7 @@ namespace Softoverse.CqrsKit.WebApi.Extensions;
 
 public static class SwaggerConfigurationExtension
 {
-    public static void AddSwaggerConfiguration(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddSwaggerConfiguration(this WebApplicationBuilder builder)
     {
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApi();
@@ -55,6 +55,8 @@ public static class SwaggerConfigurationExtension
                 }
             });
         });
+        
+        return builder;
     }
 
     public static void UseSwaggerUi(this WebApplication app)

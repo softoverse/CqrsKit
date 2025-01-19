@@ -3,13 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Models.CQRS.MappingModels;
-using Softoverse.CqrsKit.WebApi.Services;
 
 namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CommandQueryUserGroupsController(ApplicationDbContext dbContext, ICacheService cacheService) : ControllerBase
+    public class CommandQueryUserGroupsController(ApplicationDbContext dbContext) : ControllerBase
     {
         // GET: api/CommandQueryUserGroups
         [HttpGet]
@@ -51,19 +50,17 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
             var deleteAll = commandQueryUserGroups == null || commandQueryUserGroups.Count == 0;
 
             await dbContext.CommandQueryUserGroups
-                            .Where(x =>
+                           .Where(x =>
                                         x.CommandQuery!.IsCommand
-                                        &&
-                                        (deleteAll ? x.UserGroupId == userGroupId : userGroupIds.Contains(x.UserGroupId) && !commandQueryUserGroupIdsToKeepInDb.Contains(x.Id))
-                            )
-                            .Include(x => x.CommandQuery)
-                            .ExecuteDeleteAsync();
+                                    &&
+                                      (deleteAll ? x.UserGroupId == userGroupId : userGroupIds.Contains(x.UserGroupId) && !commandQueryUserGroupIdsToKeepInDb.Contains(x.Id))
+                                 )
+                           .Include(x => x.CommandQuery)
+                           .ExecuteDeleteAsync();
             //await _context.SaveChangesAsync();
 
             await dbContext.CommandQueryUserGroups.AddRangeAsync(commandQueryUserGroups!.Where(x => x.Id == 0));
             await dbContext.SaveChangesAsync();
-
-            await cacheService.ClearAllCacheAsync();
 
             return Ok(commandQueryUserGroups);
         }
@@ -78,19 +75,17 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
             var deleteAll = commandQueryUserGroups == null || commandQueryUserGroups.Count == 0;
 
             await dbContext.CommandQueryUserGroups
-                            .Where(x =>
+                           .Where(x =>
                                         !x.CommandQuery!.IsCommand
-                                        &&
-                                        (deleteAll ? x.UserGroupId == userGroupId : userGroupIds.Contains(x.UserGroupId) && !commandQueryUserGroupIdsToKeepInDb.Contains(x.Id))
-                            )
-                            .Include(x => x.CommandQuery)
-                            .ExecuteDeleteAsync();
+                                    &&
+                                      (deleteAll ? x.UserGroupId == userGroupId : userGroupIds.Contains(x.UserGroupId) && !commandQueryUserGroupIdsToKeepInDb.Contains(x.Id))
+                                 )
+                           .Include(x => x.CommandQuery)
+                           .ExecuteDeleteAsync();
             //await _context.SaveChangesAsync();
 
             await dbContext.CommandQueryUserGroups.AddRangeAsync(commandQueryUserGroups!.Where(x => x.Id == 0));
             await dbContext.SaveChangesAsync();
-
-            await cacheService.ClearAllCacheAsync();
 
             return Ok(commandQueryUserGroups);
         }
@@ -107,8 +102,6 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.CommandQuery
 
             dbContext.CommandQueryUserGroups.Remove(commandQueryUserGroup);
             await dbContext.SaveChangesAsync();
-
-            await cacheService.ClearAllCacheAsync();
 
             return NoContent();
         }

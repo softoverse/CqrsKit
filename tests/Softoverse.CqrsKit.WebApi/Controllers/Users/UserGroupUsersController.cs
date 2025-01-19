@@ -3,13 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Models.User;
-using Softoverse.CqrsKit.WebApi.Services;
 
 namespace Softoverse.CqrsKit.WebApi.Controllers.Users
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserGroupUsersController(ApplicationDbContext dbContext, ICacheService cacheService) : ControllerBase
+    public class UserGroupUsersController(ApplicationDbContext dbContext) : ControllerBase
     {
         // GET: api/UserGroupUsers
         [HttpGet]
@@ -64,8 +63,6 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users
                 }
             }
 
-            await cacheService.ClearAllCacheAsync();
-
             return NoContent();
         }
 
@@ -76,8 +73,6 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users
         {
             dbContext.UserGroupUsers.Add(userGroupUser);
             await dbContext.SaveChangesAsync();
-
-            await cacheService.ClearAllCacheAsync();
 
             return CreatedAtAction("GetUserGroupUser", new
             {
@@ -96,8 +91,6 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users
 
             await dbContext.UserGroupUsers.AddRangeAsync(userGroupUsers.Where(x => x.Id == 0));
             await dbContext.SaveChangesAsync();
-
-            await cacheService.ClearAllCacheAsync();
 
             return Ok(userGroupUsers);
         }
@@ -118,8 +111,6 @@ namespace Softoverse.CqrsKit.WebApi.Controllers.Users
 
             dbContext.UserGroupUsers.Remove(userGroupUser);
             await dbContext.SaveChangesAsync();
-
-            await cacheService.ClearAllCacheAsync();
 
             return NoContent();
         }
