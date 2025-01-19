@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Softoverse.CqrsKit.TestConsole.Models;
 
-public class Student
+public class Person
 {
     [Key]
     public Guid Id { get; set; }

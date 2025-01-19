@@ -17,7 +17,7 @@ public class ApprovalFlowService : ApprovalFlowServiceBase
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.IsApprovalFlowRequiredAsync)}");
 
-        List<string> requiredCommands = [nameof (StudentDeleteCommand)];
+        List<string> requiredCommands = [nameof (PersonDeleteCommand)];
 
         var isApprovalFlowRequired = Program.IsApprovalFlowEnabled && requiredCommands.Contains(commandType.Name);
 
@@ -40,9 +40,9 @@ public class ApprovalFlowService : ApprovalFlowServiceBase
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.GetApprovalFlowTaskAsync)}");
 
-        Type studentDeleteCommandType = typeof(StudentDeleteCommand);
-        Type studentDeleteCommandHandlerType = typeof(ICommandHandler<StudentDeleteCommand, Guid>);
-        Type studentDeleteApprovalFlowHandlerType = typeof(IApprovalFlowHandler<StudentDeleteCommand, Guid>);
+        Type studentDeleteCommandType = typeof(PersonDeleteCommand);
+        Type studentDeleteCommandHandlerType = typeof(ICommandHandler<PersonDeleteCommand, Guid>);
+        Type studentDeleteApprovalFlowHandlerType = typeof(IApprovalFlowHandler<PersonDeleteCommand, Guid>);
 
         var afId = Guid.Parse(approvalFlowId);
 
@@ -60,7 +60,7 @@ public class ApprovalFlowService : ApprovalFlowServiceBase
             ApprovalFlowHandlerName = studentDeleteApprovalFlowHandlerType.Name,
             ApprovalFlowHandlerNamespace = studentDeleteApprovalFlowHandlerType.Namespace,
             ApprovalFlowHandlerFullName = studentDeleteApprovalFlowHandlerType.FullName,
-            Payload = Encoding.ASCII.GetBytes(JsonSerializer.Serialize(new StudentDeleteCommand(afId))),
+            Payload = Encoding.ASCII.GetBytes(JsonSerializer.Serialize(new PersonDeleteCommand(afId))),
             Status = ApprovalFlowStatus.Pending,
             UniqueIdentification = approvalFlowId,
             Id = approvalFlowId

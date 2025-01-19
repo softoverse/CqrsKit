@@ -2,12 +2,13 @@
 
 using Softoverse.CqrsKit.Model.Abstraction;
 using Softoverse.CqrsKit.Model.Command;
+using Softoverse.CqrsKit.WebApi.Models;
 
-namespace Softoverse.CqrsKit.WebApi.CQRS.Events.Student.Commands;
+namespace Softoverse.CqrsKit.WebApi.CQRS.Events.Students.Commands;
 
 [Description("Create student command")]
-public class StudentCreateCommand(Models.Student payload) : Command<Models.Student>(payload),
-                                                     IUniqueCommand
+public class StudentCreateCommand(Student payload) : Command<Student>(payload),
+                                                            IUniqueCommand
 {
     public string GetUniqueIdentification()
     {

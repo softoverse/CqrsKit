@@ -8,27 +8,27 @@ using Softoverse.CqrsKit.TestConsole.Models;
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Handlers.Command;
 
 [ScopedLifetime]
-public class StudentDeleteCommandHandler : CommandHandler<StudentDeleteCommand, Guid>
+public class PersonDeleteCommandHandler : CommandHandler<PersonDeleteCommand, Guid>
 {
-    private readonly List<Student> _studentStore = Program.StudentStore;
+    private readonly List<Person> _studentStore = Program.PersonStore;
 
-    public override async Task<Result<Guid>> ValidateAsync(StudentDeleteCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Guid>> ValidateAsync(PersonDeleteCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.ValidateAsync)}");
         return await Task.FromResult(Result<Guid>.Success()
-                                                   .WithMessage("Valid Student")
+                                                   .WithMessage("Valid Person")
                                                    .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Guid>> OnStartAsync(StudentDeleteCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Guid>> OnStartAsync(PersonDeleteCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
         return await Task.FromResult(Result<Guid>.Success()
-                                                   .WithMessage("Before execution Student")
+                                                   .WithMessage("Before execution Person")
                                                    .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Guid>> HandleAsync(StudentDeleteCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Guid>> HandleAsync(PersonDeleteCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
         var student = _studentStore.FirstOrDefault(x => x.Id == command.Payload);
@@ -39,11 +39,11 @@ public class StudentDeleteCommandHandler : CommandHandler<StudentDeleteCommand, 
                                                    .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Guid>> OnEndAsync(StudentDeleteCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Guid>> OnEndAsync(PersonDeleteCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
         return await Task.FromResult(Result<Guid>.Success()
-                                                   .WithMessage("After execution Student")
+                                                   .WithMessage("After execution Person")
                                                    .WithPayload(command.Payload));
     }
 }

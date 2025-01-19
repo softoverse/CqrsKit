@@ -9,12 +9,59 @@ internal static class SequentialStepExecutor
     public static async Task<Result<TResponse>> ExecuteStepsAsync<TResponse>(HandlerStep<TResponse>[] steps, CqrsContext context)
     {
         Validate(steps);
+        
+        Result<TResponse>? finalOutputResponse = null;
 
-        return await ExecuteStepsCoreAsync(context,
-                                           steps,
-                                           step => step.Delegate(),
-                                           result => Result<TResponse>.Error().WithMessage(result.Message!),
-                                           Result<TResponse>.Error);
+        foreach (var step in steps)
+        {
+            if (step.Behavior == StepBehavior.Skip || step.IsTraversed) continue;
+
+            var result = await step.Delegate();
+            context.Response = result;
+
+            if (result.IsSuccessful)
+            {
+                if (step.Behavior == StepBehavior.FinalOutput)
+                {
+                    finalOutputResponse = result;
+                }
+            }
+            else
+            {
+                if (step.Behavior is StepBehavior.Mandatory or StepBehavior.FinalOutput)
+                {
+                    var anyMustCallStep = steps.Any(x => x is
+                                                    {
+                                                        IsTraversed: false,
+                                                        Behavior   : StepBehavior.MustCall
+                                                    });
+
+                    if (!anyMustCallStep)
+                    {
+                        return result; // Stop immediately if a mandatory step fails
+                    }
+
+                    foreach (var stepItem in steps.Where(x => x.Behavior != StepBehavior.MustCall))
+                    {
+                        stepItem.IsTraversed = true;
+                    }
+
+                    finalOutputResponse = result;
+                }
+            }
+            
+            step.IsTraversed = true;
+        }
+
+        // Return the final output response if available; otherwise, a generic success response
+        return finalOutputResponse ?? Result<TResponse>.Error();
+        
+
+        // return await ExecuteStepsCoreAsync(context,
+        //                                    steps,
+        //                                    step => step.Delegate(),
+        //                                    result => Result<TResponse>.Error().WithMessage(result.Message!),
+        //                                    Result<TResponse>.Error);
     }
 
     private static async Task<TResponse> ExecuteStepsCoreAsync<TStep, TResponse>(CqrsContext context,
@@ -29,8 +76,10 @@ internal static class SequentialStepExecutor
 
         foreach (var step in steps)
         {
-            step.IsTraversed = true;
-            if (step.Behavior == StepBehavior.Skip) continue;
+
+            Console.WriteLine(stepDelegate.Method.Name);
+            
+            if (step.Behavior == StepBehavior.Skip || step.IsTraversed) continue;
 
             var result = await stepDelegate(step);
             context.Response = result;
@@ -44,29 +93,29 @@ internal static class SequentialStepExecutor
             }
             else
             {
-                switch (step.Behavior)
+                if (step.Behavior is StepBehavior.Mandatory or StepBehavior.FinalOutput)
                 {
-                    case StepBehavior.Mandatory:
-                    case StepBehavior.FinalOutput:
-                        if (steps.Any(x => x is
-                                      {
-                                          IsTraversed: false,
-                                          Behavior   : StepBehavior.MustCall
-                                      }))
-                        {
-                            finalOutputResponse = createErrorResponse(result);
-                            continue;
-                        }
-                        else
-                        {
-                            return createErrorResponse(result); // Stop immediately if a mandatory step fails
-                        }
-                    case StepBehavior.Optional:
-                    case StepBehavior.Skip:
-                    default:
-                        continue; // Skip to the next step
+                    var anyMustCallStep = steps.Any(x => x is
+                                                    {
+                                                        IsTraversed: false,
+                                                        Behavior   : StepBehavior.MustCall
+                                                    });
+
+                    if (!anyMustCallStep)
+                    {
+                        return createErrorResponse(result); // Stop immediately if a mandatory step fails
+                    }
+
+                    foreach (var stepItem in steps.Where(x => x.Behavior != StepBehavior.MustCall))
+                    {
+                        stepItem.IsTraversed = true;
+                    }
+
+                    finalOutputResponse = createErrorResponse(result);
                 }
             }
+            
+            step.IsTraversed = true;
         }
 
         // Return the final output response if available; otherwise, a generic success response

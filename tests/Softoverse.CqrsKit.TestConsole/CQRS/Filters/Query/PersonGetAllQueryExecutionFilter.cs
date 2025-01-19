@@ -9,17 +9,17 @@ using Softoverse.CqrsKit.TestConsole.Models;
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Filters.Query;
 
 [ScopedLifetime]
-public class StudentGetAllQueryExecutionFilter : QueryExecutionFilterBase<StudentGetAllQuery, List<Student>>
+public class PersonGetAllQueryExecutionFilter : QueryExecutionFilterBase<PersonGetAllQuery, List<Person>>
 {
-    public override Task<Result<List<Student>>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task<Result<List<Person>>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)} - (Custom)");
-        return ResponseDefaults.DefaultResponse<List<Student>>();
+        return ResponseDefaults.DefaultResponse<List<Person>>();
     }
 
-    public override Task<Result<List<Student>>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task<Result<List<Person>>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)} - (Custom)");
-        return ResponseDefaults.DefaultResponse<List<Student>>();
+        return ResponseDefaults.DefaultResponse<List<Person>>();
     }
 }

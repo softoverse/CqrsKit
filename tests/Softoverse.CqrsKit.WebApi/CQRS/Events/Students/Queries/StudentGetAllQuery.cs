@@ -2,10 +2,10 @@
 
 using Softoverse.CqrsKit.Model.Abstraction;
 
-namespace Softoverse.CqrsKit.WebApi.CQRS.Events.Student.Queries;
+namespace Softoverse.CqrsKit.WebApi.CQRS.Events.Students.Queries;
 
 [Description("Search students query")]
-public class GetAllStudentsQuery: IQuery
+public class StudentGetAllQuery: IQuery
 {
     public string? Name { get; set; }
     public int? Age { get; set; }

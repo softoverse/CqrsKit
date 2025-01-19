@@ -9,13 +9,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 using static Softoverse.CqrsKit.TestConsole.Utility.ConsoleColor;
 
+using Person = Softoverse.CqrsKit.TestConsole.Models.Person;
+
 namespace Softoverse.CqrsKit.TestConsole;
 
 public class Program
 {
     public static readonly bool IsApprovalFlowEnabled = true;
-    private static readonly Faker<Student> StudentFaker = InitializeFaker();
-    public static List<Student> StudentStore = [];
+    private static readonly Faker<Person> PersonFaker = InitializeFaker();
+    public static List<Person> PersonStore = [];
 
     public static async Task Main(string[] args)
     {
@@ -23,12 +25,12 @@ public class Program
 
         var serviceCollection = new ServiceCollection();
         var serviceProvider = serviceCollection.AddCqrsKit<Program>()
-                                               .AddScoped<StudentOperation>()
+                                               .AddScoped<PersonOperation>()
                                                .BuildServiceProvider();
 
         bool isAccept = false;
 
-        StudentStore = SeedStudents(2);
+        PersonStore = SeedPerson(2);
         await StartAsync(serviceProvider, isAccept);
 
         Console.WriteLine($"{Blue}\nComplete with success!{Normal}");
@@ -37,120 +39,120 @@ public class Program
     private static async Task StartAsync(IServiceProvider serviceProvider, bool isAccept = true)
     {
         await using var scope = serviceProvider.CreateAsyncScope();
-        var studentOperation = scope.ServiceProvider.GetRequiredService<StudentOperation>();
+        var personOperation = scope.ServiceProvider.GetRequiredService<PersonOperation>();
 
-        Guid selectedStudentId = StudentStore.FirstOrDefault()?.Id ?? Guid.Empty;
+        Guid selectedPersonId = PersonStore.FirstOrDefault()?.Id ?? Guid.Empty;
 
-        await studentOperation.GetStudents(new StudentGetAllQuery
+        await personOperation.GetPerson(new PersonGetAllQuery
         {
             Name = "Abir"
         });
 
-        await studentOperation.GetStudentById(new StudentGetByIdQuery
+        await personOperation.GetPersonById(new PersonGetByIdQuery
         {
-            Id = selectedStudentId
+            Id = selectedPersonId
         });
 
-        var newStudent = SeedStudents(1)[0];
+        var newPerson = SeedPerson(1)[0];
 
-        await studentOperation.CreateStudent(new(newStudent));
+        await personOperation.CreatePerson(new(newPerson));
 
 
-        newStudent.Name = newStudent.Gender switch
+        newPerson.Name = newPerson.Gender switch
         {
             "Male" => "Abir Mahmud",
             "Female" => "Sadiya Islam",
-            _ => newStudent.Name
+            _ => newPerson.Name
         };
         
-        newStudent.Age = newStudent.Gender switch
+        newPerson.Age = newPerson.Gender switch
         {
             "Male" => 27,
             "Female" => 22,
-            _ => newStudent.Age
+            _ => newPerson.Age
         };
 
-        await studentOperation.UpdateStudent(new StudentUpdateCommand(newStudent.Id, newStudent));
+        await personOperation.UpdatePerson(new PersonUpdateCommand(newPerson.Id, newPerson));
 
-        await studentOperation.GetStudents(new StudentGetAllQuery
+        await personOperation.GetPerson(new PersonGetAllQuery
         {
-            Name = newStudent.Gender switch
+            Name = newPerson.Gender switch
             {
                 "Male" => "Abir",
                 "Female" => "Sadiya",
-                _ => newStudent.Name
+                _ => newPerson.Name
             },
-            Age = newStudent.Gender switch
+            Age = newPerson.Gender switch
             {
                 "Male" => 27,
                 "Female" => 22,
-                _ => newStudent.Age
+                _ => newPerson.Age
             }
         });
 
-        await studentOperation.DeleteStudent(new StudentDeleteCommand(newStudent.Id));
+        await personOperation.DeletePerson(new PersonDeleteCommand(newPerson.Id));
         
-        await studentOperation.GetStudents(new StudentGetAllQuery
+        await personOperation.GetPerson(new PersonGetAllQuery
         {
-            Name = newStudent.Gender switch
+            Name = newPerson.Gender switch
             {
                 "Male" => "Abir",
                 "Female" => "Sadiya",
-                _ => newStudent.Name
+                _ => newPerson.Name
             },
-            Age = newStudent.Gender switch
+            Age = newPerson.Gender switch
             {
                 "Male" => 27,
                 "Female" => 22,
-                _ => newStudent.Age
+                _ => newPerson.Age
             }
         });
 
 
         if (isAccept)
         {
-            await studentOperation.ApproveDeleteStudent($"{selectedStudentId}");
+            await personOperation.ApproveDeletePerson($"{selectedPersonId}");
         }
         else
         {
-            await studentOperation.RejectDeleteStudent($"{selectedStudentId}");
+            await personOperation.RejectDeletePerson($"{selectedPersonId}");
         }
 
-        await studentOperation.GetStudents(new StudentGetAllQuery
+        await personOperation.GetPerson(new PersonGetAllQuery
         {
-            Name = newStudent.Gender switch
+            Name = newPerson.Gender switch
             {
                 "Male" => "Abir",
                 "Female" => "Sadiya",
-                _ => newStudent.Name
+                _ => newPerson.Name
             },
-            Age = newStudent.Gender switch
+            Age = newPerson.Gender switch
             {
                 "Male" => 27,
                 "Female" => 22,
-                _ => newStudent.Age
+                _ => newPerson.Age
             }
         });
 
-        await studentOperation.GetStudentById(new StudentGetByIdQuery
+        await personOperation.GetPersonById(new PersonGetByIdQuery
         {
-            Id = selectedStudentId
+            Id = selectedPersonId
         });
     }
 
-    private static List<Student> SeedStudents(int count)
+    private static List<Person> SeedPerson(int count)
     {
-        // StudentStore.Clear();
-        return StudentFaker.Generate(count);
+        // PersonStore.Clear();
+        return PersonFaker.Generate(count);
     }
 
-    private static Faker<Student> InitializeFaker()
+    private static Faker<Person> InitializeFaker()
     {
-        var studentFaker = new Faker<Student>()
-                           .RuleFor(s => s.Id, _ => Guid.NewGuid())
-                           .RuleFor(s => s.Name, f => f.Person.FullName)
-                           .RuleFor(s => s.Age, f => (DateTime.Now - f.Person.DateOfBirth).Days / 365)
-                           .RuleFor(s => s.Gender, f => f.Person.Gender.ToString());
-        return studentFaker;
+        var personFaker = new Faker<Person>()
+                          .RuleFor(s => s.Id, _ => Guid.NewGuid())
+                          .RuleFor(s => s.Name, f => f.Person.FullName)
+                          .RuleFor(s => s.Age, f => (DateTime.Now - f.Person.DateOfBirth).Days / 365)
+                          .RuleFor(s => s.Gender, f => f.Person.Gender.ToString());
+        return personFaker;
     }
 }

@@ -14,5 +14,6 @@ public class StudentValidator : AbstractValidator<Student>
         RuleFor(x => x.Name).NotEmpty();
         RuleFor(x => x.Gender).NotEmpty();
         RuleFor(x => x.Age).NotNull().InclusiveBetween(0, 200);
+        RuleFor(x => x.AgeCategory).Null();
     }
 }

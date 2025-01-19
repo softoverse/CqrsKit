@@ -14,7 +14,7 @@ public class Student
     public int? Age { get; set; }
     
     [Required]
-    public int AgeCategory { get; set; }
+    public AgeCategory? AgeCategory { get; set; }
 
     [Required]
     public string Gender { get; set; }
@@ -22,7 +22,8 @@ public class Student
 
 public enum AgeCategory
 {
-    ADT, // 13 and greater
-    CHD, // 2 to under 12 years 
-    INF // 0 to under 2 years
+    Adult,
+    Teenager,
+    Child,
+    Infant
 }

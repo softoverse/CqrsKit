@@ -7,7 +7,7 @@ using Softoverse.CqrsKit.TestConsole.Models;
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
 
 [Description("Create student command")]
-public class StudentCreateCommand(Student payload) : Command<Student>(payload),
+public class PersonCreateCommand(Person payload) : Command<Person>(payload),
                                                      IUniqueCommand
 {
     public string GetUniqueIdentification()

@@ -6,8 +6,8 @@ using Softoverse.CqrsKit.TestConsole.Models;
 
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
 
-[Description("Update student command")]
-public class StudentUpdateCommand(Guid id, Student payload) : Command<Student>(payload),
+[Description("Update person command")]
+public class PersonUpdateCommand(Guid id, Person payload) : Command<Person>(payload),
                                                               IUniqueCommand
 {
     public Guid Id = id;

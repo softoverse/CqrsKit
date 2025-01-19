@@ -2,7 +2,7 @@
 
 using Softoverse.CqrsKit.Model.Abstraction;
 
-namespace Softoverse.CqrsKit.TestConsole.CQRS.Events.Query;
+namespace Softoverse.CqrsKit.WebApi.CQRS.Events.Students.Queries;
 
 [Description("Get student by Id query")]
 public class StudentGetByIdQuery : IQuery

@@ -1,11 +1,11 @@
 ﻿using Softoverse.CqrsKit.Model.Extensions;
-
 using Softoverse.CqrsKit.Model.Utility;
 
 namespace Softoverse.CqrsKit.Model;
 
 public class Result<TResponse> : Result
 {
+    private bool _isSuccessMessage;
     private string _errorMessage;
     private string _successMessage;
 
@@ -86,16 +86,22 @@ public class Result<TResponse> : Result
         return this;
     }
 
+    public new Result<TResponse> WithMessageLogic(bool logic)
+    {
+        _isSuccessMessage = logic;
+        return WithMessage(_isSuccessMessage ? _successMessage : _errorMessage);;
+    }
+
     public new Result<TResponse> WithSuccessMessage(string message)
     {
         _successMessage = message;
-        return WithMessage(IsSuccessful ? _successMessage : _errorMessage);
+        return WithMessage(_isSuccessMessage ? _successMessage : _errorMessage);
     }
 
     public new Result<TResponse> WithErrorMessage(string message)
     {
         _errorMessage = message;
-        return WithMessage(IsSuccessful ? _successMessage : _errorMessage);
+        return WithMessage(_isSuccessMessage ? _successMessage : _errorMessage);
     }
 
     public new static Result<TResponse> Success()

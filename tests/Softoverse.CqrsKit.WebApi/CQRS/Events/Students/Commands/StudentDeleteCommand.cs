@@ -1,9 +1,9 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 using Softoverse.CqrsKit.Model.Abstraction;
 using Softoverse.CqrsKit.Model.Command;
 
-namespace Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
+namespace Softoverse.CqrsKit.WebApi.CQRS.Events.Students.Commands;
 
 [Description("Delete student command")]
 public class StudentDeleteCommand(Guid payload) : Command<Guid>(payload),

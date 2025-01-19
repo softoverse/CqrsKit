@@ -14,20 +14,20 @@ using static Softoverse.CqrsKit.TestConsole.Utility.ConsoleColor;
 
 namespace Softoverse.CqrsKit.TestConsole;
 
-public class StudentOperation(IServiceProvider services)
+public class PersonOperation(IServiceProvider services)
 {
-    public async Task GetStudents(StudentGetAllQuery request, CancellationToken ct = default)
+    public async Task GetPerson(PersonGetAllQuery request, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(GetStudents), startsWith: Green, endsWith: Normal);
+        PrintBlock(nameof(GetPerson), startsWith: Green, endsWith: Normal);
         
         var sw = Stopwatch.StartNew();
 
-        var query = CqrsBuilder.Query<StudentGetAllQuery, List<Student>>(services)
+        var query = CqrsBuilder.Query<PersonGetAllQuery, List<Person>>(services)
                                .WithQuery(request)
                                .Build();
 
-        var students = await query.ExecuteAsync(ct);
+        var people = await query.ExecuteAsync(ct);
 
         sw.Stop();
         PrintElapsedTime(sw);
@@ -36,22 +36,22 @@ public class StudentOperation(IServiceProvider services)
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(request);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);
-        PrintPayload(students);
+        PrintPayload(people);
         EndBlock();
     }
 
-    public async Task GetStudentById(StudentGetByIdQuery request, CancellationToken ct = default)
+    public async Task GetPersonById(PersonGetByIdQuery request, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(GetStudentById), startsWith: Green, endsWith: Normal);
+        PrintBlock(nameof(GetPersonById), startsWith: Green, endsWith: Normal);
 
         var sw = Stopwatch.StartNew();
 
-        var query = QueryBuilder.Initialize<StudentGetByIdQuery, Student>(services)
+        var query = QueryBuilder.Initialize<PersonGetByIdQuery, Person>(services)
                                 .WithQuery(request)
                                 .Build();
 
-        var student = await query.ExecuteDefaultAsync(ct);
+        var person = await query.ExecuteDefaultAsync(ct);
 
         sw.Stop();
         PrintElapsedTime(sw);
@@ -60,88 +60,88 @@ public class StudentOperation(IServiceProvider services)
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(request);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);
-        PrintPayload(student);
+        PrintPayload(person);
         EndBlock();
     }
 
-    public async Task CreateStudent(StudentCreateCommand request, CancellationToken ct = default)
+    public async Task CreatePerson(PersonCreateCommand request, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(CreateStudent), startsWith: Green, endsWith: Normal);
+        PrintBlock(nameof(CreatePerson), startsWith: Green, endsWith: Normal);
 
         var sw = Stopwatch.StartNew();
 
-        var command = CommandBuilder.Initialize<StudentCreateCommand, Student>(services)
+        var command = CommandBuilder.Initialize<PersonCreateCommand, Person>(services)
                                     .WithCommand(request)
                                     .Build();
 
-        var studentCreateResponse = await command.ExecuteAsync(ct);
+        var personCreateResponse = await command.ExecuteAsync(ct);
 
         sw.Stop();
         PrintElapsedTime(sw);
 
-        if (!studentCreateResponse.IsSuccessful) PrintErrors(studentCreateResponse.Errors);
+        if (!personCreateResponse.IsSuccessful) PrintErrors(personCreateResponse.Errors);
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(request.Payload);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);
-        PrintPayload(studentCreateResponse);
+        PrintPayload(personCreateResponse);
         EndBlock();
     }
 
-    public async Task UpdateStudent(StudentUpdateCommand request, CancellationToken ct = default)
+    public async Task UpdatePerson(PersonUpdateCommand request, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(UpdateStudent), startsWith: Green, endsWith: Normal);
+        PrintBlock(nameof(UpdatePerson), startsWith: Green, endsWith: Normal);
         var student = request.Payload;
 
         var sw = Stopwatch.StartNew();
 
-        var command = CommandBuilder.Initialize<StudentUpdateCommand, Student>(services)
+        var command = CommandBuilder.Initialize<PersonUpdateCommand, Person>(services)
                                     .WithCommand(request)
                                     .Build();
 
-        var studentUpdateResponse = await command.ExecuteAsync(ct);
+        var personUpdateResponse = await command.ExecuteAsync(ct);
 
         sw.Stop();
         PrintElapsedTime(sw);
 
-        if (!studentUpdateResponse.IsSuccessful) PrintErrors(studentUpdateResponse.Errors);
+        if (!personUpdateResponse.IsSuccessful) PrintErrors(personUpdateResponse.Errors);
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(request.Payload);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);
-        PrintPayload(studentUpdateResponse);
+        PrintPayload(personUpdateResponse);
         EndBlock();
     }
 
-    public async Task DeleteStudent(StudentDeleteCommand request, CancellationToken ct = default)
+    public async Task DeletePerson(PersonDeleteCommand request, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(DeleteStudent), startsWith: Green, endsWith: Normal);
+        PrintBlock(nameof(DeletePerson), startsWith: Green, endsWith: Normal);
 
         var sw = Stopwatch.StartNew();
 
-        var command = CqrsBuilder.Command<StudentDeleteCommand, Guid>(services)
+        var command = CqrsBuilder.Command<PersonDeleteCommand, Guid>(services)
                                  .WithCommand(request)
                                  .WithApprovalFlow()
                                  .Build();
 
-        var studentDeleteResponse = await command.ExecuteAsync(ct);
+        var personDeleteResponse = await command.ExecuteAsync(ct);
 
         sw.Stop();
         PrintElapsedTime(sw);
 
-        if (!studentDeleteResponse.IsSuccessful) PrintErrors(studentDeleteResponse.Errors);
+        if (!personDeleteResponse.IsSuccessful) PrintErrors(personDeleteResponse.Errors);
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(request.Payload);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);
-        PrintPayload(studentDeleteResponse);
+        PrintPayload(personDeleteResponse);
         EndBlock();
     }
 
-    public async Task ApproveDeleteStudent(string approvalFlowId, CancellationToken ct = default)
+    public async Task ApproveDeletePerson(string approvalFlowId, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(ApproveDeleteStudent), startsWith: Green, endsWith: Normal);
+        PrintBlock(nameof(ApproveDeletePerson), startsWith: Green, endsWith: Normal);
 
         var sw = Stopwatch.StartNew();
 
@@ -149,23 +149,23 @@ public class StudentOperation(IServiceProvider services)
                                               .WithId(approvalFlowId)
                                               .Build();
 
-        var approveDeleteStudentResponse = await approvalFlow.AcceptAsync(ct);
+        var approveDeletePersonResponse = await approvalFlow.AcceptAsync(ct);
 
         sw.Stop();
         PrintElapsedTime(sw);
 
-        if (!approveDeleteStudentResponse.IsSuccessful) PrintErrors(approveDeleteStudentResponse.Errors);
+        if (!approveDeletePersonResponse.IsSuccessful) PrintErrors(approveDeletePersonResponse.Errors);
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(approvalFlowId);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);
-        PrintPayload(approveDeleteStudentResponse);
+        PrintPayload(approveDeletePersonResponse);
         EndBlock();
     }
 
-    public async Task RejectDeleteStudent(string approvalFlowId, CancellationToken ct = default)
+    public async Task RejectDeletePerson(string approvalFlowId, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(RejectDeleteStudent), startsWith: Green, endsWith: Normal);
+        PrintBlock(nameof(RejectDeletePerson), startsWith: Green, endsWith: Normal);
 
         var sw = Stopwatch.StartNew();
 
@@ -173,16 +173,16 @@ public class StudentOperation(IServiceProvider services)
                                       .WithId(approvalFlowId)
                                       .Build();
 
-        var approveDeleteStudentResponse = await approvalFlow.RejectAsync(ct);
+        var approveDeletePersonResponse = await approvalFlow.RejectAsync(ct);
 
         sw.Stop();
         PrintElapsedTime(sw);
 
-        if (!approveDeleteStudentResponse.IsSuccessful) PrintErrors(approveDeleteStudentResponse.Errors);
+        if (!approveDeletePersonResponse.IsSuccessful) PrintErrors(approveDeletePersonResponse.Errors);
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(approvalFlowId);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);
-        PrintPayload(approveDeleteStudentResponse);
+        PrintPayload(approveDeletePersonResponse);
         EndBlock();
     }
 

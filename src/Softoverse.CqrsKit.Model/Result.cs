@@ -6,6 +6,7 @@ namespace Softoverse.CqrsKit.Model;
 
 public class Result : ResultBase
 {
+    private bool _isSuccessMessage;
     private string _errorMessage;
     private string _successMessage;
 
@@ -75,17 +76,23 @@ public class Result : ResultBase
         }
         return this;
     }
+    
+    public Result WithMessageLogic(bool logic)
+    {
+        _isSuccessMessage = logic;
+        return WithMessage(_isSuccessMessage ? _successMessage : _errorMessage);;
+    }
 
     public Result WithSuccessMessage(string message)
     {
         _successMessage = message;
-        return WithMessage(IsSuccessful ? _successMessage : _errorMessage);
+        return WithMessage(_isSuccessMessage ? _successMessage : _errorMessage);
     }
 
     public Result WithErrorMessage(string message)
     {
         _errorMessage = message;
-        return WithMessage(IsSuccessful ? _successMessage : _errorMessage);
+        return WithMessage(_isSuccessMessage ? _successMessage : _errorMessage);
     }
 
     public static Result Success()

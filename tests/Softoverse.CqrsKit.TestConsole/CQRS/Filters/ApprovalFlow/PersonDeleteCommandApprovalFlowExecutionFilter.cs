@@ -8,7 +8,7 @@ using Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Filters.ApprovalFlow;
 
 [ScopedLifetime]
-public class StudentDeleteCommandApprovalFlowExecutionFilter : ApprovalFlowExecutionFilterBase<StudentDeleteCommand, Guid>
+public class PersonDeleteCommandApprovalFlowExecutionFilter : ApprovalFlowExecutionFilterBase<PersonDeleteCommand, Guid>
 {
     public override Task<Result<Guid>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {

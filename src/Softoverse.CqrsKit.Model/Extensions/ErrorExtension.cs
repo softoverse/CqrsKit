@@ -15,6 +15,21 @@ public static class ErrorExtension
         return errors;
     }
 
+    public static IDictionary<string, string[]> AddErrors(this IDictionary<string, string[]> errors, IDictionary<string, string[]> newErrors)
+    {
+
+        foreach (var keyValuePair in newErrors)
+        {
+            if (errors.TryGetValue(keyValuePair.Key, out string[]? currentMessages))
+            {
+                errors[keyValuePair.Key] = [..currentMessages, ..keyValuePair.Value];
+                return errors;
+            }
+            errors.Add(keyValuePair.Key, keyValuePair.Value);
+        }
+        return errors;
+    }
+
     public static IDictionary<string, string[]> AddError(this IDictionary<string, string[]> errors, CqrsError error)
     {
         if (errors.TryGetValue(error.Key, out string[]? currentMessages))

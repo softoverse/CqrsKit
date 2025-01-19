@@ -9,11 +9,11 @@ using Softoverse.CqrsKit.TestConsole.Models;
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Handlers.Command;
 
 [SingletonLifetime]
-public class StudentUpdateCommandHandler : CommandHandler<StudentUpdateCommand, Student>
+public class PersonUpdateCommandHandler : CommandHandler<PersonUpdateCommand, Person>
 {
-    private readonly List<Student> _studentStore = Program.StudentStore;
+    private readonly List<Person> _studentStore = Program.PersonStore;
 
-    public override async Task<Result<Student>> ValidateAsync(StudentUpdateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Person>> ValidateAsync(PersonUpdateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.ValidateAsync)}");
         Dictionary<string, string[]> errors = new Dictionary<string, string[]>();
@@ -22,28 +22,28 @@ public class StudentUpdateCommandHandler : CommandHandler<StudentUpdateCommand, 
             errors.AddError("Id", ["'Id' is invalid"]);
 
         // if (_studentStore.Any(x => x.Name == command.Payload.Name))
-        //     errors.AddError("Name", ["Student name already exists"]);
+        //     errors.AddError("Name", ["Person name already exists"]);
 
         if (errors.Count > 0)
-            return await Task.FromResult(Result<Student>.Error()
+            return await Task.FromResult(Result<Person>.Error()
                                                           .WithMessage("Validation Error")
                                                           .WithPayload(command.Payload)
                                                           .WithErrors(errors));
 
-        return await Task.FromResult(Result<Student>.Success()
-                                                      .WithMessage("Valid Student")
+        return await Task.FromResult(Result<Person>.Success()
+                                                      .WithMessage("Valid Person")
                                                       .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Student>> OnStartAsync(StudentUpdateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Person>> OnStartAsync(PersonUpdateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
-        return await Task.FromResult(Result<Student>.Success()
-                                                      .WithMessage("Before execution Student")
+        return await Task.FromResult(Result<Person>.Success()
+                                                      .WithMessage("Before execution Person")
                                                       .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Student>> HandleAsync(StudentUpdateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Person>> HandleAsync(PersonUpdateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
         var currentStudent = _studentStore.FirstOrDefault(x => x.Id == command.Id);
@@ -51,16 +51,16 @@ public class StudentUpdateCommandHandler : CommandHandler<StudentUpdateCommand, 
         currentStudent = command.Payload;
         _studentStore.Add(currentStudent);
 
-        return await Task.FromResult(Result<Student>.Success()
+        return await Task.FromResult(Result<Person>.Success()
                                                       .WithMessage("Successfully Updated")
                                                       .WithPayload(currentStudent));
     }
 
-    public override async Task<Result<Student>> OnEndAsync(StudentUpdateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Person>> OnEndAsync(PersonUpdateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
-        return await Task.FromResult(Result<Student>.Success()
-                                                      .WithMessage("After execution Student")
+        return await Task.FromResult(Result<Person>.Success()
+                                                      .WithMessage("After execution Person")
                                                       .WithPayload(command.Payload));
     }
 }

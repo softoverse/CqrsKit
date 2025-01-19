@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using Softoverse.CqrsKit.Builders;
 using Softoverse.CqrsKit.Model;
+using Softoverse.CqrsKit.WebApi.CQRS.Events.Students.Commands;
+using Softoverse.CqrsKit.WebApi.CQRS.Events.Students.Queries;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Models;
 
@@ -9,26 +12,33 @@ namespace Softoverse.CqrsKit.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class StudentsController(ApplicationDbContext dbContext) : ControllerBase
+public class StudentsController(IServiceProvider services) : ControllerBase
 {
     // GET: api/Students
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get([FromQuery] StudentGetAllQuery query, CancellationToken ct = default)
     {
-        var result = Result<IList<Student>>.Success()
-                                           .WithPayload(await dbContext.Students.ToListAsync())
-                                           .WithMessage("Students retrieved successfully");
+        var studentGetAllQuery = QueryBuilder.Initialize<StudentGetAllQuery, List<Student>>(services)
+                                             .WithQuery(query)
+                                             .Build();
+
+        var result = await studentGetAllQuery.ExecuteAsync(ct);
 
         return Ok(result);
     }
 
     // GET api/Students/5
     [HttpGet("{id}")]
-    public async Task<IActionResult> Get(Guid id)
+    public async Task<IActionResult> Get(Guid id, CancellationToken ct = default)
     {
-        var result = Result<Student?>.Success()
-                                     .WithPayload(await dbContext.Students.FindAsync(id))
-                                     .WithMessage("Student retrieved successfully");
+        var studentGetByIdQuery = QueryBuilder.Initialize<StudentGetByIdQuery, Student>(services)
+                                              .WithQuery(new StudentGetByIdQuery
+                                              {
+                                                  Id = id
+                                              })
+                                              .Build();
+
+        var result = await studentGetByIdQuery.ExecuteAsync(ct);
 
         return Ok(result);
     }
@@ -36,42 +46,39 @@ public class StudentsController(ApplicationDbContext dbContext) : ControllerBase
 
     // POST api/Students/5
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Student student)
+    public async Task<IActionResult> Post([FromBody] Student student, CancellationToken ct = default)
     {
-        var addResult = await dbContext.Students.AddAsync(student);
-        await dbContext.SaveChangesAsync();
+        var studentCreateCommand = CommandBuilder.Initialize<StudentCreateCommand, Student>(services)
+                                                 .WithCommand(new StudentCreateCommand(student))
+                                                 .Build();
 
-        var result = Result<Student>.Success()
-                                    .WithPayload(student)
-                                    .WithMessage("Student updated successfully");
+        var result = await studentCreateCommand.ExecuteAsync(ct);
 
         return Ok(result);
     }
 
     // PUT api/Students/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(string id, [FromBody] Student student)
+    public async Task<IActionResult> Put(Guid id, [FromBody] Student student, CancellationToken ct = default)
     {
-        var updateResult = dbContext.Students.Update(student);
-        await dbContext.SaveChangesAsync();
+        var studentUpdateCommand = CommandBuilder.Initialize<StudentUpdateCommand, Student>(services)
+                                                 .WithCommand(new StudentUpdateCommand(id, student))
+                                                 .Build();
 
-        var result = Result<Student>.Success()
-                                    .WithPayload(student)
-                                    .WithMessage("Student updated successfully");
+        var result = await studentUpdateCommand.ExecuteAsync(ct);
 
         return Ok(result);
     }
 
     // DELETE api/Students/5
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, CancellationToken ct = default)
     {
-        await dbContext.Students.Where(x => x.Id == id).ExecuteDeleteAsync();
-        await dbContext.SaveChangesAsync();
+        var studentDeleteCommand = CommandBuilder.Initialize<StudentDeleteCommand, Student>(services)
+                                                 .WithCommand(new StudentDeleteCommand(id))
+                                                 .Build();
 
-        var result = Result<Guid>.Success()
-                                 .WithPayload(id)
-                                 .WithMessage("Student deleted successfully");
+        var result = await studentDeleteCommand.ExecuteAsync(ct);
 
         return Ok(result);
     }

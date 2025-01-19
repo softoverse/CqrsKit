@@ -8,18 +8,18 @@ using Softoverse.CqrsKit.TestConsole.Models;
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Handlers.Query;
 
 [ScopedLifetime]
-public class StudentGetAllQueryHandler : QueryHandler<StudentGetAllQuery, List<Student>>
+public class PersonGetAllQueryHandler : QueryHandler<PersonGetAllQuery, List<Person>>
 {
-    private readonly List<Student> _studentStore = Program.StudentStore;
+    private readonly List<Person> _studentStore = Program.PersonStore;
 
-    public override async Task<Result<List<Student>>> OnStartAsync(StudentGetAllQuery query, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<List<Person>>> OnStartAsync(PersonGetAllQuery query, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
-        return await Task.FromResult(Result<List<Student>>.Success()
-                                                            .WithMessage("Before execution Student"));
+        return await Task.FromResult(Result<List<Person>>.Success()
+                                                            .WithMessage("Before execution Person"));
     }
 
-    public override async Task<Result<List<Student>>> HandleAsync(StudentGetAllQuery query, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<List<Person>>> HandleAsync(PersonGetAllQuery query, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
 
@@ -29,16 +29,16 @@ public class StudentGetAllQueryHandler : QueryHandler<StudentGetAllQuery, List<S
                                                (x.Age is not null && x.Age == query.Age)
                                           ).ToList();
 
-        return await Task.FromResult(Result<List<Student>>.Create(students.Count > 0)
+        return await Task.FromResult(Result<List<Person>>.Create(students.Count > 0)
                                                             .WithPayload(students)
-                                                            .WithSuccessMessage("Found Student data")
+                                                            .WithSuccessMessage("Found Person data")
                                                             .WithErrorMessage("No data found"));
     }
 
-    public override async Task<Result<List<Student>>> OnEndAsync(StudentGetAllQuery query, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<List<Person>>> OnEndAsync(PersonGetAllQuery query, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
-        return await Task.FromResult(Result<List<Student>>.Success()
-                                                            .WithMessage("After execution Student"));
+        return await Task.FromResult(Result<List<Person>>.Success()
+                                                            .WithMessage("After execution Person"));
     }
 }

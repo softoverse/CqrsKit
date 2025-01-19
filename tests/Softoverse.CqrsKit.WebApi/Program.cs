@@ -1,5 +1,6 @@
 using FluentValidation;
 
+using Softoverse.CqrsKit.Extensions;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Extensions;
 using Softoverse.CqrsKit.WebApi.Models;
@@ -24,6 +25,8 @@ public class Program
 
         // FluentValidation validators needs to be registered as singleton
         builder.Services.AddValidatorsFromAssemblyContaining<Program>(ServiceLifetime.Singleton);
+
+        builder.Services.AddCqrsKit<Program>();
 
         var app = builder.Build();
 
