@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 using Softoverse.CqrsKit.Builders;
-using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.WebApi.CQRS.Events.Students.Commands;
 using Softoverse.CqrsKit.WebApi.CQRS.Events.Students.Queries;
-using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Models;
 
 namespace Softoverse.CqrsKit.WebApi.Controllers;

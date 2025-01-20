@@ -14,17 +14,17 @@ namespace Softoverse.CqrsKit.WebApi.CQRS.Handlers.Students.Queries;
 public class StudentGetByIdQueryHandler(ApplicationDbContext dbContext) : QueryHandler<StudentGetByIdQuery, Student>
 {
 
-    public override async Task<Result<Student>> OnStartAsync(StudentGetByIdQuery query, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
         return await Task.FromResult(Result<Student>.Success()
                                                     .WithMessage("Before execution Student"));
     }
 
-    public override async Task<Result<Student>> HandleAsync(StudentGetByIdQuery query, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> HandleAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
-        
+        var query = context.RequestAs<StudentGetByIdQuery>();
         var student = await dbContext.Students.FirstOrDefaultAsync(x => x.Id == query.Id, ct);
 
         return Result<Student>.Success()
@@ -34,7 +34,7 @@ public class StudentGetByIdQueryHandler(ApplicationDbContext dbContext) : QueryH
                               .WithErrorMessage("No data found");
     }
 
-    public override async Task<Result<Student>> OnEndAsync(StudentGetByIdQuery query, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
         return await Task.FromResult(Result<Student>.Success()

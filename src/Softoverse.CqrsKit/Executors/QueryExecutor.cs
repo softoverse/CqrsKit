@@ -35,9 +35,9 @@ public sealed class QueryExecutor<TQuery, TResponse> : IQueryExecutor<TQuery, TR
         HandlerStep<TResponse>[] steps =
         [
             new(() => ExecutionFilter.OnExecutingAsync(Context, ct), StepBehavior.MustCall),
-            new(() => QueryHandler.OnStartAsync(Query, Context, ct)),
-            new(() => QueryHandler.HandleAsync(Query, Context, ct), StepBehavior.FinalOutput),
-            new(() => QueryHandler.OnEndAsync(Query, Context, ct)),
+            new(() => QueryHandler.OnStartAsync(Context, ct)),
+            new(() => QueryHandler.HandleAsync(Context, ct), StepBehavior.FinalOutput),
+            new(() => QueryHandler.OnEndAsync(Context, ct)),
             new(() => ExecutionFilter.OnExecutedAsync(Context, ct), StepBehavior.MustCall)
         ];
 

@@ -28,7 +28,7 @@ public class Program
                                                .AddScoped<PersonOperation>()
                                                .BuildServiceProvider();
 
-        bool isAccept = false;
+        bool isAccept = true;
 
         PersonStore = SeedPerson(2);
         await StartAsync(serviceProvider, isAccept);

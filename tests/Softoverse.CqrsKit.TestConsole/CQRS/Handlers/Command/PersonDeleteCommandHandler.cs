@@ -12,25 +12,28 @@ public class PersonDeleteCommandHandler : CommandHandler<PersonDeleteCommand, Gu
 {
     private readonly List<Person> _studentStore = Program.PersonStore;
 
-    public override async Task<Result<Guid>> ValidateAsync(PersonDeleteCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Guid>> ValidateAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.ValidateAsync)}");
+        var command = context.RequestAs<PersonDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
                                                    .WithMessage("Valid Person")
                                                    .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Guid>> OnStartAsync(PersonDeleteCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Guid>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
+        var command = context.RequestAs<PersonDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
                                                    .WithMessage("Before execution Person")
                                                    .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Guid>> HandleAsync(PersonDeleteCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Guid>> HandleAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
+        var command = context.RequestAs<PersonDeleteCommand>();
         var student = _studentStore.FirstOrDefault(x => x.Id == command.Payload);
         _studentStore.Remove(student!);
 
@@ -39,9 +42,10 @@ public class PersonDeleteCommandHandler : CommandHandler<PersonDeleteCommand, Gu
                                                    .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Guid>> OnEndAsync(PersonDeleteCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Guid>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
+        var command = context.RequestAs<PersonDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
                                                    .WithMessage("After execution Person")
                                                    .WithPayload(command.Payload));

@@ -53,10 +53,10 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
         [
             new(() => ExecuteApprovalFlowAsync(ct), isApprovalFlowRequired ? StepBehavior.FinalOutput : StepBehavior.Skip),
             new(() => ExecutionFilter.OnExecutingAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.MustCall),
-            new(() => CommandHandler.ValidateAsync(Command, Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
-            new(() => CommandHandler.OnStartAsync(Command, Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
-            new(() => CommandHandler.HandleAsync(Command, Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.FinalOutput),
-            new(() => CommandHandler.OnEndAsync(Command, Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
+            new(() => CommandHandler.ValidateAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
+            new(() => CommandHandler.OnStartAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
+            new(() => CommandHandler.HandleAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.FinalOutput),
+            new(() => CommandHandler.OnEndAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
             new(() => ExecutionFilter.OnExecutedAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.MustCall),
         ];
 
@@ -68,13 +68,13 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
         bool isApprovalFlowSkipped = ApprovalFlowHandler == null;
         HandlerStep<TResponse>[] steps =
         [
-            new(() => CommandHandler.ValidateAsync(Command, Context, ct)),
+            new(() => CommandHandler.ValidateAsync(Context, ct)),
             new(() => IsApprovalFlowPendingTaskUniqueAsync(ct)),
-            new(() => isApprovalFlowSkipped ? ResponseDefaults.DefaultResponse<TResponse>() : ApprovalFlowHandler!.OnStartAsync(Command, Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory),
+            new(() => isApprovalFlowSkipped ? ResponseDefaults.DefaultResponse<TResponse>() : ApprovalFlowHandler!.OnStartAsync(Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory),
             new(() => ApprovalFlowExecutionFilter.OnExecutingAsync(Context, ct)),
             new(() => ApprovalFlowExecutionFilter.ExecuteAsync(Context, ct), StepBehavior.FinalOutput),
             new(() => ApprovalFlowExecutionFilter.OnExecutedAsync(Context, ct)),
-            new(() => isApprovalFlowSkipped ? ResponseDefaults.DefaultResponse<TResponse>() : ApprovalFlowHandler!.OnEndAsync(Command, Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory)
+            new(() => isApprovalFlowSkipped ? ResponseDefaults.DefaultResponse<TResponse>() : ApprovalFlowHandler!.OnEndAsync(Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory)
         ];
 
         return await ExecuteStepsAsync(steps);
@@ -103,7 +103,7 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
         // Context.SetCurrentState("ApprovalFlowAccept");
 
         return ApprovalFlowHandler is not null
-            ? await ApprovalFlowHandler.AfterAcceptAsync(Command, Context, ct)
+            ? await ApprovalFlowHandler.AfterAcceptAsync(Context, ct)
             : await ResponseDefaults.DefaultResponse();
     }
 
@@ -112,7 +112,7 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
         // Context.SetCurrentState("ApprovalFlowReject");
 
         return ApprovalFlowHandler is not null
-            ? await ApprovalFlowHandler.AfterRejectAsync(Command, Context, ct)
+            ? await ApprovalFlowHandler.AfterRejectAsync(Context, ct)
             : await ResponseDefaults.DefaultResponse();
     }
 

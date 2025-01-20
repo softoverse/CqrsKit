@@ -14,9 +14,11 @@ namespace Softoverse.CqrsKit.WebApi.CQRS.Handlers.Students.Commands;
 [ScopedLifetime]
 public class StudentCreateCommandHandler(ApplicationDbContext dbContext, IValidator<Student> validator) : CommandHandler<StudentCreateCommand, Student>
 {
-    public override async Task<Result<Student>> ValidateAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> ValidateAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.ValidateAsync)}");
+        
+        var command = context.RequestAs<StudentCreateCommand>();
 
         var validationResult = await validator.ValidateAsync(command.Payload, ct);
 
@@ -30,26 +32,28 @@ public class StudentCreateCommandHandler(ApplicationDbContext dbContext, IValida
                                   .WithErrors(validationErrors);
         }
 
-        if (dbContext.Students.Any(x => x.Name == command.Payload.Name))
+        if (!dbContext.Students.Any(x => x.Name == command.Payload.Name))
         {
-            string errorMessage = "Student name already exists";
-
-            IDictionary<string, string[]> errors = new Dictionary<string, string[]>().AddError("Name", errorMessage);
-
-            return await Task.FromResult(Result<Student>.Error()
-                                                        .WithMessage(errorMessage)
-                                                        .WithPayload(command.Payload)
-                                                        .WithErrors(errors));
+            return await Task.FromResult(Result<Student>.Success()
+                                                        .WithMessage("Valid Student")
+                                                        .WithPayload(command.Payload));
         }
 
-        return await Task.FromResult(Result<Student>.Success()
-                                                    .WithMessage("Valid Student")
-                                                    .WithPayload(command.Payload));
+        string errorMessage = "Student name already exists";
+
+        IDictionary<string, string[]> errors = new Dictionary<string, string[]>().AddError("Name", errorMessage);
+
+        return await Task.FromResult(Result<Student>.Error()
+                                                    .WithMessage(errorMessage)
+                                                    .WithPayload(command.Payload)
+                                                    .WithErrors(errors));
     }
 
-    public override async Task<Result<Student>> OnStartAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
+        
+        var command = context.RequestAs<StudentCreateCommand>();
 
         command.Payload.AgeCategory = command.Payload.Age switch
         {
@@ -65,20 +69,22 @@ public class StudentCreateCommandHandler(ApplicationDbContext dbContext, IValida
                                                     .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Student>> HandleAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> HandleAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
+        var command = context.RequestAs<StudentCreateCommand>();
         Student student = command.Payload;
         dbContext.Students.Add(student);
-        await dbContext.SaveChangesAsync(ct);
+        // await dbContext.SaveChangesAsync(ct);
 
         return await Task.FromResult(Result<Student>.Success()
                                                     .WithMessage("Successfully Created")
                                                     .WithPayload(student));
     }
 
-    public override async Task<Result<Student>> OnEndAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
     {
+        var command = context.RequestAs<StudentCreateCommand>();
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
         return await Task.FromResult(Result<Student>.Success()
                                                     .WithMessage("After execution Student")

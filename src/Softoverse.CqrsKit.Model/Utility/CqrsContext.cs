@@ -1,11 +1,25 @@
 ﻿using System.Collections.Concurrent;
 
+using Softoverse.CqrsKit.Model.Abstraction;
+
 namespace Softoverse.CqrsKit.Model.Utility;
 
 public class CqrsContext
 {
-    public object? Request { get; set; }
-    public object? Response { get; set; }
+    private IRequest _request;
+    private object? _response;
+
+    public IRequest Request
+    {
+        get => _request;
+        set => _request = value;
+    }
+
+    public object? Response
+    {
+        get => _response;
+        set => _response = value;
+    }
 
     public CurrentState State { get; set; } = CurrentState.None;
 
@@ -50,6 +64,16 @@ public class CqrsContext
         return Items.TryGetValue(key, out object? value)
             ? (T)value!
             : default;
+    }
+
+    public T RequestAs<T>() where T : IRequest
+    {
+        return (T)Request!;
+    }
+    
+    public T ResponseAs<T>()
+    {
+        return (T)Response!;
     }
 
     public static CqrsContext New() => new CqrsContext();

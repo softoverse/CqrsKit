@@ -14,9 +14,10 @@ namespace Softoverse.CqrsKit.WebApi.CQRS.Handlers.Students.Commands;
 [ScopedLifetime]
 public class StudentUpdateCommandHandler(ApplicationDbContext dbContext, IValidator<Student> validator) : CommandHandler<StudentUpdateCommand, Student>
 {
-    public override async Task<Result<Student>> ValidateAsync(StudentUpdateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> ValidateAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.ValidateAsync)}");
+        var command = context.RequestAs<StudentUpdateCommand>();
         Dictionary<string, string[]> errors = new Dictionary<string, string[]>();
 
         if (command.Id != command.Payload.Id)
@@ -40,10 +41,10 @@ public class StudentUpdateCommandHandler(ApplicationDbContext dbContext, IValida
                                                     .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Student>> OnStartAsync(StudentUpdateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
-
+        var command = context.RequestAs<StudentUpdateCommand>();
         command.Payload.AgeCategory = command.Payload.Age switch
         {
             < 2 => AgeCategory.Infant,
@@ -58,10 +59,10 @@ public class StudentUpdateCommandHandler(ApplicationDbContext dbContext, IValida
                                                     .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Student>> HandleAsync(StudentUpdateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> HandleAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
-
+        var command = context.RequestAs<StudentUpdateCommand>();
         Student currentStudent = command.Payload;
         dbContext.Students.Update(currentStudent);
         await dbContext.SaveChangesAsync(ct);
@@ -71,9 +72,10 @@ public class StudentUpdateCommandHandler(ApplicationDbContext dbContext, IValida
                                                     .WithPayload(currentStudent));
     }
 
-    public override async Task<Result<Student>> OnEndAsync(StudentUpdateCommand command, CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
+        var command = context.RequestAs<StudentUpdateCommand>();
         return await Task.FromResult(Result<Student>.Success()
                                                     .WithMessage("After execution Person")
                                                     .WithPayload(command.Payload));
