@@ -16,4 +16,8 @@
         <ProjectReference Include="..\Softoverse.CqrsKit.WebApi.DataAccess\Softoverse.CqrsKit.WebApi.DataAccess.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+
 </Project>

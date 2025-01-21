@@ -11,12 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Reference Include="Microsoft.AspNetCore.Mvc.Core">
-            <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.1\Microsoft.AspNetCore.Mvc.Core.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.Extensions.Identity.Stores">
-            <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.1\Microsoft.Extensions.Identity.Stores.dll</HintPath>
-        </Reference>
+        <PackageReference Include="Microsoft.AspNetCore.App"/>
     </ItemGroup>
 
 </Project>

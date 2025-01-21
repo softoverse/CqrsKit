@@ -33,12 +33,7 @@ public class Program
                .AddValidatorsFromAssemblyContaining<IWebApiDataAccessMarker>(ServiceLifetime.Singleton)
                .AddValidatorsFromAssemblyContaining<IWebApiModelsMarker>(ServiceLifetime.Singleton)
                .AddValidatorsFromAssemblyContaining<IWebApiModuleMarker>(ServiceLifetime.Singleton);
-
-        builder.Services.AddCqrsKit(typeof(IWebApiMarker),
-                                    typeof(IWebApiDataAccessMarker),
-                                    typeof(IWebApiModelsMarker),
-                                    typeof(IWebApiModuleMarker));
-
+        
         builder.Services
                .AddCqrsKit<IWebApiMarker>()
                .AddCqrsKit<IWebApiDataAccessMarker>()
