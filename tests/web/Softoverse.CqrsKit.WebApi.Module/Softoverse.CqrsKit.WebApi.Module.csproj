@@ -8,12 +8,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\src\Softoverse.CqrsKit\Softoverse.CqrsKit.csproj" />
-      <ProjectReference Include="..\Softoverse.CqrsKit.WebApi.DataAccess\Softoverse.CqrsKit.WebApi.DataAccess.csproj" />
+        <ProjectReference Include="..\..\..\src\Softoverse.CqrsKit\Softoverse.CqrsKit.csproj"/>
+        <ProjectReference Include="..\Softoverse.CqrsKit.WebApi.DataAccess\Softoverse.CqrsKit.WebApi.DataAccess.csproj"/>
     </ItemGroup>
 
 </Project>

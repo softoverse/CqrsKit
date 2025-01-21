@@ -8,13 +8,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0"/>
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
-        <PackageReference Include="Scalar.AspNetCore" Version="1.2.76" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0"/>
+        <PackageReference Include="Scalar.AspNetCore" Version="1.2.76"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0"/>
 
+        <!--     Added for using DB Migrations     -->
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,9 +23,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\src\Softoverse.CqrsKit\Softoverse.CqrsKit.csproj" />
-      <ProjectReference Include="..\Softoverse.CqrsKit.WebApi.DataAccess\Softoverse.CqrsKit.WebApi.DataAccess.csproj" />
-      <ProjectReference Include="..\Softoverse.CqrsKit.WebApi.Module\Softoverse.CqrsKit.WebApi.Module.csproj" />
+        <ProjectReference Include="..\..\..\src\Softoverse.CqrsKit\Softoverse.CqrsKit.csproj"/>
+        <ProjectReference Include="..\Softoverse.CqrsKit.WebApi.DataAccess\Softoverse.CqrsKit.WebApi.DataAccess.csproj"/>
+        <ProjectReference Include="..\Softoverse.CqrsKit.WebApi.Module\Softoverse.CqrsKit.WebApi.Module.csproj"/>
     </ItemGroup>
 
 </Project>

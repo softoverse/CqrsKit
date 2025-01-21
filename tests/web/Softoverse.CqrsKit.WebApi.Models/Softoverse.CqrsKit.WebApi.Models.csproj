@@ -1,22 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Softoverse.CqrsKit\Softoverse.CqrsKit.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\src\Softoverse.CqrsKit\Softoverse.CqrsKit.csproj"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Microsoft.AspNetCore.Mvc.Core">
-      <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.1\Microsoft.AspNetCore.Mvc.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.Identity.Stores">
-      <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.1\Microsoft.Extensions.Identity.Stores.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+    <ItemGroup>
+        <Reference Include="Microsoft.AspNetCore.Mvc.Core">
+            <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.1\Microsoft.AspNetCore.Mvc.Core.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Extensions.Identity.Stores">
+            <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.1\Microsoft.Extensions.Identity.Stores.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 
 </Project>
