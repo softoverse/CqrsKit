@@ -20,39 +20,37 @@ public static class DependencyInjectionExtension
 {
     public static IServiceCollection AddCqrsKit<TMarker>(this IServiceCollection services)
     {
-        services.AddAssembly(typeof(TMarker).Assembly);
-        return services;
+        return services.AddCqrsKit(typeof(TMarker));
     }
-    
+
     public static IServiceCollection AddCqrsKit(this IServiceCollection services, params List<Type> types)
     {
         foreach (var assembly in types.Select(type => type.Assembly))
         {
-            services.AddAssembly(assembly);
+            CqrsHelper.AddAssembly(assembly);
         }
         return services;
     }
 
-    private static void AddAssembly(this IServiceCollection services, Assembly assembly)
+    public static void Build(this IServiceCollection services)
     {
-        CqrsHelper.AddAssembly(assembly);
-
-        services.AddApprovalFlowService(assembly)
-                .AddQueryHandlers(assembly)
-                .AddQueryExecutionFilter(assembly)
-                .AddCommandHandlers(assembly)
-                .AddCommandExecutionFilter(assembly)
-                .AddApprovalFlowExecutionFilter(assembly)
-                .AddApprovalFlowHandlers(assembly)
-                .AddApprovalFlowAcceptFilter(assembly)
-                .AddApprovalFlowRejectFilter(assembly);
+        var types = CqrsHelper.AddedAssemblies.SelectMany(x => x.GetTypes()).ToList();
+        services.AddApprovalFlowService(types)
+                .AddQueryHandlers(types)
+                .AddQueryExecutionFilter(types)
+                .AddCommandHandlers(types)
+                .AddCommandExecutionFilter(types)
+                .AddApprovalFlowExecutionFilter(types)
+                .AddApprovalFlowHandlers(types)
+                .AddApprovalFlowAcceptFilter(types)
+                .AddApprovalFlowRejectFilter(types);
     }
-    
+
     #region Query Handlers
 
-    private static IServiceCollection AddQueryHandlers(this IServiceCollection services, Assembly assembly)
+    private static IServiceCollection AddQueryHandlers(this IServiceCollection services, IList<Type> types)
     {
-        foreach (var implementationType in assembly.GetQueryHandlerTypes())
+        foreach (var implementationType in types.GetQueryHandlerTypes())
         {
             var interfaceType = implementationType.GetInterfaces()
                                                   .FirstOrDefault(type =>
@@ -71,9 +69,9 @@ public static class DependencyInjectionExtension
 
     #region Command Handlers
 
-    private static IServiceCollection AddCommandHandlers(this IServiceCollection services, Assembly assembly)
+    private static IServiceCollection AddCommandHandlers(this IServiceCollection services, IList<Type> types)
     {
-        foreach (var implementationType in assembly.GetCommandHandlerTypes())
+        foreach (var implementationType in types.GetCommandHandlerTypes())
         {
             var interfaceType = implementationType.GetInterfaces()
                                                   .FirstOrDefault(type => typeof(ICommandHandlerMarker)
@@ -92,15 +90,14 @@ public static class DependencyInjectionExtension
 
     #region Approval Flow Handlers
 
-    private static IServiceCollection AddApprovalFlowHandlers(this IServiceCollection services, Assembly assembly)
+    private static IServiceCollection AddApprovalFlowHandlers(this IServiceCollection services, IList<Type> types)
     {
-        var implementationTypes = assembly.GetTypes()
-                                          .Where(type =>
-                                                     type.GetTypeInfo().IsClass
-                                                   &&
-                                                     typeof(IApprovalFlowHandlerMarker).IsAssignableFrom(type)
-                                                   &&
-                                                     type != typeof(IApprovalFlowHandlerMarker));
+        var implementationTypes = types.Where(type =>
+                                                  type.GetTypeInfo().IsClass
+                                                &&
+                                                  typeof(IApprovalFlowHandlerMarker).IsAssignableFrom(type)
+                                                &&
+                                                  type != typeof(IApprovalFlowHandlerMarker));
 
         foreach (var implementationType in implementationTypes)
         {
@@ -116,19 +113,18 @@ public static class DependencyInjectionExtension
     #endregion Approval Flow Handlers
 
     #region CQRS Configuration
-    
-    private static IServiceCollection AddQueryExecutionFilter(this IServiceCollection services, Assembly assembly)
+
+    private static IServiceCollection AddQueryExecutionFilter(this IServiceCollection services, IList<Type> types)
     {
-        var queryHandlerTypes = assembly.GetQueryHandlerTypes();
+        var queryHandlerTypes = types.GetQueryHandlerTypes();
 
 
-        var implementationType = assembly.GetTypes()
-                                         .FirstOrDefault(type => type.GetTypeInfo().IsClass
-                                                               &&
-                                                                 typeof(IExecutionFilterMarker).IsAssignableFrom(type)
-                                                               &&
-                                                                 type != typeof(IExecutionFilterMarker)
-                                                              && typeof(IQuery).IsAssignableFrom(type.GetGenericArguments().FirstOrDefault()))
+        var implementationType = types.FirstOrDefault(type => type.GetTypeInfo().IsClass
+                                                            &&
+                                                              typeof(IExecutionFilterMarker).IsAssignableFrom(type)
+                                                            &&
+                                                              type != typeof(IExecutionFilterMarker)
+                                                           && typeof(IQuery).IsAssignableFrom(type.GetGenericArguments().FirstOrDefault()))
                               ?? typeof(QueryExecutionFilter<,>);
 
         Type interfaceType = typeof(IExecutionFilter<,>);
@@ -138,11 +134,11 @@ public static class DependencyInjectionExtension
             Type[] queryHandlerGenericTypes = queryHandlerType.GetInterface(typeof(IQueryHandler<,>).Name)?.GetGenericArguments() ?? [];
 
             var newQueryExecutionFilterBaseType = typeof(QueryExecutionFilterBase<,>).MakeGenericType(queryHandlerGenericTypes);
-            var customQueryExecutionFilterType = assembly.GetTypes().FirstOrDefault(type => type.GetTypeInfo().IsClass
-                                                                                          &&
-                                                                                            newQueryExecutionFilterBaseType.IsAssignableFrom(type)
-                                                                                          &&
-                                                                                            type != newQueryExecutionFilterBaseType);
+            var customQueryExecutionFilterType = types.FirstOrDefault(type => type.GetTypeInfo().IsClass
+                                                                            &&
+                                                                              newQueryExecutionFilterBaseType.IsAssignableFrom(type)
+                                                                            &&
+                                                                              type != newQueryExecutionFilterBaseType);
 
             var newInterfaceType = interfaceType?.MakeGenericType(queryHandlerGenericTypes);
             if (customQueryExecutionFilterType != null)
@@ -160,17 +156,16 @@ public static class DependencyInjectionExtension
         return services;
     }
 
-    private static IServiceCollection AddCommandExecutionFilter(this IServiceCollection services, Assembly assembly)
+    private static IServiceCollection AddCommandExecutionFilter(this IServiceCollection services, IList<Type> types)
     {
-        var commandHandlerTypes = assembly.GetCommandHandlerTypes();
+        var commandHandlerTypes = types.GetCommandHandlerTypes();
 
-        Type implementationType = assembly.GetTypes()
-                                          .FirstOrDefault(type => type.GetTypeInfo().IsClass
-                                                                &&
-                                                                  typeof(IExecutionFilterMarker).IsAssignableFrom(type)
-                                                                &&
-                                                                  type != typeof(IExecutionFilterMarker)
-                                                               && typeof(ICommand).IsAssignableFrom(type.GetGenericArguments().FirstOrDefault()))
+        Type implementationType = types.FirstOrDefault(type => type.GetTypeInfo().IsClass
+                                                             &&
+                                                               typeof(IExecutionFilterMarker).IsAssignableFrom(type)
+                                                             &&
+                                                               type != typeof(IExecutionFilterMarker)
+                                                            && typeof(ICommand).IsAssignableFrom(type.GetGenericArguments().FirstOrDefault()))
                                ?? typeof(CommandExecutionFilter<,>);
 
         Type interfaceType = typeof(IExecutionFilter<,>);
@@ -180,11 +175,11 @@ public static class DependencyInjectionExtension
             Type[] commandHandlerGenericTypes = commandHandlerType.GetInterface(typeof(ICommandHandler<,>).Name)?.GetGenericArguments() ?? [];
 
             var newCommandExecutionFilterBaseType = typeof(CommandExecutionFilterBase<,>).MakeGenericType(commandHandlerGenericTypes);
-            var customCommandExecutionFilterType = assembly.GetTypes().FirstOrDefault(type => type.GetTypeInfo().IsClass
-                                                                                            &&
-                                                                                              newCommandExecutionFilterBaseType.IsAssignableFrom(type)
-                                                                                            &&
-                                                                                              type != newCommandExecutionFilterBaseType);
+            var customCommandExecutionFilterType = types.FirstOrDefault(type => type.GetTypeInfo().IsClass
+                                                                              &&
+                                                                                newCommandExecutionFilterBaseType.IsAssignableFrom(type)
+                                                                              &&
+                                                                                type != newCommandExecutionFilterBaseType);
 
             var newInterfaceType = interfaceType?.MakeGenericType(commandHandlerGenericTypes);
             if (customCommandExecutionFilterType != null)
@@ -202,15 +197,14 @@ public static class DependencyInjectionExtension
         return services;
     }
 
-    private static IServiceCollection AddApprovalFlowService(this IServiceCollection services, Assembly assembly)
+    private static IServiceCollection AddApprovalFlowService(this IServiceCollection services, IList<Type> types)
     {
-        var implementationType = assembly.GetTypes()
-                                         .FirstOrDefault(type =>
-                                                             type.GetTypeInfo().IsClass
-                                                           &&
-                                                             typeof(IApprovalFlowService).IsAssignableFrom(type)
-                                                           &&
-                                                             type != typeof(IApprovalFlowService))
+        var implementationType = types.FirstOrDefault(type =>
+                                                          type.GetTypeInfo().IsClass
+                                                        &&
+                                                          typeof(IApprovalFlowService).IsAssignableFrom(type)
+                                                        &&
+                                                          type != typeof(IApprovalFlowService))
                               ?? typeof(ApprovalFlowServiceBase);
 
         if (implementationType is null)
@@ -225,18 +219,17 @@ public static class DependencyInjectionExtension
 
         return services;
     }
-    
-    private static IServiceCollection AddApprovalFlowExecutionFilter(this IServiceCollection services, Assembly assembly)
-    {
-        var commandHandlerTypes = assembly.GetCommandHandlerTypes();
 
-        Type implementationType = assembly.GetTypes()
-                                          .FirstOrDefault(type => type.GetTypeInfo().IsClass
-                                                                &&
-                                                                  typeof(IApprovalFlowExecutionFilterMarker).IsAssignableFrom(type)
-                                                                &&
-                                                                  type != typeof(IApprovalFlowExecutionFilterMarker)
-                                                               && typeof(ICommand).IsAssignableFrom(type.GetGenericArguments().FirstOrDefault()))
+    private static IServiceCollection AddApprovalFlowExecutionFilter(this IServiceCollection services, IList<Type> types)
+    {
+        var commandHandlerTypes = types.GetCommandHandlerTypes();
+
+        Type implementationType = types.FirstOrDefault(type => type.GetTypeInfo().IsClass
+                                                             &&
+                                                               typeof(IApprovalFlowExecutionFilterMarker).IsAssignableFrom(type)
+                                                             &&
+                                                               type != typeof(IApprovalFlowExecutionFilterMarker)
+                                                            && typeof(ICommand).IsAssignableFrom(type.GetGenericArguments().FirstOrDefault()))
                                ?? typeof(ApprovalFlowExecutionFilter<,>);
 
         Type interfaceType = typeof(IApprovalFlowExecutionFilter<,>);
@@ -246,11 +239,11 @@ public static class DependencyInjectionExtension
             Type[] commandHandlerGenericTypes = commandHandlerType.GetInterface(typeof(ICommandHandler<,>).Name)?.GetGenericArguments() ?? [];
 
             var newApprovalFlowExecutionFilterBaseType = typeof(ApprovalFlowExecutionFilterBase<,>).MakeGenericType(commandHandlerGenericTypes);
-            var customApprovalFlowExecutionFilterType = assembly.GetTypes().FirstOrDefault(type => type.GetTypeInfo().IsClass
-                                                                                                 &&
-                                                                                                   newApprovalFlowExecutionFilterBaseType.IsAssignableFrom(type)
-                                                                                                 &&
-                                                                                                   type != newApprovalFlowExecutionFilterBaseType);
+            var customApprovalFlowExecutionFilterType = types.FirstOrDefault(type => type.GetTypeInfo().IsClass
+                                                                                   &&
+                                                                                     newApprovalFlowExecutionFilterBaseType.IsAssignableFrom(type)
+                                                                                   &&
+                                                                                     type != newApprovalFlowExecutionFilterBaseType);
 
             var newInterfaceType = interfaceType?.MakeGenericType(commandHandlerGenericTypes);
             if (customApprovalFlowExecutionFilterType != null)
@@ -268,14 +261,13 @@ public static class DependencyInjectionExtension
         return services;
     }
 
-    private static IServiceCollection AddApprovalFlowAcceptFilter(this IServiceCollection services, Assembly assembly)
+    private static IServiceCollection AddApprovalFlowAcceptFilter(this IServiceCollection services, IList<Type> types)
     {
-        Type implementationType = assembly.GetTypes()
-                                          .FirstOrDefault(type => type.GetTypeInfo().IsClass
-                                                                &&
-                                                                  typeof(IApprovalFlowAcceptFilterMarker).IsAssignableFrom(type)
-                                                                &&
-                                                                  type != typeof(IApprovalFlowAcceptFilterMarker))
+        Type implementationType = types.FirstOrDefault(type => type.GetTypeInfo().IsClass
+                                                             &&
+                                                               typeof(IApprovalFlowAcceptFilterMarker).IsAssignableFrom(type)
+                                                             &&
+                                                               type != typeof(IApprovalFlowAcceptFilterMarker))
                                ?? typeof(ApprovalFlowAcceptFilter);
 
         Type interfaceType = typeof(IApprovalFlowAcceptFilter);
@@ -285,14 +277,13 @@ public static class DependencyInjectionExtension
         return services;
     }
 
-    private static IServiceCollection AddApprovalFlowRejectFilter(this IServiceCollection services, Assembly assembly)
+    private static IServiceCollection AddApprovalFlowRejectFilter(this IServiceCollection services, IList<Type> types)
     {
-        Type implementationType = assembly.GetTypes()
-                                          .FirstOrDefault(type => type.GetTypeInfo().IsClass
-                                                                &&
-                                                                  typeof(IApprovalFlowRejectFilterMarker).IsAssignableFrom(type)
-                                                                &&
-                                                                  type != typeof(IApprovalFlowRejectFilterMarker))
+        Type implementationType = types.FirstOrDefault(type => type.GetTypeInfo().IsClass
+                                                             &&
+                                                               typeof(IApprovalFlowRejectFilterMarker).IsAssignableFrom(type)
+                                                             &&
+                                                               type != typeof(IApprovalFlowRejectFilterMarker))
                                ?? typeof(ApprovalFlowRejectFilter);
 
         Type interfaceType = typeof(IApprovalFlowRejectFilter);
@@ -324,32 +315,30 @@ public static class DependencyInjectionExtension
         {
             throw new NotImplementedException($"The class is not implemented.");
         }
-        
+
         if (implementationType.GetCustomAttribute<TransientLifetimeAttribute>() is not null) services.AddTransient(implementationType);
         else if (implementationType.GetCustomAttribute<ScopedLifetimeAttribute>() is not null) services.AddScoped(implementationType);
         else if (implementationType.GetCustomAttribute<SingletonLifetimeAttribute>() is not null) services.AddSingleton(implementationType);
         else services.AddScoped(implementationType);
     }
 
-    private static IEnumerable<Type> GetQueryHandlerTypes(this Assembly assembly)
+    private static IEnumerable<Type> GetQueryHandlerTypes(this IList<Type> types)
     {
-        return assembly.GetTypes()
-                       .Where(type =>
-                                  type.GetTypeInfo().IsClass
-                                &&
-                                  typeof(IQueryHandlerMarker).IsAssignableFrom(type)
-                                &&
-                                  type != typeof(IQueryHandlerMarker));
+        return types.Where(type =>
+                               type.GetTypeInfo().IsClass
+                             &&
+                               typeof(IQueryHandlerMarker).IsAssignableFrom(type)
+                             &&
+                               type != typeof(IQueryHandlerMarker));
     }
 
-    private static IEnumerable<Type> GetCommandHandlerTypes(this Assembly assembly)
+    private static IEnumerable<Type> GetCommandHandlerTypes(this IList<Type> types)
     {
-        return assembly.GetTypes()
-                       .Where(type =>
-                                  type.GetTypeInfo().IsClass
-                                &&
-                                  typeof(ICommandHandlerMarker).IsAssignableFrom(type)
-                                &&
-                                  type != typeof(ICommandHandlerMarker));
+        return types.Where(type =>
+                               type.GetTypeInfo().IsClass
+                             &&
+                               typeof(ICommandHandlerMarker).IsAssignableFrom(type)
+                             &&
+                               type != typeof(ICommandHandlerMarker));
     }
 }

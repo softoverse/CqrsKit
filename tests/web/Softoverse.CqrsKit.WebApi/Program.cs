@@ -38,7 +38,8 @@ public class Program
                .AddCqrsKit<IWebApiMarker>()
                .AddCqrsKit<IWebApiDataAccessMarker>()
                .AddCqrsKit<IWebApiModelsMarker>()
-               .AddCqrsKit<IWebApiModuleMarker>();
+               .AddCqrsKit<IWebApiModuleMarker>()
+               .Build();
 
         var app = builder.Build();
 
