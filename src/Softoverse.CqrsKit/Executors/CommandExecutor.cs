@@ -51,13 +51,13 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
 
         HandlerStep<TResponse>[] steps =
         [
-            new(() => ExecuteApprovalFlowAsync(ct), isApprovalFlowRequired ? StepBehavior.FinalOutput : StepBehavior.Skip),
-            new(() => ExecutionFilter.OnExecutingAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.MustCall),
-            new(() => CommandHandler.ValidateAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
-            new(() => CommandHandler.OnStartAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
-            new(() => CommandHandler.HandleAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.FinalOutput),
-            new(() => CommandHandler.OnEndAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
-            new(() => ExecutionFilter.OnExecutedAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.MustCall),
+            HandlerStep<TResponse>.New(() => ExecutionFilter.OnExecutingAsync(Context, ct), StepBehavior.MustCall),
+            HandlerStep<TResponse>.New(() => ExecuteApprovalFlowAsync(ct), isApprovalFlowRequired ? StepBehavior.FinalOutput : StepBehavior.Skip),
+            HandlerStep<TResponse>.New(() => CommandHandler.ValidateAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
+            HandlerStep<TResponse>.New(() => CommandHandler.OnStartAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
+            HandlerStep<TResponse>.New(() => CommandHandler.HandleAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.FinalOutput),
+            HandlerStep<TResponse>.New(() => CommandHandler.OnEndAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
+            HandlerStep<TResponse>.New(() => ExecutionFilter.OnExecutedAsync(Context, ct), StepBehavior.MustCall),
         ];
 
         return await ExecuteStepsAsync(steps);
@@ -68,13 +68,13 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
         bool isApprovalFlowSkipped = ApprovalFlowHandler == null;
         HandlerStep<TResponse>[] steps =
         [
-            new(() => CommandHandler.ValidateAsync(Context, ct)),
-            new(() => IsApprovalFlowPendingTaskUniqueAsync(ct)),
-            new(() => isApprovalFlowSkipped ? ResponseDefaults.DefaultResponse<TResponse>() : ApprovalFlowHandler!.OnStartAsync(Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory),
-            new(() => ApprovalFlowExecutionFilter.OnExecutingAsync(Context, ct)),
-            new(() => ApprovalFlowExecutionFilter.ExecuteAsync(Context, ct), StepBehavior.FinalOutput),
-            new(() => ApprovalFlowExecutionFilter.OnExecutedAsync(Context, ct)),
-            new(() => isApprovalFlowSkipped ? ResponseDefaults.DefaultResponse<TResponse>() : ApprovalFlowHandler!.OnEndAsync(Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory)
+            HandlerStep<TResponse>.New(() => CommandHandler.ValidateAsync(Context, ct)),
+            HandlerStep<TResponse>.New(() => IsApprovalFlowPendingTaskUniqueAsync(ct)),
+            HandlerStep<TResponse>.New(() => isApprovalFlowSkipped ? ResponseDefaults.DefaultResponse<TResponse>() : ApprovalFlowHandler!.OnStartAsync(Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory),
+            HandlerStep<TResponse>.New(() => ApprovalFlowExecutionFilter.OnExecutingAsync(Context, ct)),
+            HandlerStep<TResponse>.New(() => ApprovalFlowExecutionFilter.ExecuteAsync(Context, ct), StepBehavior.FinalOutput),
+            HandlerStep<TResponse>.New(() => ApprovalFlowExecutionFilter.OnExecutedAsync(Context, ct)),
+            HandlerStep<TResponse>.New(() => isApprovalFlowSkipped ? ResponseDefaults.DefaultResponse<TResponse>() : ApprovalFlowHandler!.OnEndAsync(Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory)
         ];
 
         return await ExecuteStepsAsync(steps);

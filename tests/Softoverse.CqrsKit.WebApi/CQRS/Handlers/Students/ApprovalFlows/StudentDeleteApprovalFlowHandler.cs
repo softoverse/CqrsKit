@@ -17,7 +17,7 @@ public class StudentDeleteApprovalFlowHandler : ApprovalFlowHandler<StudentDelet
                                                  .WithMessage("Before Approval Flow Start Student")
                                                  .WithPayload(command.Payload));
     }
-
+    
     public override async Task<Result<Guid>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");

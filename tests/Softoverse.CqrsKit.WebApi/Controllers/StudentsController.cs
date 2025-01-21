@@ -39,8 +39,7 @@ public class StudentsController(IServiceProvider services) : ControllerBase
 
         return Ok(result);
     }
-
-
+    
     // POST api/Students/5
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] Student student, CancellationToken ct = default)

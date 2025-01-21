@@ -13,3 +13,19 @@ public interface IExecutionFilter<in TRequest, TResponse> : IExecutionFilterMark
 
     public Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
 }
+
+public abstract class CommandExecutionFilterBase<TCommand, TResponse> : IExecutionFilter<TCommand, TResponse>
+    where TCommand : ICommand
+{
+    public abstract Task<Result<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default);
+
+    public abstract Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
+}
+
+public abstract class QueryExecutionFilterBase<TQuery, TResponse> : IExecutionFilter<TQuery, TResponse>
+    where TQuery : IQuery
+{
+    public abstract Task<Result<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default);
+
+    public abstract Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
+}

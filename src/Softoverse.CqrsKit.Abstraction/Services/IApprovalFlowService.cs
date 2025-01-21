@@ -11,6 +11,6 @@ public interface IApprovalFlowService
     public Task<bool> IsApprovalFlowPendingTaskUniqueAsync<TCommand>(TCommand command, CqrsContext context, CancellationToken ct = default)
         where TCommand : ICommand;
 
-    public Task<T?> GetApprovalFlowTaskAsync<T>(string approvalFlowId, CqrsContext context, CancellationToken ct = default)
+    public Task<T> GetApprovalFlowTaskAsync<T>(CqrsContext context, CancellationToken ct = default)
         where T : BaseApprovalFlowPendingTask;
 }

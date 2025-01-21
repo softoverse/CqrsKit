@@ -6,7 +6,6 @@ using Softoverse.CqrsKit.Model.Abstraction;
 using Softoverse.CqrsKit.Model.Entity;
 using Softoverse.CqrsKit.Model.Utility;
 using Softoverse.CqrsKit.Services;
-using Softoverse.CqrsKit.TestConsole.CQRS.Events;
 using Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
 
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Services;
@@ -36,15 +35,21 @@ public class ApprovalFlowService : ApprovalFlowServiceBase
         return Task.FromResult(true);
     }
 
-    public override Task<T> GetApprovalFlowTaskAsync<T>(string approvalFlowId, CqrsContext context, CancellationToken ct = default)
+    public override Task<T> GetApprovalFlowTaskAsync<T>(CqrsContext context, CancellationToken ct = default) where T : class
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.GetApprovalFlowTaskAsync)}");
 
+        // Here it is hard coded.
+        // In real life implementation it will be generated dynamically from DB or other source
         Type studentDeleteCommandType = typeof(PersonDeleteCommand);
         Type studentDeleteCommandHandlerType = typeof(ICommandHandler<PersonDeleteCommand, Guid>);
         Type studentDeleteApprovalFlowHandlerType = typeof(IApprovalFlowHandler<PersonDeleteCommand, Guid>);
 
-        var afId = Guid.Parse(approvalFlowId);
+        var approvalFlowPendingTaskId = Guid.Parse(context.ApprovalFlowPendingTaskId);
+
+        // Here it is hard coded.
+        // In real life implementation it will be generated dynamically from DB or other source
+        IUniqueCommand uniqueCommand = new PersonDeleteCommand(approvalFlowPendingTaskId);
 
         BaseApprovalFlowPendingTask approvalFlowTask = new BaseApprovalFlowPendingTask
         {
@@ -60,10 +65,10 @@ public class ApprovalFlowService : ApprovalFlowServiceBase
             ApprovalFlowHandlerName = studentDeleteApprovalFlowHandlerType.Name,
             ApprovalFlowHandlerNamespace = studentDeleteApprovalFlowHandlerType.Namespace,
             ApprovalFlowHandlerFullName = studentDeleteApprovalFlowHandlerType.FullName,
-            Payload = Encoding.ASCII.GetBytes(JsonSerializer.Serialize(new PersonDeleteCommand(afId))),
+            Payload = Encoding.ASCII.GetBytes(JsonSerializer.Serialize(new PersonDeleteCommand(approvalFlowPendingTaskId))),
             Status = ApprovalFlowStatus.Pending,
-            UniqueIdentification = approvalFlowId,
-            Id = approvalFlowId
+            UniqueIdentification = uniqueCommand.GetUniqueIdentification(),
+            Id = context.ApprovalFlowPendingTaskId
         };
 
         return Task.FromResult(approvalFlowTask as T)!;

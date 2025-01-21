@@ -17,4 +17,9 @@ public class HandlerStep<TResponse>(Func<Task<Result<TResponse>>> @delegate, Ste
     : HandlerStepBase(behavior, message)
 {
     public Func<Task<Result<TResponse>>> Delegate { get; } = @delegate;
+    
+    public static HandlerStep<TResponse> New(Func<Task<Result<TResponse>>> @delegate, StepBehavior behavior = StepBehavior.Mandatory, string? message = null)
+    {
+        return new HandlerStep<TResponse>(@delegate, behavior, message);
+    }
 }

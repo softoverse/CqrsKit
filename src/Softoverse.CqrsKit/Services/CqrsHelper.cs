@@ -49,12 +49,7 @@ public static class CqrsHelper
             }
         }
 
-        if (throwIfNotFound && type is null)
-        {
-            throw new NullReferenceException($"Could not find type for '{fullName}'.");
-        }
-
-        return type;
+        return throwIfNotFound && type is null ? throw new NullReferenceException($"Could not find type for '{fullName}'.") : type;
     }
 
     private static void CacheType(string fullName, Type? type)

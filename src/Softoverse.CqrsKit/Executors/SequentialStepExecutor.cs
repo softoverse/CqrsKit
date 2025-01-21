@@ -127,10 +127,11 @@ internal static class SequentialStepExecutor
         return ThrowIfFinalOutputStepMissing(steps);
     }
 
-    private static bool Validate(HandlerStep[] steps)
-    {
-        return ThrowIfFinalOutputStepMissing(steps);
-    }
+    // [Obsolete("Use other overwrite instead", true)]
+    // private static bool Validate(HandlerStep[] steps)
+    // {
+    //     return ThrowIfFinalOutputStepMissing(steps);
+    // }
 
     private static bool ThrowIfFinalOutputStepMissing(HandlerStepBase[] steps)
     {

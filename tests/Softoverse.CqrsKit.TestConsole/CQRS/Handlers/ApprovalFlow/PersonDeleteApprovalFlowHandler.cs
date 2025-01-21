@@ -18,14 +18,14 @@ public class PersonDeleteApprovalFlowHandler : ApprovalFlowHandler<PersonDeleteC
                                                    .WithMessage("Before Approval Flow Start Person")
                                                    .WithPayload(command.Payload));
     }
-
+    
     public override async Task<Result<Guid>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
         var command = context.RequestAs<PersonDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
-                                                   .WithMessage("After Approval Flow End Person")
-                                                   .WithPayload(command.Payload));
+                                                 .WithMessage("After Approval Flow End Person")
+                                                 .WithPayload(command.Payload));
     }
 
     public override async Task<Result<Guid>> AfterAcceptAsync(CqrsContext context, CancellationToken ct = default)

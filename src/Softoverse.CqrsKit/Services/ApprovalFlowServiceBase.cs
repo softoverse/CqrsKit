@@ -13,6 +13,6 @@ public class ApprovalFlowServiceBase : IApprovalFlowService
     public virtual Task<bool> IsApprovalFlowPendingTaskUniqueAsync<TCommand>(TCommand command, CqrsContext context, CancellationToken ct = default)
         where TCommand : ICommand => ResponseDefaults.DefaultValueResponse(true);
 
-    public virtual Task<T?> GetApprovalFlowTaskAsync<T>(string approvalFlowId, CqrsContext context, CancellationToken ct = default)
-        where T : BaseApprovalFlowPendingTask => ResponseDefaults.DefaultValueResponse(default (T));
+    public virtual Task<T> GetApprovalFlowTaskAsync<T>(CqrsContext context, CancellationToken ct = default)
+        where T : BaseApprovalFlowPendingTask => ResponseDefaults.DefaultValueResponse(default (T))!;
 }

@@ -15,3 +15,13 @@ public interface IApprovalFlowExecutionFilter<in TCommand, TResponse> : IApprova
     
     public Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
 }
+
+public abstract class ApprovalFlowExecutionFilterBase<TCommand, TResponse> : IApprovalFlowExecutionFilter<TCommand, TResponse>
+    where TCommand : ICommand
+{
+    public abstract Task<Result<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default);
+
+    public abstract Task<Result<TResponse>> ExecuteAsync(CqrsContext context, CancellationToken ct = default);
+
+    public abstract Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
+}

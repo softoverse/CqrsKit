@@ -1,10 +1,9 @@
-﻿using Softoverse.CqrsKit.Attributes;
-using Softoverse.CqrsKit.Filters;
+﻿using Softoverse.CqrsKit.Abstraction.Filters;
+using Softoverse.CqrsKit.Attributes;
 using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.Model.Utility;
 using Softoverse.CqrsKit.Services;
 using Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
-using Softoverse.CqrsKit.TestConsole.Models;
 
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Filters.Command
 {

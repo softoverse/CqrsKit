@@ -30,7 +30,9 @@ public sealed class ApprovalFlowExecutor<T> : IApprovalFlowExecutor<T>
 
     public async Task<Result> AcceptAsync(CancellationToken ct = default)
     {
-        Result beforeApprovalFlowAcceptResult = await ApprovalFlowAcceptFilter.OnAcceptingAsync(ApprovalFlowPendingTaskId, Context, ct);
+        Context.ApprovalFlowPendingTaskId = ApprovalFlowPendingTaskId;
+        
+        Result beforeApprovalFlowAcceptResult = await ApprovalFlowAcceptFilter.OnExecutingAsync(Context, ct);
         if (!beforeApprovalFlowAcceptResult.IsSuccessful) return beforeApprovalFlowAcceptResult;
 
         var commandExecutorResponse = await GetCommandApprovalFlowExecutor(ct);
@@ -42,7 +44,7 @@ public sealed class ApprovalFlowExecutor<T> : IApprovalFlowExecutor<T>
         var afterAcceptResponse = await commandExecutor.AfterAcceptAsync(ct) as Result ?? Result.Success();
         if (!afterAcceptResponse.IsSuccessful) return afterAcceptResponse;
 
-        Result afterApprovalFlowAcceptResult = await ApprovalFlowAcceptFilter.OnAcceptedAsync(ApprovalFlowPendingTaskId, Context, ct);
+        Result afterApprovalFlowAcceptResult = await ApprovalFlowAcceptFilter.OnExecutedAsync(Context, ct);
         if (!afterApprovalFlowAcceptResult.IsSuccessful) return afterApprovalFlowAcceptResult;
 
         return commandResult;
@@ -50,7 +52,9 @@ public sealed class ApprovalFlowExecutor<T> : IApprovalFlowExecutor<T>
 
     public async Task<Result> RejectAsync(CancellationToken ct = default)
     {
-        var onRejectResponse = await ApprovalFlowRejectFilter.OnRejectingAsync(ApprovalFlowPendingTaskId, Context, ct);
+        Context.ApprovalFlowPendingTaskId = ApprovalFlowPendingTaskId;
+        
+        var onRejectResponse = await ApprovalFlowRejectFilter.OnExecutingAsync(Context, ct);
         if (!onRejectResponse.IsSuccessful) return onRejectResponse;
 
         var commandExecutorResponse = await GetCommandApprovalFlowExecutor(ct);
@@ -59,8 +63,8 @@ public sealed class ApprovalFlowExecutor<T> : IApprovalFlowExecutor<T>
 
         Result afterRejectResult = await commandExecutor.AfterRejectAsync(ct) as Result ?? Result.Success();
         if (!afterRejectResult.IsSuccessful) return afterRejectResult;
-
-        Result afterApprovalFlowRejectResult = await ApprovalFlowRejectFilter.OnRejectedAsync(ApprovalFlowPendingTaskId, Context, ct);
+        
+        Result afterApprovalFlowRejectResult = await ApprovalFlowRejectFilter.OnExecutedAsync(Context, ct);
         if (!afterApprovalFlowRejectResult.IsSuccessful) return afterApprovalFlowRejectResult;
 
         return afterRejectResult;
@@ -68,8 +72,10 @@ public sealed class ApprovalFlowExecutor<T> : IApprovalFlowExecutor<T>
 
     private async Task<Result<ICommandApprovalFlowEventExecutor>> GetCommandApprovalFlowExecutor(CancellationToken ct = default)
     {
-        T? pendingTask = await ApprovalFlowService.GetApprovalFlowTaskAsync<T>(ApprovalFlowPendingTaskId, Context, ct);
-        if (pendingTask is null)
+        Context.ApprovalFlowPendingTaskId = ApprovalFlowPendingTaskId;
+        
+        T pendingTask = await ApprovalFlowService.GetApprovalFlowTaskAsync<T>(Context, ct);
+        if (pendingTask == null!)
         {
             return Result<ICommandApprovalFlowEventExecutor>.Error(ApprovalFlowPendingTaskErrors.NotFound(ApprovalFlowPendingTaskId));
         }

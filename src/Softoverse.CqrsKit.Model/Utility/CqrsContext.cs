@@ -6,20 +6,10 @@ namespace Softoverse.CqrsKit.Model.Utility;
 
 public class CqrsContext
 {
-    private IRequest _request;
-    private object? _response;
-
-    public IRequest Request
-    {
-        get => _request;
-        set => _request = value;
-    }
-
-    public object? Response
-    {
-        get => _response;
-        set => _response = value;
-    }
+    public IRequest Request { get; set; }
+    public object? Response { get; set; }
+    
+    public string ApprovalFlowPendingTaskId { get; set; }
 
     public CurrentState State { get; set; } = CurrentState.None;
 

@@ -1,5 +1,5 @@
-﻿using Softoverse.CqrsKit.Attributes;
-using Softoverse.CqrsKit.Filters;
+﻿using Softoverse.CqrsKit.Abstraction.Filters;
+using Softoverse.CqrsKit.Attributes;
 using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.Model.Utility;
 
@@ -8,16 +8,16 @@ namespace Softoverse.CqrsKit.WebApi.CQRS.Filters.ApprovalFlow;
 [ScopedLifetime]
 public class ApprovalFlowRejectFilter : ApprovalFlowRejectFilterBase
 {
-    public override Task<Result> OnRejectingAsync(string approvalFlowId, CqrsContext context, CancellationToken ct = default)
+    public override Task<Result> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnRejectingAsync)}");
+        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnExecutingAsync)}");
 
         return ResponseDefaults.DefaultResponse();
     }
 
-    public override Task<Result> OnRejectedAsync(string approvalFlowId, CqrsContext context, CancellationToken ct = default)
+    public override Task<Result> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnRejectedAsync)}");
+        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnExecutedAsync)}");
         return ResponseDefaults.DefaultResponse();
     }
 }

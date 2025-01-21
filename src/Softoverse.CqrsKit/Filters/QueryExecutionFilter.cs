@@ -5,14 +5,6 @@ using Softoverse.CqrsKit.Model.Utility;
 
 namespace Softoverse.CqrsKit.Filters;
 
-public abstract class QueryExecutionFilterBase<TQuery, TResponse> : IExecutionFilter<TQuery, TResponse>
-    where TQuery : IQuery
-{
-    public abstract Task<Result<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default);
-
-    public abstract Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
-}
-
 internal class QueryExecutionFilter<TQuery, TResponse> : QueryExecutionFilterBase<TQuery, TResponse>
     where TQuery : IQuery
 {
