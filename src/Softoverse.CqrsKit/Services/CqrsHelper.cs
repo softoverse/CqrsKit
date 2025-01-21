@@ -11,12 +11,14 @@ namespace Softoverse.CqrsKit.Services;
 
 public static class CqrsHelper
 {
-    private static readonly List<Assembly> ApplicationAssemblies = [typeof(Type).Assembly, typeof(IBaseHandlerMarker).Assembly];
-    private static readonly ConcurrentDictionary<string, Type?> CachedTypes = new ConcurrentDictionary<string, Type?>();
+    internal static readonly List<Assembly> ApplicationAssemblies = [typeof(Type).Assembly, typeof(IBaseHandlerMarker).Assembly];
+    internal static readonly List<Assembly> AddedAssemblies = [];
+    internal static readonly ConcurrentDictionary<string, Type?> CachedTypes = new ConcurrentDictionary<string, Type?>();
 
     public static void AddAssembly(Assembly assembly)
     {
         ApplicationAssemblies.Add(assembly);
+        AddedAssemblies.Add(assembly);
     }
 
     public static string GetFullTypeName(string nameSpace, string className)
@@ -57,11 +59,16 @@ public static class CqrsHelper
         CachedTypes[fullName] = type;
     }
 
-    public static IEnumerable<BaseCommandQuery> GetAllCommandQueryTypes(Assembly assembly)
+    public static IEnumerable<BaseCommandQuery> GetAllCommandQueryTypes()
     {
-        IEnumerable<BaseCommandQuery> commands = GetAllCommandTypes(assembly);
-        IEnumerable<BaseCommandQuery> queries = GetAllQueryTypes(assembly);
-
+        List<BaseCommandQuery> commands =  new List<BaseCommandQuery>();
+        List<BaseCommandQuery> queries =  new List<BaseCommandQuery>();
+        
+        foreach (var assembly in AddedAssemblies)
+        {
+            commands.AddRange(GetAllCommandTypes(assembly));
+            queries.AddRange(GetAllQueryTypes(assembly));
+        }
         return commands.Concat(queries);
     }
 

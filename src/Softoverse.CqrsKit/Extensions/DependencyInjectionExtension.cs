@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 
+using Microsoft.AspNetCore.Builder;
+
 using Softoverse.CqrsKit.Abstraction.Filters;
 using Softoverse.CqrsKit.Abstraction.Handlers;
 using Softoverse.CqrsKit.Abstraction.Handlers.Markers;
@@ -18,19 +20,32 @@ public static class DependencyInjectionExtension
 {
     public static IServiceCollection AddCqrsKit<TMarker>(this IServiceCollection services)
     {
-        Assembly assembly = typeof(TMarker).Assembly;
+        services.AddAssembly(typeof(TMarker).Assembly);
+        return services;
+    }
+    
+    public static IServiceCollection AddCqrsKit(this IServiceCollection services, params List<Type> types)
+    {
+        foreach (var assembly in types.Select(type => type.Assembly))
+        {
+            services.AddAssembly(assembly);
+        }
+        return services;
+    }
 
+    private static void AddAssembly(this IServiceCollection services, Assembly assembly)
+    {
         CqrsHelper.AddAssembly(assembly);
 
-        return services.AddApprovalFlowService(assembly)
-                       .AddQueryHandlers(assembly)
-                       .AddQueryExecutionFilter(assembly)
-                       .AddCommandHandlers(assembly)
-                       .AddCommandExecutionFilter(assembly)
-                       .AddApprovalFlowExecutionFilter(assembly)
-                       .AddApprovalFlowHandlers(assembly)
-                       .AddApprovalFlowAcceptFilter(assembly)
-                       .AddApprovalFlowRejectFilter(assembly);
+        services.AddApprovalFlowService(assembly)
+                .AddQueryHandlers(assembly)
+                .AddQueryExecutionFilter(assembly)
+                .AddCommandHandlers(assembly)
+                .AddCommandExecutionFilter(assembly)
+                .AddApprovalFlowExecutionFilter(assembly)
+                .AddApprovalFlowHandlers(assembly)
+                .AddApprovalFlowAcceptFilter(assembly)
+                .AddApprovalFlowRejectFilter(assembly);
     }
     
     #region Query Handlers
@@ -67,7 +82,7 @@ public static class DependencyInjectionExtension
                                                                           type != typeof(ICommandHandlerMarker));
 
             RegisterToService(services, interfaceType, implementationType);
-            RegisterToService(services, implementationType);
+            // RegisterToService(services, implementationType);
         }
 
         return services;
@@ -92,7 +107,7 @@ public static class DependencyInjectionExtension
             var interfaceType = implementationType.GetInterfaces().FirstOrDefault(type => typeof(IApprovalFlowHandlerMarker).IsAssignableFrom(type) && type != typeof(IApprovalFlowHandlerMarker));
 
             RegisterToService(services, interfaceType, implementationType);
-            RegisterToService(services, implementationType);
+            // RegisterToService(services, implementationType);
         }
 
         return services;
@@ -302,19 +317,18 @@ public static class DependencyInjectionExtension
         else services.AddScoped(interfaceType, implementationType);
     }
 
-    // [Obsolete("Use other overload instead", true)]
+    [Obsolete("Use other overload instead", true)]
     private static void RegisterToService(IServiceCollection services, Type? implementationType)
     {
         if (implementationType is null)
         {
             throw new NotImplementedException($"The class is not implemented.");
         }
-
+        
         if (implementationType.GetCustomAttribute<TransientLifetimeAttribute>() is not null) services.AddTransient(implementationType);
         else if (implementationType.GetCustomAttribute<ScopedLifetimeAttribute>() is not null) services.AddScoped(implementationType);
         else if (implementationType.GetCustomAttribute<SingletonLifetimeAttribute>() is not null) services.AddSingleton(implementationType);
         else services.AddScoped(implementationType);
-
     }
 
     private static IEnumerable<Type> GetQueryHandlerTypes(this Assembly assembly)

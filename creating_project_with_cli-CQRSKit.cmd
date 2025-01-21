@@ -1,7 +1,7 @@
 @REM mkdir <solution-name>
 @REM cd <solution-name>
 
-dotnet new sln --name CqrsKit
+dotnet new sln --name Softoverse.CqrsKit
 
 @REM dotnet new .gitignore
 @REM dotnet new .editorconfig
@@ -23,9 +23,9 @@ mkdir tests
 
 @REM src projects
 cd src
-dotnet new classlib --name CqrsKit
-dotnet new classlib --name CqrsKit.Abstraction
-dotnet new classlib --name CqrsKit.Model
+dotnet new classlib --name Softoverse.CqrsKit
+dotnet new classlib --name Softoverse.CqrsKit.Abstraction
+dotnet new classlib --name Softoverse.CqrsKit.Model
 cd ..
 dotnet sln add src/Softoverse.CqrsKit/Softoverse.CqrsKit.csproj
 dotnet sln add src/Softoverse.CqrsKit.Abstraction/Softoverse.CqrsKit.Abstraction.csproj
@@ -46,3 +46,10 @@ cd ..
 
 dotnet sln add tests/console/Softoverse.CqrsKit.TestConsole/Softoverse.CqrsKit.TestConsole.csproj
 dotnet sln add tests/web/Softoverse.CqrsKit.WebApi/Softoverse.CqrsKit.WebApi.csproj
+
+@REM Add Migration Command
+@REM dotnet ef migrations add --project tests\web\Softoverse.CqrsKit.WebApi.DataAccess\Softoverse.CqrsKit.WebApi.DataAccess.csproj --startup-project tests\web\Softoverse.CqrsKit.WebApi\Softoverse.CqrsKit.WebApi.csproj --context Softoverse.CqrsKit.WebApi.DataAccess.ApplicationDbContext --configuration Debug Initial --output-dir Migrations
+
+@REM Update Database Command
+@REM dotnet ef database update --project tests\web\Softoverse.CqrsKit.WebApi.DataAccess\Softoverse.CqrsKit.WebApi.DataAccess.csproj --startup-project tests\web\Softoverse.CqrsKit.WebApi\Softoverse.CqrsKit.WebApi.csproj --context Softoverse.CqrsKit.WebApi.DataAccess.ApplicationDbContext --configuration Debug 20250121110353_Initial
+
