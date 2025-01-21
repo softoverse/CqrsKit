@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+using Softoverse.CqrsKit.WebApi.Models.CQRS.Custom;
+
 namespace Softoverse.CqrsKit.WebApi.Models.CQRS.MappingModels;
 
 public class CommandApprovalFlowConfiguration
@@ -10,9 +12,7 @@ public class CommandApprovalFlowConfiguration
     [Required]
     public long ApprovalFlowConfigurationId { get; set; }
 
-    public CommandApprovalFlowConfiguration? ApprovalFlowConfiguration { get; set; }
-    
-    public List<CommandApprovalFlowConfiguration> CommandApprovalFlowConfigurations { get; set; } = new();
+    public ApprovalFlowConfiguration? ApprovalFlowConfiguration { get; set; }
 
     [Required]
     public long CommandId { get; set; }

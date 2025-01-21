@@ -264,22 +264,15 @@ namespace Softoverse.CqrsKit.WebApi.DataAccess.Migrations
                     Id = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ApprovalFlowConfigurationId = table.Column<long>(type: "INTEGER", nullable: false),
-                    CommandId = table.Column<long>(type: "INTEGER", nullable: false),
-                    ApprovalFlowConfigurationId1 = table.Column<long>(type: "INTEGER", nullable: false)
+                    CommandId = table.Column<long>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CommandApprovalFlowConfigurations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CommandApprovalFlowConfigurations_ApprovalFlowConfigurations_ApprovalFlowConfigurationId1",
-                        column: x => x.ApprovalFlowConfigurationId1,
-                        principalTable: "ApprovalFlowConfigurations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CommandApprovalFlowConfigurations_CommandApprovalFlowConfigurations_ApprovalFlowConfigurationId",
+                        name: "FK_CommandApprovalFlowConfigurations_ApprovalFlowConfigurations_ApprovalFlowConfigurationId",
                         column: x => x.ApprovalFlowConfigurationId,
-                        principalTable: "CommandApprovalFlowConfigurations",
+                        principalTable: "ApprovalFlowConfigurations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -456,11 +449,6 @@ namespace Softoverse.CqrsKit.WebApi.DataAccess.Migrations
                 name: "IX_CommandApprovalFlowConfigurations_ApprovalFlowConfigurationId",
                 table: "CommandApprovalFlowConfigurations",
                 column: "ApprovalFlowConfigurationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CommandApprovalFlowConfigurations_ApprovalFlowConfigurationId1",
-                table: "CommandApprovalFlowConfigurations",
-                column: "ApprovalFlowConfigurationId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CommandApprovalFlowConfigurations_CommandId",

@@ -11,7 +11,7 @@ using Softoverse.CqrsKit.WebApi.DataAccess;
 namespace Softoverse.CqrsKit.WebApi.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250121110353_Initial")]
+    [Migration("20250121133817_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -470,17 +470,12 @@ namespace Softoverse.CqrsKit.WebApi.DataAccess.Migrations
                     b.Property<long>("ApprovalFlowConfigurationId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<long>("ApprovalFlowConfigurationId1")
-                        .HasColumnType("INTEGER");
-
                     b.Property<long>("CommandId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ApprovalFlowConfigurationId");
-
-                    b.HasIndex("ApprovalFlowConfigurationId1");
 
                     b.HasIndex("CommandId")
                         .IsUnique();
@@ -690,15 +685,9 @@ namespace Softoverse.CqrsKit.WebApi.DataAccess.Migrations
 
             modelBuilder.Entity("Softoverse.CqrsKit.WebApi.Models.CQRS.MappingModels.CommandApprovalFlowConfiguration", b =>
                 {
-                    b.HasOne("Softoverse.CqrsKit.WebApi.Models.CQRS.MappingModels.CommandApprovalFlowConfiguration", "ApprovalFlowConfiguration")
+                    b.HasOne("Softoverse.CqrsKit.WebApi.Models.CQRS.Custom.ApprovalFlowConfiguration", "ApprovalFlowConfiguration")
                         .WithMany("CommandApprovalFlowConfigurations")
                         .HasForeignKey("ApprovalFlowConfigurationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Softoverse.CqrsKit.WebApi.Models.CQRS.Custom.ApprovalFlowConfiguration", null)
-                        .WithMany("CommandApprovalFlowConfigurations")
-                        .HasForeignKey("ApprovalFlowConfigurationId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -762,11 +751,6 @@ namespace Softoverse.CqrsKit.WebApi.DataAccess.Migrations
                 {
                     b.Navigation("ApprovalFlowConfigurationSteps");
 
-                    b.Navigation("CommandApprovalFlowConfigurations");
-                });
-
-            modelBuilder.Entity("Softoverse.CqrsKit.WebApi.Models.CQRS.MappingModels.CommandApprovalFlowConfiguration", b =>
-                {
                     b.Navigation("CommandApprovalFlowConfigurations");
                 });
 
