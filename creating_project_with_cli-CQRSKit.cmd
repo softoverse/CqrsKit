@@ -27,14 +27,22 @@ dotnet new classlib --name CqrsKit
 dotnet new classlib --name CqrsKit.Abstraction
 dotnet new classlib --name CqrsKit.Model
 cd ..
-dotnet sln add src/CqrsKit/CqrsKit.csproj
-dotnet sln add src/CqrsKit.Abstraction/CqrsKit.Abstraction.csproj
-dotnet sln add src/CqrsKit.Model/CqrsKit.Model.csproj
+dotnet sln add src/Softoverse.CqrsKit/Softoverse.CqrsKit.csproj
+dotnet sln add src/Softoverse.CqrsKit.Abstraction/Softoverse.CqrsKit.Abstraction.csproj
+dotnet sln add src/Softoverse.CqrsKit.Model/Softoverse.CqrsKit.Model.csproj
 
 @REM tests projects
 cd tests
-dotnet new console --name CqrsKit.TestConsole
-dotnet new web --name CqrsKit.WebApi
+
+mkdir console
+cd console
+dotnet new console --name Softoverse.CqrsKit.TestConsole
 cd ..
-dotnet sln add tests/CqrsKit.TestConsole/CqrsKit.TestConsole.csproj
-dotnet sln add tests/CqrsKit.WebApi/CqrsKit.WebApi.csproj
+
+mkdir web
+cd web
+dotnet new web --name Softoverse.CqrsKit.WebApi
+cd ..
+
+dotnet sln add tests/console/Softoverse.CqrsKit.TestConsole/Softoverse.CqrsKit.TestConsole.csproj
+dotnet sln add tests/web/Softoverse.CqrsKit.WebApi/Softoverse.CqrsKit.WebApi.csproj

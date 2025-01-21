@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Softoverse.CqrsKit\Softoverse.CqrsKit.csproj" />
+    <ProjectReference Include="..\..\..\src\Softoverse.CqrsKit\Softoverse.CqrsKit.csproj" />
   </ItemGroup>
 
   <ItemGroup>

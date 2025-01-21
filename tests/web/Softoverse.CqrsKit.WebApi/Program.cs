@@ -1,5 +1,7 @@
 using FluentValidation;
 
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+
 using Softoverse.CqrsKit.Extensions;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Extensions;
@@ -18,6 +20,9 @@ public class Program
         {
             options.ModelValidatorProviders.Clear(); // Disable default asp.net core model state validation
         });
+
+        // builder.Services.AddControllers()
+        //        .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(ExternalController).Assembly));
 
         builder.AddSwaggerConfiguration()
                .AddDatabaseConfiguration()

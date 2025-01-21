@@ -11,12 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Softoverse.CqrsKit.Abstract
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Softoverse.CqrsKit.Model", "src\Softoverse.CqrsKit.Model\Softoverse.CqrsKit.Model.csproj", "{03AFF348-3973-4E34-8F2C-D8B751D3B6C6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{180E089A-BCBC-407F-8043-4453D54490F1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Softoverse.CqrsKit.TestConsole", "tests\Softoverse.CqrsKit.TestConsole\Softoverse.CqrsKit.TestConsole.csproj", "{E5AE552D-6A5C-44D2-AE8E-7B0BE731315B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Softoverse.CqrsKit.WebApi", "tests\Softoverse.CqrsKit.WebApi\Softoverse.CqrsKit.WebApi.csproj", "{3F5EEFE9-9613-4907-B0A3-5FDA05907DE1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E16DA8A1-981B-410B-96EC-504BBAED5821}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -24,6 +18,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{180E089A-BCBC-407F-8043-4453D54490F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "console", "console", "{0D39187F-AA66-491C-AF82-295D9AD4F790}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Softoverse.CqrsKit.TestConsole", "tests\console\Softoverse.CqrsKit.TestConsole\Softoverse.CqrsKit.TestConsole.csproj", "{5327FDCF-04DC-4469-AB14-49A0D8633F41}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{2E0BB830-6744-40C2-B69C-2A95FE060AE6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Softoverse.CqrsKit.WebApi", "tests\web\Softoverse.CqrsKit.WebApi\Softoverse.CqrsKit.WebApi.csproj", "{E18F74DE-AE2B-451D-8FF6-B93876D8AABB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +58,14 @@ Global
 		{3F5EEFE9-9613-4907-B0A3-5FDA05907DE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F5EEFE9-9613-4907-B0A3-5FDA05907DE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F5EEFE9-9613-4907-B0A3-5FDA05907DE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5327FDCF-04DC-4469-AB14-49A0D8633F41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5327FDCF-04DC-4469-AB14-49A0D8633F41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5327FDCF-04DC-4469-AB14-49A0D8633F41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5327FDCF-04DC-4469-AB14-49A0D8633F41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E18F74DE-AE2B-451D-8FF6-B93876D8AABB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E18F74DE-AE2B-451D-8FF6-B93876D8AABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E18F74DE-AE2B-451D-8FF6-B93876D8AABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E18F74DE-AE2B-451D-8FF6-B93876D8AABB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A123F358-AE35-4937-9B32-D134C8E83E4C} = {01BD9300-D7E9-4002-A03F-65C5D5A64C9F}
@@ -61,5 +73,9 @@ Global
 		{03AFF348-3973-4E34-8F2C-D8B751D3B6C6} = {01BD9300-D7E9-4002-A03F-65C5D5A64C9F}
 		{E5AE552D-6A5C-44D2-AE8E-7B0BE731315B} = {180E089A-BCBC-407F-8043-4453D54490F1}
 		{3F5EEFE9-9613-4907-B0A3-5FDA05907DE1} = {180E089A-BCBC-407F-8043-4453D54490F1}
+		{0D39187F-AA66-491C-AF82-295D9AD4F790} = {180E089A-BCBC-407F-8043-4453D54490F1}
+		{5327FDCF-04DC-4469-AB14-49A0D8633F41} = {0D39187F-AA66-491C-AF82-295D9AD4F790}
+		{2E0BB830-6744-40C2-B69C-2A95FE060AE6} = {180E089A-BCBC-407F-8043-4453D54490F1}
+		{E18F74DE-AE2B-451D-8FF6-B93876D8AABB} = {2E0BB830-6744-40C2-B69C-2A95FE060AE6}
 	EndGlobalSection
 EndGlobal
