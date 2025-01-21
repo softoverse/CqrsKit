@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\src\Softoverse.CqrsKit\Softoverse.CqrsKit.csproj"/>
         <ProjectReference Include="..\Softoverse.CqrsKit.WebApi.DataAccess\Softoverse.CqrsKit.WebApi.DataAccess.csproj"/>
     </ItemGroup>
 
