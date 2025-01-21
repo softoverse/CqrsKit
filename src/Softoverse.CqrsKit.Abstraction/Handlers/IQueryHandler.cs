@@ -5,7 +5,7 @@ using Softoverse.CqrsKit.Model.Utility;
 
 namespace Softoverse.CqrsKit.Abstraction.Handlers;
 
-public interface IQueryHandler<TQuery, TResponse> : IQueryHandlerMarker
+public interface IQueryHandler<in TQuery, TResponse> : IQueryHandlerMarker
     where TQuery : IQuery
 {
     Task<Result<TResponse>> OnStartAsync(CqrsContext context, CancellationToken ct = default);
