@@ -4,7 +4,7 @@ using Softoverse.CqrsKit.Model.Utility;
 
 namespace Softoverse.CqrsKit.Services;
 
-public class CqrsKitOptions: CqrsKitOption
+public class CqrsKitOptions : CqrsKitOption
 {
     private readonly List<Assembly> _assemblies = new();
 
@@ -20,8 +20,8 @@ public class CqrsKitOptions: CqrsKitOption
         return this;
     }
 
-    public List<Assembly> GetAssemblies()
+    public List<Assembly> Assemblies
     {
-        return _assemblies;
+        get => _assemblies;
     }
 }

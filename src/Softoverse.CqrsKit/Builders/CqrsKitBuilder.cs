@@ -19,11 +19,14 @@ public class CqrsKitBuilder
 
     public IServiceCollection Configure(Action<CqrsKitOptions> configureOptions)
     {
-        CqrsKitOptions options = new();
+        CqrsKitOptions options = new CqrsKitOptions();
         configureOptions(options);
-        
-        _services.BuildCqrsKit(options.GetAssemblies());
-        
+
+        if (!options.Assemblies.Any())
+            throw new ArgumentException("No assemblies found to scan. Supply at least one assembly to scan for handlers.");
+
+        _services.BuildCqrsKit(options.Assemblies);
+
         _services.Configure<CqrsKitOption>(option =>
         {
             option.EnableLogging = options.EnableLogging;

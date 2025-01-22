@@ -2,7 +2,6 @@
 using Softoverse.CqrsKit.Abstraction.Executors;
 using Softoverse.CqrsKit.Abstraction.Filters;
 using Softoverse.CqrsKit.Abstraction.Handlers;
-
 using Softoverse.CqrsKit.Extensions;
 using Softoverse.CqrsKit.Model.Abstraction;
 using Softoverse.CqrsKit.Model.Utility;
