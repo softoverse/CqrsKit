@@ -11,25 +11,22 @@ namespace Softoverse.CqrsKit.Builders;
 public class CqrsKitBuilder
 {
     private readonly IServiceCollection _services;
-    private readonly List<Assembly> _assemblies = new();
-    private readonly CqrsKitOptions _options = new();
 
-    public CqrsKitBuilder(IServiceCollection services)
+    internal CqrsKitBuilder(IServiceCollection services)
     {
         _services = services;
     }
 
-    public IServiceCollection Configure(Action<CqrsKitOptions> configureOptions, ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
+    public IServiceCollection Configure(Action<CqrsKitOptions> configureOptions)
     {
-        configureOptions(_options);
+        CqrsKitOptions options = new();
+        configureOptions(options);
         
-        _services.AddCqrsKit(_options.GetAssemblies())
-                 .Build();
+        _services.BuildCqrsKit(options.GetAssemblies());
         
-        // Simplified options configuration
         _services.Configure<CqrsKitOption>(option =>
         {
-            option.EnableLogging = _options.EnableLogging;
+            option.EnableLogging = options.EnableLogging;
         });
 
         return _services;

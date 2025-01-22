@@ -10,36 +10,20 @@ namespace Softoverse.CqrsKit.Extensions;
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddCqrsKit(this IServiceCollection services,
-                                                Action<CqrsKitOptions> options,
-                                                ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
+    public static IServiceCollection AddCqrsKit(this IServiceCollection services, Action<CqrsKitOptions> options)
     {
-        var builder = new CqrsKitBuilder(services);
-        return builder.Configure(options, serviceLifetime);
+        return new CqrsKitBuilder(services).Configure(options);
     }
 
-    public static IServiceCollection AddCqrsKit<TMarker>(this IServiceCollection services)
-    {
-        return services.AddCqrsKit(typeof(TMarker));
-    }
-
-    public static IServiceCollection AddCqrsKit(this IServiceCollection services, params List<Type> types)
-    {
-        return services.AddCqrsKit(types.Select(type => type.Assembly).ToList());
-    }
-    
-    public static IServiceCollection AddCqrsKit(this IServiceCollection services, params List<Assembly> assemblies)
+    internal static void BuildCqrsKit(this IServiceCollection services, List<Assembly> assemblies)
     {
         foreach (var assembly in assemblies)
         {
             CqrsHelper.AddAssembly(assembly);
         }
-        return services;
-    }
 
-    public static void Build(this IServiceCollection services)
-    {
         var types = CqrsHelper.ConsumerAssemblies.SelectMany(x => x.GetTypes()).ToList();
+
         services.AddApprovalFlowService(types)
                 .AddQueryHandlers(types)
                 .AddQueryExecutionFilter(types)

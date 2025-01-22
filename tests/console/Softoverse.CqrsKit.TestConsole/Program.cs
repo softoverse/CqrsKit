@@ -25,12 +25,11 @@ public class Program
 
         var serviceCollection = new ServiceCollection();
 
-        serviceCollection.AddCqrsKit<Program>()
-                         .Build();
-
-        // serviceCollection.AddCqrsKit(op => op.RegisterServicesFromAssemblyContaining<Program>());
-
-        var serviceProvider = serviceCollection.AddScoped<PersonOperation>()
+        var serviceProvider = serviceCollection.AddCqrsKit(op =>
+                                               {
+                                                   op.RegisterServicesFromAssemblyContaining<Program>();
+                                               })
+                                               .AddScoped<PersonOperation>()
                                                .BuildServiceProvider();
 
         bool isAccept = true;
