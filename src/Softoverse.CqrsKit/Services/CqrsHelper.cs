@@ -11,14 +11,14 @@ namespace Softoverse.CqrsKit.Services;
 
 public static class CqrsHelper
 {
-    internal static readonly List<Assembly> ApplicationAssemblies = [typeof(Type).Assembly, typeof(IBaseHandlerMarker).Assembly];
-    internal static readonly List<Assembly> AddedAssemblies = [];
-    internal static readonly ConcurrentDictionary<string, Type?> CachedTypes = new ConcurrentDictionary<string, Type?>();
+    private static readonly List<Assembly> ApplicationAssemblies = [typeof(Type).Assembly, typeof(IBaseHandlerMarker).Assembly];
+    internal static readonly List<Assembly> ConsumerAssemblies = [];
+    private static readonly ConcurrentDictionary<string, Type?> CachedTypes = new ConcurrentDictionary<string, Type?>();
 
     public static void AddAssembly(Assembly assembly)
     {
         ApplicationAssemblies.Add(assembly);
-        AddedAssemblies.Add(assembly);
+        ConsumerAssemblies.Add(assembly);
     }
 
     public static string GetFullTypeName(string nameSpace, string className)
@@ -64,7 +64,7 @@ public static class CqrsHelper
         List<BaseCommandQuery> commands =  new List<BaseCommandQuery>();
         List<BaseCommandQuery> queries =  new List<BaseCommandQuery>();
         
-        foreach (var assembly in AddedAssemblies)
+        foreach (var assembly in ConsumerAssemblies)
         {
             commands.AddRange(GetAllCommandTypes(assembly));
             queries.AddRange(GetAllQueryTypes(assembly));

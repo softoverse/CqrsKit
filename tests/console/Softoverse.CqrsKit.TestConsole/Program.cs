@@ -24,8 +24,13 @@ public class Program
         Console.WriteLine($"{Blue}Welcome to the CQRS Kit!{Normal}\n");
 
         var serviceCollection = new ServiceCollection();
-        var serviceProvider = serviceCollection.AddCqrsKit<Program>()
-                                               .AddScoped<PersonOperation>()
+
+        serviceCollection.AddCqrsKit<Program>()
+                         .Build();
+
+        // serviceCollection.AddCqrsKit(op => op.RegisterServicesFromAssemblyContaining<Program>());
+
+        var serviceProvider = serviceCollection.AddScoped<PersonOperation>()
                                                .BuildServiceProvider();
 
         bool isAccept = true;
@@ -64,7 +69,7 @@ public class Program
             "Female" => "Sadiya Islam",
             _ => newPerson.Name
         };
-        
+
         newPerson.Age = newPerson.Gender switch
         {
             "Male" => 27,
@@ -91,7 +96,7 @@ public class Program
         });
 
         await personOperation.DeletePerson(new PersonDeleteCommand(newPerson.Id));
-        
+
         await personOperation.GetPerson(new PersonGetAllQuery
         {
             Name = newPerson.Gender switch

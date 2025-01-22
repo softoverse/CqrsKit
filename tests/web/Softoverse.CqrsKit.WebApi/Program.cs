@@ -33,13 +33,37 @@ public class Program
                .AddValidatorsFromAssemblyContaining<IWebApiDataAccessMarker>(ServiceLifetime.Singleton)
                .AddValidatorsFromAssemblyContaining<IWebApiModelsMarker>(ServiceLifetime.Singleton)
                .AddValidatorsFromAssemblyContaining<IWebApiModuleMarker>(ServiceLifetime.Singleton);
-        
-        builder.Services
-               .AddCqrsKit<IWebApiMarker>()
-               .AddCqrsKit<IWebApiDataAccessMarker>()
-               .AddCqrsKit<IWebApiModelsMarker>()
-               .AddCqrsKit<IWebApiModuleMarker>()
-               .Build();
+
+        // builder.Services
+        //        .AddCqrsKit(typeof(IWebApiMarker),
+        //                    typeof(IWebApiDataAccessMarker),
+        //                    typeof(IWebApiModelsMarker),
+        //                    typeof(IWebApiModuleMarker))
+        //        .Build();
+
+        // builder.Services
+        //        .AddCqrsKit(typeof(IWebApiMarker))
+        //        .AddCqrsKit(typeof(IWebApiDataAccessMarker))
+        //        .AddCqrsKit(typeof(IWebApiModelsMarker))
+        //        .AddCqrsKit(typeof(IWebApiModuleMarker))
+        //        .Build();
+
+        // builder.Services
+        //        .AddCqrsKit<IWebApiMarker>()
+        //        .AddCqrsKit<IWebApiDataAccessMarker>()
+        //        .AddCqrsKit<IWebApiModelsMarker>()
+        //        .AddCqrsKit<IWebApiModuleMarker>()
+        //        .Build();
+
+        builder.Services.AddCqrsKit(op =>
+        {
+            op.EnableLogging = true;
+
+            op.RegisterServicesFromAssemblyContaining<IWebApiMarker>();
+            op.RegisterServicesFromAssemblyContaining<IWebApiDataAccessMarker>();
+            op.RegisterServicesFromAssemblyContaining<IWebApiModelsMarker>();
+            op.RegisterServicesFromAssemblyContaining<IWebApiModuleMarker>();
+        });
 
         var app = builder.Build();
 
