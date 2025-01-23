@@ -12,12 +12,12 @@ public class Result : ResultBase
 
     private Result() : this(false, "", new Dictionary<string, object>(), new Dictionary<string, string[]>()) { }
 
-    internal Result(bool isSuccessful = true, string? message = "", IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
+    internal Result(bool isSuccessful = true, string? message = null, IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
     {
         Message = message;
         IsSuccessful = isSuccessful;
-        AdditionalProperties = additionalProperties ?? new Dictionary<string, object>();
-        Errors = errors ?? new Dictionary<string, string[]>();
+        AdditionalProperties = additionalProperties;
+        Errors = errors;
     }
 
     public Result WithMessage(string message)
@@ -118,7 +118,7 @@ public class Result : ResultBase
                .WithErrorMessage(errorMessage!);
     }
 
-    private static Result Create(bool isSuccessful, string? message, IDictionary<string, object>? additionalProperties, IDictionary<string, string[]>? errors)
+    private static Result Create(bool isSuccessful, string? message, IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
     {
         return new Result(isSuccessful, message, additionalProperties, errors);
     }

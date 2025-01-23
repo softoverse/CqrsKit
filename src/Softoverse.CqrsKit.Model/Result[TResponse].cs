@@ -13,14 +13,14 @@ public class Result<TResponse> : Result
 
     private Result() : this(default!, false, "", new Dictionary<string, object>(), new Dictionary<string, string[]>()) { }
 
-    private Result(TResponse payload = default!, bool isSuccessful = true, string? message = "", IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
+    private Result(TResponse payload = default!, bool isSuccessful = true, string? message = null, IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
     {
         Payload = payload;
 
         Message = message;
         IsSuccessful = isSuccessful;
-        AdditionalProperties = additionalProperties ?? new Dictionary<string, object>();
-        Errors = errors ?? new Dictionary<string, string[]>();
+        AdditionalProperties = additionalProperties;
+        Errors = errors;
     }
 
     public Result<TResponse> WithPayload(TResponse payload)
@@ -127,7 +127,7 @@ public class Result<TResponse> : Result
                .WithErrorMessage(errorMessage!);
     }
 
-    private static Result<TResponse> Create(bool isSuccessful, string? message, TResponse payload, IDictionary<string, object>? additionalProperties, IDictionary<string, string[]>? errors)
+    private static Result<TResponse> Create(bool isSuccessful, string? message, TResponse payload, IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
     {
         return new Result<TResponse>(payload, isSuccessful, message, additionalProperties, errors);
     }
