@@ -25,8 +25,12 @@ public class StudentGetAllQueryHandler(ApplicationDbContext dbContext) : QueryHa
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
         var query = context.RequestAs<StudentGetAllQuery>();
 
-        var students = await dbContext.Students.Where(x => (!string.IsNullOrEmpty(x.Name) && x.Name == query.Name) || (x.Age != null && x.Age == query.Age))
-                                      .ToListAsync(ct);
+        var students = await dbContext.Students.Where(x => (!string.IsNullOrEmpty(x.Name) && x.Name == query.Name) 
+                                                           ||
+                                                           (x.Age != null && x.Age == query.Age)
+                                                           ||
+                                                           (!string.IsNullOrEmpty(x.Gender) && x.Gender == query.Gender))
+                                                .ToListAsync(ct);
 
         return Result<List<Student>>.Success()
                                     .WithPayload(students)
