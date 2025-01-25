@@ -10,13 +10,9 @@ public class ResultBase
 
 public static class ResponseDefaults
 {
-    #region Static Methods
-
     public static Task<T> DefaultValueResponse<T>(T value) => Task.FromResult(value);
 
     public static Task<Result> DefaultResponse() => Task.FromResult(Result.Success());
 
     public static Task<Result<TResponse>> DefaultResponse<TResponse>() => Task.FromResult(Result<TResponse>.Success());
-
-    #endregion Static Methods
 }

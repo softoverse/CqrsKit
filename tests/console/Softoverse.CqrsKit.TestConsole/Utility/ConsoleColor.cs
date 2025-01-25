@@ -2,8 +2,6 @@
 
 public static class ConsoleColor
 {
-    #region Console work color Sample
-
     public static readonly string NewLine = Environment.NewLine; // shortcut
     public static readonly string Normal = Console.IsOutputRedirected ? "" : "\x1b[39m";
     public static readonly string Red = Console.IsOutputRedirected ? "" : "\x1b[91m";
@@ -20,6 +18,4 @@ public static class ConsoleColor
     public static readonly string Reverse = Console.IsOutputRedirected ? "" : "\x1b[7m";
     public static readonly string Noreverse = Console.IsOutputRedirected ? "" : "\x1b[27m";
     //errorLogMessageBuilder.AppendLine($"{RED}Url:{NORMAL} {currentUrl}");
-
-    #endregion Console work color Sample
 }

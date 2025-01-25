@@ -14,8 +14,6 @@ namespace Softoverse.CqrsKit.Extensions;
 
 public static class CommandQueryExtension
 {
-    #region Query Handlers
-
     internal static IServiceCollection AddQueryHandlers(this IServiceCollection services, IList<Type> types)
     {
         foreach (var implementationType in types.GetQueryHandlerTypes())
@@ -33,10 +31,6 @@ public static class CommandQueryExtension
         return services;
     }
 
-    #endregion Query Handlers
-
-    #region Command Handlers
-
     internal static IServiceCollection AddCommandHandlers(this IServiceCollection services, IList<Type> types)
     {
         foreach (var implementationType in types.GetCommandHandlerTypes())
@@ -53,10 +47,6 @@ public static class CommandQueryExtension
 
         return services;
     }
-
-    #endregion Command Handlers
-
-    #region Approval Flow Handlers
 
     internal static IServiceCollection AddApprovalFlowHandlers(this IServiceCollection services, IList<Type> types)
     {
@@ -77,10 +67,6 @@ public static class CommandQueryExtension
 
         return services;
     }
-
-    #endregion Approval Flow Handlers
-
-    #region CQRS Configuration
 
     internal static IServiceCollection AddQueryExecutionFilter(this IServiceCollection services, IList<Type> types)
     {
@@ -260,8 +246,6 @@ public static class CommandQueryExtension
 
         return services;
     }
-
-    #endregion CQRS Configuration
 
     private static IEnumerable<Type> GetQueryHandlerTypes(this IList<Type> types)
     {
