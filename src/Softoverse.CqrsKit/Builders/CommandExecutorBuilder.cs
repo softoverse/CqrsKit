@@ -21,9 +21,9 @@ internal sealed class CommandExecutorBuilder<TCommand, TResponse> : CommandExecu
     private ICommandHandler<TCommand, TResponse>? _commandHandler;
     private IApprovalFlowHandler<TCommand, TResponse>? _approvalFlowHandler;
 
-    private CommandExecutorBuilder() { }
+    private CommandExecutorBuilder(): base() { }
 
-    private CommandExecutorBuilder(IServiceProvider serviceProvider) : base(serviceProvider) { }
+    private CommandExecutorBuilder(IServiceProvider services) : base(services) { }
 
     public static ICommandExecutorBuilder<TCommand, TResponse> Initialize(IServiceProvider services) => new CommandExecutorBuilder<TCommand, TResponse>(services);
 

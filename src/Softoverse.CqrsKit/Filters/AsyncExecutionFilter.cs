@@ -2,20 +2,8 @@
 using Softoverse.CqrsKit.Model.Abstraction;
 using Softoverse.CqrsKit.Model.Utility;
 
-namespace Softoverse.CqrsKit.Filters
-{
-    public class AsyncExecutionFilter<TRequest, TResponse>(IAsyncExecutionFilter asyncExecutionFilter) : IAsyncExecutionFilter<TRequest, TResponse>
-        where TRequest : IRequest
-    {
+namespace Softoverse.CqrsKit.Filters;
 
-        public Task OnActionExecutingAsync(CqrsContext context, CancellationToken ct = default)
-        {
-            return asyncExecutionFilter.OnActionExecutingAsync(context, ct);
-        }
-
-        public Task OnActionExecutedAsync(CqrsContext context, CancellationToken ct = default)
-        {
-            return asyncExecutionFilter.OnActionExecutedAsync(context, ct);
-        }
-    }
-}
+public class AsyncExecutionFilter<TRequest, TResponse>(IAsyncExecutionFilter asyncExecutionFilter) :
+    AsyncExecutionFilterBase<TRequest, TResponse>(asyncExecutionFilter)
+    where TRequest : IRequest;

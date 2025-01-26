@@ -14,3 +14,20 @@ public interface IAsyncExecutionFilter<TRequest, TResponse> : IAsyncExecutionFil
     where TRequest : IRequest
 {
 }
+
+public abstract class AsyncExecutionFilterBase<TRequest, TResponse>(IAsyncExecutionFilter asyncExecutionFilter) :
+    IAsyncExecutionFilter<TRequest, TResponse>
+    where TRequest : IRequest
+{
+    internal readonly IAsyncExecutionFilter AsyncExecutionFilter = asyncExecutionFilter;
+
+    public virtual Task OnActionExecutingAsync(CqrsContext context, CancellationToken ct = default)
+    {
+        return AsyncExecutionFilter.OnActionExecutingAsync(context, ct);
+    }
+
+    public virtual Task OnActionExecutedAsync(CqrsContext context, CancellationToken ct = default)
+    {
+        return AsyncExecutionFilter.OnActionExecutedAsync(context, ct);
+    }
+}

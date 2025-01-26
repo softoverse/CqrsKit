@@ -22,13 +22,14 @@ internal sealed class QueryExecutorBuilder<TQuery, TResponse> : IQueryExecutorBu
     private TQuery _query;
     private IQueryHandler<TQuery, TResponse>? _queryHandler;
 
-    private readonly CqrsContext _context = CqrsContext.New();
+    private readonly CqrsContext _context;
 
     private QueryExecutorBuilder() { }
 
     private QueryExecutorBuilder(IServiceProvider serviceProvider)
     {
         _services = serviceProvider;
+        _context = CqrsContext.New(_services);
     }
 
     public static IQueryExecutorBuilder<TQuery, TResponse> Initialize(IServiceProvider services) => new QueryExecutorBuilder<TQuery, TResponse>(services);

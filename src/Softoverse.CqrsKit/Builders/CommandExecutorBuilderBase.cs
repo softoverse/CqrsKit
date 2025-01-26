@@ -1,3 +1,7 @@
+using System.ComponentModel.Design;
+
+using Microsoft.Extensions.DependencyInjection;
+
 using Softoverse.CqrsKit.Abstraction.Builders;
 using Softoverse.CqrsKit.Model.Abstraction;
 using Softoverse.CqrsKit.Model.Utility;
@@ -11,16 +15,18 @@ internal abstract class CommandExecutorBuilderBase<TCommand> : ICommandExecutorD
     protected TCommand _command;
     protected bool _isApprovalFlowEnabled = false;
 
-    protected readonly CqrsContext _context = CqrsContext.New();
+    protected readonly CqrsContext _context;
 
     protected CommandExecutorBuilderBase()
     {
+        _context = CqrsContext.New();
         _context.IsApprovalFlowEnabled = _isApprovalFlowEnabled;
     }
 
-    protected CommandExecutorBuilderBase(IServiceProvider serviceProvider)
+    protected CommandExecutorBuilderBase(IServiceProvider services)
     {
-        _services = serviceProvider;
+        _services = services;
+        _context = CqrsContext.New(_services);
         _context.IsApprovalFlowEnabled = _isApprovalFlowEnabled;
     }
 

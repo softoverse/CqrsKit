@@ -19,9 +19,9 @@ internal sealed class CommandExecutorDynamicBuilder : ICommandExecutorBuilder
     {
     }
 
-    private CommandExecutorDynamicBuilder(IServiceProvider serviceProvider)
+    private CommandExecutorDynamicBuilder(IServiceProvider services)
     {
-        _services = serviceProvider;
+        _services = services;
     }
 
     public static ICommandExecutorBuilder Initialize(IServiceProvider services)

@@ -18,7 +18,7 @@ internal sealed class ApprovalFlowExecutorBuilder<T> : IApprovalFlowExecutorBuil
 
     private string _approvalFlowPendingTaskId;
 
-    private readonly CqrsContext _context = new CqrsContext();
+    private readonly CqrsContext _context;
 
     private ApprovalFlowExecutorBuilder()
     {
@@ -27,6 +27,7 @@ internal sealed class ApprovalFlowExecutorBuilder<T> : IApprovalFlowExecutorBuil
     private ApprovalFlowExecutorBuilder(IServiceProvider services)
     {
         _services = services;
+        _context = CqrsContext.New(_services);
     }
 
     public static IApprovalFlowExecutorBuilder<T> Initialize(IServiceProvider services)

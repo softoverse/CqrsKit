@@ -11,9 +11,20 @@ public class CqrsContext
     
     public string ApprovalFlowPendingTaskId { get; set; }
 
+    public IServiceProvider RequestServices { get; set; }
+
     public CurrentState State { get; set; } = CurrentState.None;
 
     private IDictionary<object, object?> _items = new ConcurrentDictionary<object, object?>();
+
+    private CqrsContext()
+    {
+    }
+
+    private CqrsContext(IServiceProvider services)
+    {
+        RequestServices = services;
+    }
 
     public IDictionary<object, object?> Items
     {
@@ -67,5 +78,6 @@ public class CqrsContext
         return (Result<T>)result!;
     }
 
+    public static CqrsContext New(IServiceProvider services) => new CqrsContext(services);
     public static CqrsContext New() => new CqrsContext();
 }
