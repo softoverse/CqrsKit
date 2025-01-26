@@ -74,7 +74,7 @@ internal sealed class CommandExecutorBuilder<TCommand, TResponse> : CommandExecu
     private ICommandExecutor<TCommand, TResponse> BuildBase()
     {
         var executionFilter = _services.GetRequiredService<IExecutionFilter<TCommand, TResponse>>();
-        var asyncExecutionFilter = _services.GetRequiredService<IAsyncExecutionFilter<TCommand, TResponse>>();
+        var asyncExecutionFilter = _services.GetService<IAsyncExecutionFilter<TCommand, TResponse>>();
         var approvalFlowExecutionFilter = _services.GetRequiredService<IApprovalFlowExecutionFilter<TCommand, TResponse>>();
         var approvalFlowService = _services.GetRequiredService<IApprovalFlowService>();
 

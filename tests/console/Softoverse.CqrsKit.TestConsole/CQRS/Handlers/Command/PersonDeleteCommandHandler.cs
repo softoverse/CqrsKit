@@ -2,12 +2,14 @@
 using Softoverse.CqrsKit.Attributes;
 using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.Model.Utility;
+using Softoverse.CqrsKit.TestConsole.CQRS.Attributes;
 using Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
 using Softoverse.CqrsKit.TestConsole.Models;
 
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Handlers.Command;
 
 [ScopedLifetime]
+[CommandAuthorize]
 public class PersonDeleteCommandHandler : CommandHandler<PersonDeleteCommand, Guid>
 {
     private readonly List<Person> _studentStore = Program.PersonStore;

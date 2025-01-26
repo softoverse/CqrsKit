@@ -3,12 +3,14 @@ using Softoverse.CqrsKit.Attributes;
 using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.Model.Extensions;
 using Softoverse.CqrsKit.Model.Utility;
+using Softoverse.CqrsKit.TestConsole.CQRS.Attributes;
 using Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
 using Softoverse.CqrsKit.TestConsole.Models;
 
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Handlers.Command;
 
 [ScopedLifetime]
+[CommandAuthorize]
 public class PersonCreateCommandHandler : CommandHandler<PersonCreateCommand, Person>
 {
     private readonly List<Person> _studentStore = Program.PersonStore;

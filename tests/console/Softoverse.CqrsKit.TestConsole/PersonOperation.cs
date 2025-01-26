@@ -16,6 +16,7 @@ namespace Softoverse.CqrsKit.TestConsole;
 
 public class PersonOperation(IServiceProvider services)
 {
+    private readonly List<Person> _studentStore = Program.PersonStore;
     public async Task GetPerson(PersonGetAllQuery request, CancellationToken ct = default)
     {
         StartBlock();
