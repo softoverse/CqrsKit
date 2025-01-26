@@ -13,18 +13,18 @@ public class PersonDeleteCommandApprovalFlowExecutionFilter : ApprovalFlowExecut
     public override Task<Result<Guid>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)} - (Custom)");
-        return ResponseDefaults.DefaultResponse<Guid>();
+        return ResultDefaults.DefaultResult<Guid>();
     }
 
     public override Task<Result<Guid>> ExecuteAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.ExecuteAsync)} - (Custom)");
-        return ResponseDefaults.DefaultResponse<Guid>();
+        return ResultDefaults.DefaultResult<Guid>();
     }
 
     public override Task<Result<Guid>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutedAsync)} - (Custom)");
-        return ResponseDefaults.DefaultResponse<Guid>();
+        return ResultDefaults.DefaultResult<Guid>();
     }
 }

@@ -14,12 +14,12 @@ public class QueryExecutionFilter<TQuery, TResponse> : QueryExecutionFilterBase<
     public override Task<Result<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)}");
-        return ResponseDefaults.DefaultResponse<TResponse>();
+        return ResultDefaults.DefaultResult<TResponse>();
     }
 
     public override Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)}");
-        return ResponseDefaults.DefaultResponse<TResponse>();
+        return ResultDefaults.DefaultResult<TResponse>();
     }
 }

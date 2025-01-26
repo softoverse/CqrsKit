@@ -9,6 +9,7 @@ using Softoverse.CqrsKit.Model.Abstraction;
 using Softoverse.CqrsKit.Model.Utility;
 
 using Softoverse.CqrsKit.Builders;
+using Softoverse.CqrsKit.Filters.Attributes;
 
 namespace Softoverse.CqrsKit.Executors;
 
@@ -19,6 +20,7 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
     public required IServiceProvider Services { get; init; }
 
     public required IExecutionFilter<TCommand, TResponse> ExecutionFilter { get; init; }
+    public required IAsyncExecutionFilter<TCommand, TResponse>? AsyncExecutionFilter { get; init; }
     public required IApprovalFlowExecutionFilter<TCommand, TResponse> ApprovalFlowExecutionFilter { get; init; }
 
     public required IApprovalFlowService ApprovalFlowService { get; init; }
@@ -48,16 +50,20 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
         {
             isApprovalFlowRequired = await ApprovalFlowService.IsApprovalFlowRequiredAsync(Context, typeof(TCommand), ct: ct);
         }
+        
+        var isAsyncExecutionFilterAvailable = AsyncExecutionFilter != null;
 
         HandlerStep<TResponse>[] steps =
         [
             HandlerStep<TResponse>.New(() => ExecutionFilter.OnExecutingAsync(Context, ct), StepBehavior.MustCall),
+            HandlerStep<TResponse>.New(() => ExecuteAsyncExecutionFilterActionAsync(() => AsyncExecutionFilter?.OnActionExecutingAsync(Context, ct)!), isAsyncExecutionFilterAvailable ? StepBehavior.MustCall : StepBehavior.Skip),
             HandlerStep<TResponse>.New(() => ExecuteApprovalFlowAsync(ct), isApprovalFlowRequired ? StepBehavior.FinalOutput : StepBehavior.Skip),
             HandlerStep<TResponse>.New(() => CommandHandler.ValidateAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
             HandlerStep<TResponse>.New(() => CommandHandler.OnStartAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
             HandlerStep<TResponse>.New(() => CommandHandler.HandleAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.FinalOutput),
             HandlerStep<TResponse>.New(() => CommandHandler.OnEndAsync(Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
-            HandlerStep<TResponse>.New(() => ExecutionFilter.OnExecutedAsync(Context, ct), StepBehavior.MustCall),
+            HandlerStep<TResponse>.New(() => ExecuteAsyncExecutionFilterActionAsync(() => AsyncExecutionFilter?.OnActionExecutedAsync(Context, ct)!), isAsyncExecutionFilterAvailable ? StepBehavior.MustCall : StepBehavior.Skip),
+            HandlerStep<TResponse>.New(() => ExecutionFilter.OnExecutedAsync(Context, ct), StepBehavior.MustCall)
         ];
 
         return await ExecuteStepsAsync(steps);
@@ -70,11 +76,11 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
         [
             HandlerStep<TResponse>.New(() => CommandHandler.ValidateAsync(Context, ct)),
             HandlerStep<TResponse>.New(() => IsApprovalFlowPendingTaskUniqueAsync(ct)),
-            HandlerStep<TResponse>.New(() => isApprovalFlowSkipped ? ResponseDefaults.DefaultResponse<TResponse>() : ApprovalFlowHandler!.OnStartAsync(Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory),
+            HandlerStep<TResponse>.New(() => isApprovalFlowSkipped ? ResultDefaults.DefaultResult<TResponse>() : ApprovalFlowHandler!.OnStartAsync(Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory),
             HandlerStep<TResponse>.New(() => ApprovalFlowExecutionFilter.OnExecutingAsync(Context, ct)),
             HandlerStep<TResponse>.New(() => ApprovalFlowExecutionFilter.ExecuteAsync(Context, ct), StepBehavior.FinalOutput),
             HandlerStep<TResponse>.New(() => ApprovalFlowExecutionFilter.OnExecutedAsync(Context, ct)),
-            HandlerStep<TResponse>.New(() => isApprovalFlowSkipped ? ResponseDefaults.DefaultResponse<TResponse>() : ApprovalFlowHandler!.OnEndAsync(Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory)
+            HandlerStep<TResponse>.New(() => isApprovalFlowSkipped ? ResultDefaults.DefaultResult<TResponse>() : ApprovalFlowHandler!.OnEndAsync(Context, ct), isApprovalFlowSkipped ? StepBehavior.Skip : StepBehavior.Mandatory)
         ];
 
         return await ExecuteStepsAsync(steps);
@@ -104,7 +110,7 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
 
         return ApprovalFlowHandler is not null
             ? await ApprovalFlowHandler.AfterAcceptAsync(Context, ct)
-            : await ResponseDefaults.DefaultResponse();
+            : await ResultDefaults.DefaultResult();
     }
 
     public async Task<object> AfterRejectAsync(CancellationToken ct)
@@ -113,7 +119,18 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
 
         return ApprovalFlowHandler is not null
             ? await ApprovalFlowHandler.AfterRejectAsync(Context, ct)
-            : await ResponseDefaults.DefaultResponse();
+            : await ResultDefaults.DefaultResult();
+    }
+    
+    private async Task<Result<TResponse>> ExecuteAsyncExecutionFilterActionAsync(Func<Task>? action)
+    {
+        if (action == null)
+        {
+            return await ResultDefaults.DefaultResult<TResponse>();
+        }
+
+        await action();
+        return Context.ResultAs<TResponse>();
     }
 
     private async Task<Result<TResponse>> ExecuteStepsAsync(HandlerStep<TResponse>[] steps)
@@ -122,7 +139,7 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
         Context.SetApprovalFlowPendingTaskContextData(typeof(TCommand), typeof(ICommandHandler<TCommand, TResponse>), typeof(TResponse), typeof(IApprovalFlowHandler<TCommand, TResponse>));
 
         var response = await SequentialStepExecutor.ExecuteStepsAsync(steps, Context);
-        Context.Response = response;
+        Context.Result = response;
         return response ?? Result<TResponse>.Error()
                                               .WithMessage("An error occurred.");
     }

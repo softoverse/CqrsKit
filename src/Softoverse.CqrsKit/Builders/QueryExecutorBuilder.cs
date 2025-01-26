@@ -1,4 +1,6 @@
-﻿using Softoverse.CqrsKit.Abstraction.Builders;
+﻿using System.Diagnostics;
+
+using Softoverse.CqrsKit.Abstraction.Builders;
 using Softoverse.CqrsKit.Abstraction.Executors;
 using Softoverse.CqrsKit.Abstraction.Filters;
 using Softoverse.CqrsKit.Abstraction.Handlers;
@@ -9,6 +11,7 @@ using Softoverse.CqrsKit.Model.Utility;
 using Microsoft.Extensions.DependencyInjection;
 
 using Softoverse.CqrsKit.Executors;
+using Softoverse.CqrsKit.Filters.Attributes;
 
 namespace Softoverse.CqrsKit.Builders;
 
@@ -70,6 +73,7 @@ internal sealed class QueryExecutorBuilder<TQuery, TResponse> : IQueryExecutorBu
     public IQueryExecutor<TQuery, TResponse> Build()
     {
         var executionFilter = _services.GetRequiredService<IExecutionFilter<TQuery, TResponse>>();
+        var asyncExecutionFilter = _services.GetService<IAsyncExecutionFilter<TQuery, TResponse>>();
 
         if (_queryHandler == null) WithDefaultHandler();
 
@@ -79,6 +83,7 @@ internal sealed class QueryExecutorBuilder<TQuery, TResponse> : IQueryExecutorBu
             Query = _query,
             QueryHandler = _queryHandler!,
             ExecutionFilter = executionFilter,
+            AsyncExecutionFilter = asyncExecutionFilter, 
             Context = _context,
         };
     }

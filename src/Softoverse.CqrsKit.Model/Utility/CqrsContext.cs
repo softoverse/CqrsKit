@@ -7,7 +7,7 @@ namespace Softoverse.CqrsKit.Model.Utility;
 public class CqrsContext
 {
     public IRequest Request { get; set; }
-    public object? Response { get; set; }
+    public object? Result { get; set; }
     
     public string ApprovalFlowPendingTaskId { get; set; }
 
@@ -61,9 +61,10 @@ public class CqrsContext
         return (T)Request!;
     }
     
-    public T ResponseAs<T>()
+    public Result<T> ResultAs<T>()
     {
-        return (T)Response!;
+        object? result = Result;
+        return (Result<T>)result!;
     }
 
     public static CqrsContext New() => new CqrsContext();

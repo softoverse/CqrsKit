@@ -26,8 +26,10 @@ public static class ServiceCollectionExtension
 
         services.AddApprovalFlowService(types)
                 .AddQueryHandlers(types)
+                .AddQueryAsyncExecutionFilter(types)
                 .AddQueryExecutionFilter(types)
                 .AddCommandHandlers(types)
+                .AddCommandAsyncExecutionFilter(types)
                 .AddCommandExecutionFilter(types)
                 .AddApprovalFlowExecutionFilter(types)
                 .AddApprovalFlowHandlers(types)

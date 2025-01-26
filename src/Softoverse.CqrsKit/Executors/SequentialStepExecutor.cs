@@ -17,7 +17,7 @@ internal static class SequentialStepExecutor
             if (step.Behavior == StepBehavior.Skip || step.IsTraversed) continue;
 
             var result = await step.Delegate();
-            context.Response = result;
+            context.Result = result;
 
             if (result.IsSuccessful)
             {
@@ -82,7 +82,7 @@ internal static class SequentialStepExecutor
             if (step.Behavior == StepBehavior.Skip || step.IsTraversed) continue;
 
             var result = await stepDelegate(step);
-            context.Response = result;
+            context.Result = result;
 
             if (result.IsSuccessful)
             {

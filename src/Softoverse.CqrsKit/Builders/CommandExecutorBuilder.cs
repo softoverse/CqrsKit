@@ -10,6 +10,7 @@ using Softoverse.CqrsKit.Model.Abstraction;
 using Microsoft.Extensions.DependencyInjection;
 
 using Softoverse.CqrsKit.Executors;
+using Softoverse.CqrsKit.Filters.Attributes;
 
 namespace Softoverse.CqrsKit.Builders;
 
@@ -73,6 +74,7 @@ internal sealed class CommandExecutorBuilder<TCommand, TResponse> : CommandExecu
     private ICommandExecutor<TCommand, TResponse> BuildBase()
     {
         var executionFilter = _services.GetRequiredService<IExecutionFilter<TCommand, TResponse>>();
+        var asyncExecutionFilter = _services.GetRequiredService<IAsyncExecutionFilter<TCommand, TResponse>>();
         var approvalFlowExecutionFilter = _services.GetRequiredService<IApprovalFlowExecutionFilter<TCommand, TResponse>>();
         var approvalFlowService = _services.GetRequiredService<IApprovalFlowService>();
 
@@ -86,6 +88,7 @@ internal sealed class CommandExecutorBuilder<TCommand, TResponse> : CommandExecu
             CommandHandler = _commandHandler!,
             IsApprovalFlowEnabled = _isApprovalFlowEnabled,
             ExecutionFilter = executionFilter,
+            AsyncExecutionFilter = asyncExecutionFilter,
             ApprovalFlowExecutionFilter = approvalFlowExecutionFilter,
             ApprovalFlowService = approvalFlowService,
             ApprovalFlowHandler = _approvalFlowHandler,

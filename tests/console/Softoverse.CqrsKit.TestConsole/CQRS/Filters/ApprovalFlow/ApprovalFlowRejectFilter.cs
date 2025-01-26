@@ -12,12 +12,12 @@ public class ApprovalFlowRejectFilter : ApprovalFlowRejectFilterBase
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnExecutingAsync)}");
 
-        return ResponseDefaults.DefaultResponse();
+        return ResultDefaults.DefaultResult();
     }
 
     public override Task<Result> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnExecutedAsync)}");
-        return ResponseDefaults.DefaultResponse();
+        return ResultDefaults.DefaultResult();
     }
 }

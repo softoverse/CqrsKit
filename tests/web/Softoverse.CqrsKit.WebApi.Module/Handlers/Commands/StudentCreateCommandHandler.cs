@@ -7,11 +7,13 @@ using Softoverse.CqrsKit.Model.Extensions;
 using Softoverse.CqrsKit.Model.Utility;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Models;
+using Softoverse.CqrsKit.WebApi.Module.Attributes;
 using Softoverse.CqrsKit.WebApi.Module.Event.Commands;
 
 namespace Softoverse.CqrsKit.WebApi.Module.Handlers.Commands;
 
 [ScopedLifetime]
+[CommandAuthorize]
 public class StudentCreateCommandHandler(ApplicationDbContext dbContext, IValidator<Student> validator) : CommandHandler<StudentCreateCommand, Student>
 {
     public override async Task<Result<Student>> ValidateAsync(CqrsContext context, CancellationToken ct = default)

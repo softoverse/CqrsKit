@@ -6,11 +6,13 @@ using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.Model.Utility;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Models;
+using Softoverse.CqrsKit.WebApi.Module.Attributes;
 using Softoverse.CqrsKit.WebApi.Module.Event.Queries;
 
 namespace Softoverse.CqrsKit.WebApi.Module.Handlers.Queries;
 
 [ScopedLifetime]
+[QueryAuthorize]
 public class StudentGetAllQueryHandler(ApplicationDbContext dbContext) : QueryHandler<StudentGetAllQuery, List<Student>>
 {
     public override async Task<Result<List<Student>>> OnStartAsync(CqrsContext context, CancellationToken ct = default)

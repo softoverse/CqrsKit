@@ -18,9 +18,9 @@ public interface IQueryHandler<in TQuery, TResponse> : IQueryHandlerMarker
 public abstract class QueryHandler<TQuery, TResponse> : IQueryHandler<TQuery, TResponse>
     where TQuery : IQuery
 {
-    public virtual Task<Result<TResponse>> OnStartAsync(CqrsContext context, CancellationToken ct = default) => ResponseDefaults.DefaultResponse<TResponse>();
+    public virtual Task<Result<TResponse>> OnStartAsync(CqrsContext context, CancellationToken ct = default) => ResultDefaults.DefaultResult<TResponse>();
 
     public abstract Task<Result<TResponse>> HandleAsync(CqrsContext context, CancellationToken ct = default);
 
-    public virtual Task<Result<TResponse>> OnEndAsync(CqrsContext context, CancellationToken ct = default) => ResponseDefaults.DefaultResponse<TResponse>();
+    public virtual Task<Result<TResponse>> OnEndAsync(CqrsContext context, CancellationToken ct = default) => ResultDefaults.DefaultResult<TResponse>();
 }

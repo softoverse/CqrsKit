@@ -5,8 +5,8 @@ using Softoverse.CqrsKit.Extensions;
 using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.Model.Abstraction;
 using Softoverse.CqrsKit.Model.Utility;
-
 using Softoverse.CqrsKit.Builders;
+using Softoverse.CqrsKit.Filters.Attributes;
 
 namespace Softoverse.CqrsKit.Executors;
 
@@ -15,6 +15,7 @@ public sealed class QueryExecutor<TQuery, TResponse> : IQueryExecutor<TQuery, TR
 {
     public required IServiceProvider Services { get; init; }
     public required IExecutionFilter<TQuery, TResponse> ExecutionFilter { get; init; }
+    public required IAsyncExecutionFilter<TQuery, TResponse>? AsyncExecutionFilter { get; init; }
 
     public required IQueryHandler<TQuery, TResponse> QueryHandler { get; init; }
 
@@ -32,26 +33,41 @@ public sealed class QueryExecutor<TQuery, TResponse> : IQueryExecutor<TQuery, TR
 
     public async Task<Result<TResponse>> ExecuteAsync(CancellationToken ct = default)
     {
+        var isAsyncExecutionFilterAvailable = AsyncExecutionFilter != null;
+
         HandlerStep<TResponse>[] steps =
         [
             HandlerStep<TResponse>.New(() => ExecutionFilter.OnExecutingAsync(Context, ct), StepBehavior.MustCall),
+            HandlerStep<TResponse>.New(() => ExecuteAsyncExecutionFilterActionAsync(() => AsyncExecutionFilter?.OnActionExecutingAsync(Context, ct)!), isAsyncExecutionFilterAvailable ? StepBehavior.MustCall : StepBehavior.Skip),
             HandlerStep<TResponse>.New(() => QueryHandler.OnStartAsync(Context, ct)),
             HandlerStep<TResponse>.New(() => QueryHandler.HandleAsync(Context, ct), StepBehavior.FinalOutput),
             HandlerStep<TResponse>.New(() => QueryHandler.OnEndAsync(Context, ct)),
+            HandlerStep<TResponse>.New(() => ExecuteAsyncExecutionFilterActionAsync(() => AsyncExecutionFilter?.OnActionExecutedAsync(Context, ct)!), isAsyncExecutionFilterAvailable ? StepBehavior.MustCall : StepBehavior.Skip),
             HandlerStep<TResponse>.New(() => ExecutionFilter.OnExecutedAsync(Context, ct), StepBehavior.MustCall)
         ];
 
         return await ExecuteStepsAsync(steps);
     }
 
+    private async Task<Result<TResponse>> ExecuteAsyncExecutionFilterActionAsync(Func<Task>? action)
+    {
+        if (action == null)
+        {
+            return await ResultDefaults.DefaultResult<TResponse>();
+        }
+
+        await action();
+        return Context.ResultAs<TResponse>();
+    }
+
     private async Task<Result<TResponse>> ExecuteStepsAsync(HandlerStep<TResponse>[] steps)
     {
         Context.Request = Query;
         Context.SetApprovalFlowPendingTaskContextData(typeof(TQuery), typeof(IQueryHandler<TQuery, TResponse>), typeof(TResponse), null);
-        
+
         var response = await SequentialStepExecutor.ExecuteStepsAsync(steps, Context);
-        Context.Response = response;
+        Context.Result = response;
         return response ?? Result<TResponse>.Error()
-                                              .WithMessage("An error occurred.");
+                                            .WithMessage("An error occurred.");
     }
 }

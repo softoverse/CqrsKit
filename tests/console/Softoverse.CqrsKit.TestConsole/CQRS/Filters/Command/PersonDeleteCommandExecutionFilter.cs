@@ -13,13 +13,13 @@ namespace Softoverse.CqrsKit.TestConsole.CQRS.Filters.Command
         public override Task<Result<Guid>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
         {
             Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)} - (Custom)");
-            return ResponseDefaults.DefaultResponse<Guid>();
+            return ResultDefaults.DefaultResult<Guid>();
         }
 
         public override Task<Result<Guid>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
         {
             Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutedAsync)} - (Custom)");
-            return ResponseDefaults.DefaultResponse<Guid>();
+            return ResultDefaults.DefaultResult<Guid>();
         }
     }
 }

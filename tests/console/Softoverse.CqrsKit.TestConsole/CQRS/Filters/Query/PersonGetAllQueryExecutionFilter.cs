@@ -14,12 +14,12 @@ public class PersonGetAllQueryExecutionFilter : QueryExecutionFilterBase<PersonG
     public override Task<Result<List<Person>>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)} - (Custom)");
-        return ResponseDefaults.DefaultResponse<List<Person>>();
+        return ResultDefaults.DefaultResult<List<Person>>();
     }
 
     public override Task<Result<List<Person>>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)} - (Custom)");
-        return ResponseDefaults.DefaultResponse<List<Person>>();
+        return ResultDefaults.DefaultResult<List<Person>>();
     }
 }

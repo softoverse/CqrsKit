@@ -8,11 +8,11 @@ public class ResultBase
     public IDictionary<string, string[]>? Errors { get; set; }
 }
 
-public static class ResponseDefaults
+public static class ResultDefaults
 {
-    public static Task<T> DefaultValueResponse<T>(T value) => Task.FromResult(value);
+    public static Task<T> DefaultValueResult<T>(T value) => Task.FromResult(value);
 
-    public static Task<Result> DefaultResponse() => Task.FromResult(Result.Success());
+    public static Task<Result> DefaultResult() => Task.FromResult(Result.Success());
 
-    public static Task<Result<TResponse>> DefaultResponse<TResponse>() => Task.FromResult(Result<TResponse>.Success());
+    public static Task<Result<TResponse>> DefaultResult<TResponse>() => Task.FromResult(Result<TResponse>.Success());
 }

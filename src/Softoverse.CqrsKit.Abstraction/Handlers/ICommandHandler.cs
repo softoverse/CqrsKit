@@ -20,11 +20,11 @@ public interface ICommandHandler<in TCommand, TResponse> : ICommandHandlerMarker
 public abstract class CommandHandler<TCommand, TResponse> : ICommandHandler<TCommand, TResponse>
     where TCommand : ICommand
 {
-    public virtual Task<Result<TResponse>> ValidateAsync(CqrsContext context, CancellationToken ct = default) => ResponseDefaults.DefaultResponse<TResponse>();
+    public virtual Task<Result<TResponse>> ValidateAsync(CqrsContext context, CancellationToken ct = default) => ResultDefaults.DefaultResult<TResponse>();
 
-    public virtual Task<Result<TResponse>> OnStartAsync(CqrsContext context, CancellationToken ct = default) => ResponseDefaults.DefaultResponse<TResponse>();
+    public virtual Task<Result<TResponse>> OnStartAsync(CqrsContext context, CancellationToken ct = default) => ResultDefaults.DefaultResult<TResponse>();
 
     public abstract Task<Result<TResponse>> HandleAsync(CqrsContext context, CancellationToken ct = default);
 
-    public virtual Task<Result<TResponse>> OnEndAsync(CqrsContext context, CancellationToken ct = default) => ResponseDefaults.DefaultResponse<TResponse>();
+    public virtual Task<Result<TResponse>> OnEndAsync(CqrsContext context, CancellationToken ct = default) => ResultDefaults.DefaultResult<TResponse>();
 }

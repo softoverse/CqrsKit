@@ -20,11 +20,11 @@ public interface IApprovalFlowHandler<in TCommand, TResponse> : IApprovalFlowHan
 public abstract class ApprovalFlowHandler<TCommand, TResponse> : IApprovalFlowHandler<TCommand, TResponse>
     where TCommand : ICommand
 {
-    public  virtual Task<Result<TResponse>> OnStartAsync(CqrsContext context, CancellationToken ct = default) => ResponseDefaults.DefaultResponse<TResponse>();
+    public  virtual Task<Result<TResponse>> OnStartAsync(CqrsContext context, CancellationToken ct = default) => ResultDefaults.DefaultResult<TResponse>();
 
-    public  virtual Task<Result<TResponse>> OnEndAsync(CqrsContext context, CancellationToken ct = default) => ResponseDefaults.DefaultResponse<TResponse>();
+    public  virtual Task<Result<TResponse>> OnEndAsync(CqrsContext context, CancellationToken ct = default) => ResultDefaults.DefaultResult<TResponse>();
 
-    public  virtual Task<Result<TResponse>> AfterAcceptAsync(CqrsContext context, CancellationToken ct = default) => ResponseDefaults.DefaultResponse<TResponse>();
+    public  virtual Task<Result<TResponse>> AfterAcceptAsync(CqrsContext context, CancellationToken ct = default) => ResultDefaults.DefaultResult<TResponse>();
 
-    public  virtual Task<Result<TResponse>> AfterRejectAsync(CqrsContext context, CancellationToken ct = default) => ResponseDefaults.DefaultResponse<TResponse>();
+    public  virtual Task<Result<TResponse>> AfterRejectAsync(CqrsContext context, CancellationToken ct = default) => ResultDefaults.DefaultResult<TResponse>();
 }
