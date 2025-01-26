@@ -7,7 +7,6 @@ namespace Softoverse.CqrsKit.Filters.Attributes;
 public abstract class ExecutionFilterAttribute : Attribute,
                                                  IAsyncExecutionFilter
 {
-
     public virtual Task OnActionExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
         return Task.CompletedTask;
@@ -16,13 +15,5 @@ public abstract class ExecutionFilterAttribute : Attribute,
     public virtual Task OnActionExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
         return Task.CompletedTask;
-    }
-
-    internal IAsyncExecutionFilter AsyncExecutionFilter
-    {
-        get
-        {
-            return (IAsyncExecutionFilter)this;
-        }
     }
 }

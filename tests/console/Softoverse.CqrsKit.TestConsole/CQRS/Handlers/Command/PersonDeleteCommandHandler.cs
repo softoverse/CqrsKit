@@ -9,7 +9,7 @@ using Softoverse.CqrsKit.TestConsole.Models;
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Handlers.Command;
 
 [ScopedLifetime]
-[CommandAuthorize]
+[CommandValidate]
 public class PersonDeleteCommandHandler : CommandHandler<PersonDeleteCommand, Guid>
 {
     private readonly List<Person> _studentStore = Program.PersonStore;
