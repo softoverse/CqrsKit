@@ -12,8 +12,6 @@ public class ApprovalFlowService : ApprovalFlowServiceBase
 {
     // public override Task<bool> IsApprovalFlowRequiredAsync(CqrsContext context, Type commandType, Type? responseType = null, CancellationToken ct = default)
     // {
-    //     Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.IsApprovalFlowRequiredAsync)}");
-    //
     //     // List<string> requiredCommands = [nameof (StudentDeleteCommand)];
     //     //
     //     // var isApprovalFlowRequired = Program.IsApprovalFlowEnabled && requiredCommands.Contains(commandType.Name);
@@ -24,8 +22,6 @@ public class ApprovalFlowService : ApprovalFlowServiceBase
     //
     // public override Task<bool> IsApprovalFlowPendingTaskUniqueAsync<TCommand>(TCommand command, CqrsContext context, CancellationToken ct = default)
     // {
-    //     Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.IsApprovalFlowPendingTaskUniqueAsync)}<{typeof(TCommand).Name}>");
-    //
     //     var uniqueCommand = command as IUniqueCommand;
     //
     //     string? uniqueIdentification = uniqueCommand?.GetUniqueIdentification();
@@ -36,7 +32,6 @@ public class ApprovalFlowService : ApprovalFlowServiceBase
     //
     // public override Task<T?> GetApprovalFlowTaskAsync<T>(string approvalFlowId, CqrsContext context, CancellationToken ct = default)
     // {
-    //     Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.GetApprovalFlowTaskAsync)}");
     //
     //     Type studentDeleteCommandType = typeof(StudentDeleteCommand);
     //     Type studentDeleteCommandHandlerType = typeof(ICommandHandler<StudentDeleteCommand, Guid>);

@@ -17,14 +17,12 @@ public class StudentGetAllQueryHandler(ApplicationDbContext dbContext) : QueryHa
 {
     public override async Task<Result<List<Student>>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
         return await Task.FromResult(Result<List<Student>>.Success()
                                                           .WithMessage("Before execution Student"));
     }
 
     public override async Task<Result<List<Student>>> HandleAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
         var query = context.RequestAs<StudentGetAllQuery>();
 
         var students = await dbContext.Students.Where(x => (!string.IsNullOrEmpty(x.Name) && x.Name == query.Name)
@@ -43,7 +41,6 @@ public class StudentGetAllQueryHandler(ApplicationDbContext dbContext) : QueryHa
 
     public override async Task<Result<List<Student>>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
         return await Task.FromResult(Result<List<Student>>.Success()
                                                           .WithMessage("After execution Student"));
     }
