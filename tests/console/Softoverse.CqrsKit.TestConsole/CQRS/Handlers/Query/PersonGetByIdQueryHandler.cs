@@ -17,7 +17,7 @@ public class PersonGetByIdQueryHandler : QueryHandler<PersonGetByIdQuery, Person
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
         var query = context.RequestAs<PersonGetByIdQuery>();
         return await Task.FromResult(Result<Person>.Success()
-                                                      .WithMessage("Before execution Person"));
+                                                   .WithMessage("Before execution Person"));
     }
 
     public override async Task<Result<Person>> HandleAsync(CqrsContext context, CancellationToken ct = default)
@@ -26,10 +26,10 @@ public class PersonGetByIdQueryHandler : QueryHandler<PersonGetByIdQuery, Person
         var query = context.RequestAs<PersonGetByIdQuery>();
         var student = _studentStore.FirstOrDefault(x => x.Id == query.Id);
 
-        return await Task.FromResult(Result<Person>.Create(student != null)
-                                                      .WithPayload(student!)
-                                                      .WithSuccessMessage("Found Person data")
-                                                      .WithErrorMessage("No data found"));
+        return await Task.FromResult(Result<Person>.Create(x => x.Payload != null)
+                                                   .WithPayload(student!)
+                                                   .WithSuccessMessage("Found Person data")
+                                                   .WithErrorMessage("No data found"));
     }
 
     public override async Task<Result<Person>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
@@ -37,6 +37,6 @@ public class PersonGetByIdQueryHandler : QueryHandler<PersonGetByIdQuery, Person
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
         var query = context.RequestAs<PersonGetByIdQuery>();
         return await Task.FromResult(Result<Person>.Success()
-                                                      .WithMessage("After execution Person"));
+                                                   .WithMessage("After execution Person"));
     }
 }
