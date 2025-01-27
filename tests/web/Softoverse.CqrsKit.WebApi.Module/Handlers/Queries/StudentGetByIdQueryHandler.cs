@@ -27,9 +27,11 @@ public class StudentGetByIdQueryHandler(ApplicationDbContext dbContext) : QueryH
         var query = context.RequestAs<StudentGetByIdQuery>();
         var student = await dbContext.Students.FirstOrDefaultAsync(x => x.Id == query.Id, ct);
 
+
+
         return Result<Student>.Success()
                               .WithPayload(student!)
-                              .WithMessageLogic(student != null)
+                              .WithMessageLogic(x => x.Payload != null)
                               .WithSuccessMessage("Found Student data")
                               .WithErrorMessage("No data found");
     }

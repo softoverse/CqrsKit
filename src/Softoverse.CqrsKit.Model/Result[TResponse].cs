@@ -8,8 +8,9 @@ public class Result<TResponse> : Result
     private bool _isSuccessMessage;
     private string _errorMessage;
     private string _successMessage;
+    private Func<Result<TResponse>, bool> _isSuccessful;
 
-    public TResponse Payload { get; set; }
+    public TResponse? Payload { get; set; }
 
     private Result() : this(default!, false, "", new Dictionary<string, object>(), new Dictionary<string, string[]>()) { }
 
@@ -23,15 +24,20 @@ public class Result<TResponse> : Result
         Errors = errors;
     }
 
+    private Result(Func<Result<TResponse>, bool> isSuccessful, TResponse payload = default!, string? message = null, IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
+    {
+        Payload = payload;
+
+        _isSuccessful = isSuccessful;
+        IsSuccessful = isSuccessful(this);
+        Message = message;
+        AdditionalProperties = additionalProperties;
+        Errors = errors;
+    }
+
     public Result<TResponse> WithPayload(TResponse payload)
     {
         this.Payload = payload;
-        return this;
-    }
-
-    public new Result<TResponse> WithMessage(string message)
-    {
-        this.Message = message;
         return this;
     }
 
@@ -86,22 +92,42 @@ public class Result<TResponse> : Result
         return this;
     }
 
-    public new Result<TResponse> WithMessageLogic(bool logic)
+    public new Result<TResponse> WithMessage(string message)
     {
-        _isSuccessMessage = logic;
-        return WithMessage(_isSuccessMessage ? _successMessage : _errorMessage);;
+        this.Message = message;
+        return this;
+    }
+
+    public new Result<TResponse> WithMessage(Func<Result<TResponse>, bool> isSuccessful)
+    {
+        _isSuccessful = isSuccessful;
+
+        if (_isSuccessful != null!)
+        {
+            _isSuccessMessage = _isSuccessful(this);
+            IsSuccessful = _isSuccessful(this);
+        }
+
+        this.Message = _isSuccessMessage ? _successMessage : _errorMessage;
+        return this;
+    }
+
+    public new Result<TResponse> WithMessageLogic(Func<Result<TResponse>, bool> isSuccessful)
+    {
+        _isSuccessful = isSuccessful;
+        return WithMessage(_isSuccessful);
     }
 
     public new Result<TResponse> WithSuccessMessage(string message)
     {
         _successMessage = message;
-        return WithMessage(_isSuccessMessage ? _successMessage : _errorMessage);
+        return WithMessage(_isSuccessful);
     }
 
     public new Result<TResponse> WithErrorMessage(string message)
     {
         _errorMessage = message;
-        return WithMessage(_isSuccessMessage ? _successMessage : _errorMessage);
+        return WithMessage(_isSuccessful);
     }
 
     public new static Result<TResponse> Success()
@@ -127,8 +153,20 @@ public class Result<TResponse> : Result
                .WithErrorMessage(errorMessage!);
     }
 
+    public new static Result<TResponse> Create(Func<Result<TResponse>, bool> isSuccessful, string? successMessage = null, string? errorMessage = null)
+    {
+        return Create(isSuccessful, null, default!, null, null)
+               .WithSuccessMessage(successMessage!)
+               .WithErrorMessage(errorMessage!);
+    }
+
     private static Result<TResponse> Create(bool isSuccessful, string? message, TResponse payload, IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
     {
         return new Result<TResponse>(payload, isSuccessful, message, additionalProperties, errors);
+    }
+
+    private static Result<TResponse> Create(Func<Result<TResponse>, bool> isSuccessful, string? message, TResponse payload, IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
+    {
+        return new Result<TResponse>(isSuccessful, payload, message, additionalProperties, errors);
     }
 }
