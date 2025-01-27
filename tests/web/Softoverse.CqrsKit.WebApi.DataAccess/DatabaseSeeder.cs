@@ -51,7 +51,7 @@ public static class DatabaseSeeder
         }
         catch (Exception ex)
         {
-            var logger = loggerFactory.CreateLogger<IWebApiDataAccessMarker>();
+            var logger = loggerFactory.CreateLogger<IWebApiDataAccessAssemblyMarker>();
             logger.LogError(ex, "An error occurred seeding the DB.");
         }
     }

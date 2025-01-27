@@ -1,3 +1,3 @@
 ﻿namespace Softoverse.CqrsKit.WebApi.Models;
 
-public class IWebApiModelsMarker;
+public interface IWebApiModelsAssemblyMarker;

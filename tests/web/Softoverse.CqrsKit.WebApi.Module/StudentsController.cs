@@ -13,7 +13,6 @@ public class StudentsController(IServiceProvider services) : ControllerBase
 {
     // GET: api/Students
     [HttpGet]
-    [CustomAuthorize]
     public async Task<IActionResult> Get([FromQuery] StudentGetAllQuery query, CancellationToken ct = default)
     {
         var studentGetAllQuery = QueryBuilder.Initialize<StudentGetAllQuery, List<Student>>(services)

@@ -27,19 +27,19 @@ public class Program
 
         // FluentValidation validators need to be registered as singleton
         builder.Services
-               .AddValidatorsFromAssemblyContaining<IWebApiMarker>(ServiceLifetime.Singleton)
-               .AddValidatorsFromAssemblyContaining<IWebApiDataAccessMarker>(ServiceLifetime.Singleton)
-               .AddValidatorsFromAssemblyContaining<IWebApiModelsMarker>(ServiceLifetime.Singleton)
-               .AddValidatorsFromAssemblyContaining<IWebApiModuleMarker>(ServiceLifetime.Singleton);
+               .AddValidatorsFromAssemblyContaining<IWebApiAssemblyMarker>(ServiceLifetime.Singleton)
+               .AddValidatorsFromAssemblyContaining<IWebApiDataAccessAssemblyMarker>(ServiceLifetime.Singleton)
+               .AddValidatorsFromAssemblyContaining<IWebApiModelsAssemblyMarker>(ServiceLifetime.Singleton)
+               .AddValidatorsFromAssemblyContaining<IWebApiModuleAssemblyMarker>(ServiceLifetime.Singleton);
 
         builder.Services.AddCqrsKit(op =>
         {
             op.EnableLogging = true;
 
-            op.RegisterServicesFromAssemblyContaining<IWebApiMarker>()
-              .RegisterServicesFromAssemblyContaining<IWebApiDataAccessMarker>()
-              .RegisterServicesFromAssemblyContaining<IWebApiModelsMarker>()
-              .RegisterServicesFromAssemblyContaining<IWebApiModuleMarker>();
+            op.RegisterServicesFromAssemblyContaining<IWebApiAssemblyMarker>()
+              .RegisterServicesFromAssemblyContaining<IWebApiDataAccessAssemblyMarker>()
+              .RegisterServicesFromAssemblyContaining<IWebApiModelsAssemblyMarker>()
+              .RegisterServicesFromAssemblyContaining<IWebApiModuleAssemblyMarker>();
         });
 
         var app = builder.Build();
