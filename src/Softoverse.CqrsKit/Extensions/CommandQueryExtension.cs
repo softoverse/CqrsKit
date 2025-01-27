@@ -38,15 +38,11 @@ public static class CommandQueryExtension
 
         foreach (var queryHandlerType in queryHandlerTypes)
         {
-            IEnumerable<ExecutionFilterAttribute> executionFilterAttributes = queryHandlerType.GetCustomAttributes<ExecutionFilterAttribute>();
+            List<ExecutionFilterAttribute> executionFilterAttributes = queryHandlerType.GetCustomAttributes<ExecutionFilterAttribute>().ToList();
 
-            IEnumerable<ExecutionFilterAttribute> filterAttributes = executionFilterAttributes.ToList();
-            if (!filterAttributes.Any())
-            {
-                continue;
-            }
+            if (executionFilterAttributes.Count == 0) continue;
 
-            foreach (var attribute in filterAttributes)
+            foreach (var attribute in executionFilterAttributes)
             {
                 services.AddScoped(attribute.GetType(), _ => attribute);
             }
@@ -64,7 +60,7 @@ public static class CommandQueryExtension
             // Cache the factory delegate for the AsyncExecutionFilter implementation
             Func<List<IAsyncExecutionFilter>, object> factory = CreateFactory(asyncExecutionFilterImplType, typeof(List<IAsyncExecutionFilter>));
 
-            var executionFilterAttributeTypes = filterAttributes.Select(attribute => attribute.GetType());
+            var executionFilterAttributeTypes = executionFilterAttributes.Select(attribute => attribute.GetType());
 
             services.AddScoped(typedAsyncExecutionFilterType, provider =>
             {
@@ -143,15 +139,11 @@ public static class CommandQueryExtension
 
         foreach (var commandHandlerType in commandHandlerTypes)
         {
-            IEnumerable<ExecutionFilterAttribute> executionFilterAttributes = commandHandlerType.GetCustomAttributes<ExecutionFilterAttribute>();
+            List<ExecutionFilterAttribute> executionFilterAttributes = commandHandlerType.GetCustomAttributes<ExecutionFilterAttribute>().ToList();
 
-            IEnumerable<ExecutionFilterAttribute> filterAttributes = executionFilterAttributes.ToList();
-            if (!filterAttributes.Any())
-            {
-                continue;
-            }
+            if (executionFilterAttributes.Count == 0) continue;
 
-            foreach (var attribute in filterAttributes)
+            foreach (var attribute in executionFilterAttributes)
             {
                 services.AddScoped(attribute.GetType(), _ => attribute);
             }
@@ -169,7 +161,7 @@ public static class CommandQueryExtension
             // Cache the factory delegate for the AsyncExecutionFilter implementation
             Func<List<IAsyncExecutionFilter>, object> factory = CreateFactory(asyncExecutionFilterImplType, typeof(List<IAsyncExecutionFilter>));
 
-            var executionFilterAttributeTypes = filterAttributes.Select(attribute => attribute.GetType());
+            var executionFilterAttributeTypes = executionFilterAttributes.Select(attribute => attribute.GetType());
 
             services.AddScoped(typedAsyncExecutionFilterType, provider =>
             {
@@ -240,11 +232,6 @@ public static class CommandQueryExtension
     internal static IServiceCollection AddApprovalFlowService(this IServiceCollection services, IList<Type> types)
     {
         var implementationType = types.GetApprovalFlowServiceTypes() ?? typeof(ApprovalFlowServiceBase);
-
-        if (implementationType is null)
-        {
-            throw new NotImplementedException($"The class '{nameof (ApprovalFlowServiceBase)}' is not implemented.");
-        }
 
         Type? interfaceType = implementationType.GetInterfaces().FirstOrDefault(type => typeof(IApprovalFlowService).IsAssignableFrom(type));
 
@@ -332,7 +319,7 @@ public static class CommandQueryExtension
         var constructor = targetType.GetConstructor([parameterType]) ?? throw new InvalidOperationException($"No suitable constructor found for type {targetType.Name}.");
 
         // Compile a factory delegate for the constructor
-        var parameter = Expression.Parameter(parameterType, "asyncExecutionFilter");
+        var parameter = Expression.Parameter(parameterType, "asyncExecutionFilters");
         var newExpression = Expression.New(constructor, parameter);
         var lambda = Expression.Lambda<Func<List<IAsyncExecutionFilter>, object>>(newExpression, parameter);
         return lambda.Compile();
