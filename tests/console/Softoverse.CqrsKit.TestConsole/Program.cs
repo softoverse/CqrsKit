@@ -3,7 +3,6 @@
 using Softoverse.CqrsKit.Extensions;
 using Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
 using Softoverse.CqrsKit.TestConsole.CQRS.Events.Query;
-using Softoverse.CqrsKit.TestConsole.Models;
 
 using Microsoft.Extensions.DependencyInjection;
 
