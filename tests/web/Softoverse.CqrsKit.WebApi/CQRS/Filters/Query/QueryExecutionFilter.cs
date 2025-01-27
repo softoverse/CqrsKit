@@ -3,7 +3,6 @@ using Softoverse.CqrsKit.Attributes;
 using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.Model.Abstraction;
 using Softoverse.CqrsKit.Model.Utility;
-using Softoverse.CqrsKit.Services;
 
 namespace Softoverse.CqrsKit.WebApi.CQRS.Filters.Query;
 

@@ -18,29 +18,13 @@ public class StudentsController(IServiceProvider services, ApplicationDbContext 
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] StudentGetAllQuery query, bool useCqrs = false, CancellationToken ct = default)
     {
-        if (useCqrs)
-        {
-            var studentGetAllQuery = QueryBuilder.Initialize<StudentGetAllQuery, List<Student>>(services)
-                                                 .WithQuery(query)
-                                                 .Build();
+        var studentGetAllQuery = QueryBuilder.Initialize<StudentGetAllQuery, List<Student>>(services)
+                                             .WithQuery(query)
+                                             .Build();
 
-            var result = await studentGetAllQuery.ExecuteAsync(ct);
+        var result = await studentGetAllQuery.ExecuteAsync(ct);
 
-            return Ok(result);
-        }
-
-        var students = await dbContext.Students.Where(x => (!string.IsNullOrEmpty(x.Name) && x.Name == query.Name)
-                                                         ||
-                                                           (x.Age != null && x.Age == query.Age)
-                                                         ||
-                                                           (!string.IsNullOrEmpty(x.Gender) && x.Gender == query.Gender))
-                                      .ToListAsync(ct);
-
-        return Ok(Result<List<Student>>.Success()
-                                       .WithPayload(students)
-                                       .WithMessageLogic(x => x.Payload?.Count > 0)
-                                       .WithSuccessMessage("Found Student data")
-                                       .WithErrorMessage("No data found"));
+        return Ok(result);
     }
 
     // GET api/Students/5
