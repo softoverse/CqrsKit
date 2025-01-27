@@ -14,7 +14,7 @@ public class StudentsController(IServiceProvider services, ApplicationDbContext 
 {
     // GET: api/Students
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] StudentGetAllQuery query, bool useCqrs = false, CancellationToken ct = default)
+    public async Task<IActionResult> Get([FromQuery] StudentGetAllQuery query, CancellationToken ct = default)
     {
         var studentGetAllQuery = QueryBuilder.Initialize<StudentGetAllQuery, List<Student>>(services)
                                              .WithQuery(query)
