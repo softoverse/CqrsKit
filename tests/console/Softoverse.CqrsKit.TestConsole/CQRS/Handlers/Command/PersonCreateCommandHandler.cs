@@ -11,6 +11,7 @@ namespace Softoverse.CqrsKit.TestConsole.CQRS.Handlers.Command;
 
 [ScopedLifetime]
 [CommandAuthorize]
+[CommandValidate]
 public class PersonCreateCommandHandler : CommandHandler<PersonCreateCommand, Person>
 {
     private readonly List<Person> _studentStore = Program.PersonStore;

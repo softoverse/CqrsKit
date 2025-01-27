@@ -15,19 +15,26 @@ public interface IAsyncExecutionFilter<TRequest, TResponse> : IAsyncExecutionFil
 {
 }
 
-public abstract class AsyncExecutionFilterBase<TRequest, TResponse>(IAsyncExecutionFilter asyncExecutionFilter) :
+public abstract class AsyncExecutionFilterBase<TRequest, TResponse>(List<IAsyncExecutionFilter> asyncExecutionFilters) :
     IAsyncExecutionFilter<TRequest, TResponse>
     where TRequest : IRequest
 {
-    internal readonly IAsyncExecutionFilter AsyncExecutionFilter = asyncExecutionFilter;
+    internal readonly List<IAsyncExecutionFilter> AsyncExecutionFilters = asyncExecutionFilters;
 
-    public virtual Task OnActionExecutingAsync(CqrsContext context, CancellationToken ct = default)
+    public virtual async Task OnActionExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
-        return AsyncExecutionFilter.OnActionExecutingAsync(context, ct);
+        foreach (var asyncExecutionFilter in AsyncExecutionFilters)
+        {
+            await asyncExecutionFilter.OnActionExecutingAsync(context, ct);
+        }
     }
 
-    public virtual Task OnActionExecutedAsync(CqrsContext context, CancellationToken ct = default)
+    public virtual async Task OnActionExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
-        return AsyncExecutionFilter.OnActionExecutedAsync(context, ct);
+        AsyncExecutionFilters.Reverse();
+        foreach (var asyncExecutionFilter in AsyncExecutionFilters)
+        {
+            await asyncExecutionFilter.OnActionExecutedAsync(context, ct);
+        }
     }
 }

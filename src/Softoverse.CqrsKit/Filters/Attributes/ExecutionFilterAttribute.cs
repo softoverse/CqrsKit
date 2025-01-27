@@ -3,7 +3,7 @@ using Softoverse.CqrsKit.Model.Utility;
 
 namespace Softoverse.CqrsKit.Filters.Attributes;
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public abstract class ExecutionFilterAttribute : Attribute,
                                                  IAsyncExecutionFilter
 {

@@ -4,6 +4,6 @@ using Softoverse.CqrsKit.Model.Utility;
 
 namespace Softoverse.CqrsKit.Filters;
 
-public class AsyncExecutionFilter<TRequest, TResponse>(IAsyncExecutionFilter asyncExecutionFilter) :
-    AsyncExecutionFilterBase<TRequest, TResponse>(asyncExecutionFilter)
+public class AsyncExecutionFilter<TRequest, TResponse>(List<IAsyncExecutionFilter> asyncExecutionFilters) :
+    AsyncExecutionFilterBase<TRequest, TResponse>(asyncExecutionFilters)
     where TRequest : IRequest;

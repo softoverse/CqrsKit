@@ -38,32 +38,40 @@ public static class CommandQueryExtension
 
         foreach (var queryHandlerType in queryHandlerTypes)
         {
-            var executionFilterAttribute = queryHandlerType.GetCustomAttribute<ExecutionFilterAttribute>();
+            IEnumerable<ExecutionFilterAttribute> executionFilterAttributes = queryHandlerType.GetCustomAttributes<ExecutionFilterAttribute>();
 
-            if (executionFilterAttribute is null)
+            IEnumerable<ExecutionFilterAttribute> filterAttributes = executionFilterAttributes.ToList();
+            if (!filterAttributes.Any())
             {
                 continue;
             }
 
-            services.AddScoped(executionFilterAttribute.GetType());
+            foreach (var attribute in filterAttributes)
+            {
+                services.AddScoped(attribute.GetType(), _ => attribute);
+            }
 
             // Get IQueryHandler<,> generic arguments
-            var genericArguments = queryHandlerType
-                                   .GetInterface(typeof(IQueryHandler<,>).Name)?
-                                   .GetGenericArguments() ?? Array.Empty<Type>();
+            var genericArguments = queryHandlerType.GetInterface(typeof(IQueryHandler<,>).Name)
+                                                   ?.GetGenericArguments() ?? [];
+
+            if (genericArguments.Length == 0)
+                throw new InvalidOperationException($"Handler type {queryHandlerType.Name} does not implement IQueryHandler<,>.");
 
             var typedAsyncExecutionFilterType = typeof(IAsyncExecutionFilter<,>).MakeGenericType(genericArguments);
             var asyncExecutionFilterImplType = typeof(AsyncExecutionFilter<,>).MakeGenericType(genericArguments);
 
             // Cache the factory delegate for the AsyncExecutionFilter implementation
-            Func<IAsyncExecutionFilter, object> factory = CreateFactory(asyncExecutionFilterImplType, typeof(IAsyncExecutionFilter));
+            Func<List<IAsyncExecutionFilter>, object> factory = CreateFactory(asyncExecutionFilterImplType, typeof(List<IAsyncExecutionFilter>));
 
-            var executionFilterAttributeType = executionFilterAttribute.GetType();
+            var executionFilterAttributeTypes = filterAttributes.Select(attribute => attribute.GetType());
 
             services.AddScoped(typedAsyncExecutionFilterType, provider =>
             {
-                var asyncFilter = provider.GetService(executionFilterAttributeType) as IAsyncExecutionFilter;
-                return factory(asyncFilter!) ?? throw new InvalidOperationException("Failed to create async execution filter instance.");
+                var asyncFilters = executionFilterAttributeTypes.Select(type => (IAsyncExecutionFilter)provider.GetRequiredService(type))
+                                                                .ToList();
+
+                return factory(asyncFilters) ?? throw new InvalidOperationException("Failed to create async execution filter instance.");
             });
         }
 
@@ -135,29 +143,39 @@ public static class CommandQueryExtension
 
         foreach (var commandHandlerType in commandHandlerTypes)
         {
-            var executionFilterAttribute = commandHandlerType.GetCustomAttribute<ExecutionFilterAttribute>();
+            IEnumerable<ExecutionFilterAttribute> executionFilterAttributes = commandHandlerType.GetCustomAttributes<ExecutionFilterAttribute>();
 
-            if (executionFilterAttribute is null)
+            IEnumerable<ExecutionFilterAttribute> filterAttributes = executionFilterAttributes.ToList();
+            if (!filterAttributes.Any())
             {
                 continue;
             }
 
-            services.AddScoped(executionFilterAttribute.GetType());
+            foreach (var attribute in filterAttributes)
+            {
+                services.AddScoped(attribute.GetType(), _ => attribute);
+            }
 
             // Get ICommandHandler<,> generic arguments
             var genericArguments = commandHandlerType.GetInterface(typeof(ICommandHandler<,>).Name)
                                                      ?.GetGenericArguments() ?? [];
 
+            if (genericArguments.Length == 0)
+                throw new InvalidOperationException($"Handler type {commandHandlerType.Name} does not implement ICommandHandler<,>.");
+
             var typedAsyncExecutionFilterType = typeof(IAsyncExecutionFilter<,>).MakeGenericType(genericArguments);
             var asyncExecutionFilterImplType = typeof(AsyncExecutionFilter<,>).MakeGenericType(genericArguments);
 
             // Cache the factory delegate for the AsyncExecutionFilter implementation
-            Func<IAsyncExecutionFilter, object> factory = CreateFactory(asyncExecutionFilterImplType, typeof(IAsyncExecutionFilter));
+            Func<List<IAsyncExecutionFilter>, object> factory = CreateFactory(asyncExecutionFilterImplType, typeof(List<IAsyncExecutionFilter>));
+
+            var executionFilterAttributeTypes = filterAttributes.Select(attribute => attribute.GetType());
 
             services.AddScoped(typedAsyncExecutionFilterType, provider =>
             {
-                var asyncFilter = provider.GetService(executionFilterAttribute.GetType()) as IAsyncExecutionFilter;
-                return factory(asyncFilter!) ?? throw new InvalidOperationException("Failed to create async execution filter instance.");
+                var asyncFilters = executionFilterAttributeTypes.Select(type => (IAsyncExecutionFilter)provider.GetRequiredService(type))
+                                                                .ToList();
+                return factory(asyncFilters) ?? throw new InvalidOperationException("Failed to create async execution filter instance.");
             });
         }
 
@@ -308,7 +326,7 @@ public static class CommandQueryExtension
         return services;
     }
 
-    private static Func<IAsyncExecutionFilter, object> CreateFactory(Type targetType, Type parameterType)
+    private static Func<List<IAsyncExecutionFilter>, object> CreateFactory(Type targetType, Type parameterType)
     {
         // Find the constructor that takes a single IAsyncExecutionFilter parameter
         var constructor = targetType.GetConstructor([parameterType]) ?? throw new InvalidOperationException($"No suitable constructor found for type {targetType.Name}.");
@@ -316,7 +334,7 @@ public static class CommandQueryExtension
         // Compile a factory delegate for the constructor
         var parameter = Expression.Parameter(parameterType, "asyncExecutionFilter");
         var newExpression = Expression.New(constructor, parameter);
-        var lambda = Expression.Lambda<Func<IAsyncExecutionFilter, object>>(newExpression, parameter);
+        var lambda = Expression.Lambda<Func<List<IAsyncExecutionFilter>, object>>(newExpression, parameter);
         return lambda.Compile();
     }
 
