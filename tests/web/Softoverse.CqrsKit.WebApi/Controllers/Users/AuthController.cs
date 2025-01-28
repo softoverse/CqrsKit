@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -19,6 +20,7 @@ public class AuthController(UserManager<IdentityUser> userManager, SignInManager
 {
     private readonly int _accessTokenExpiresIn = Convert.ToInt32(configuration["JWT:AccessTokenExpirationMinutes"]);
     private readonly int _refreshTokenExpiresIn = Convert.ToInt32(configuration["JWT:RefreshTokenExpirationMinutes"]);
+    private readonly int _userLockoutMinutes = Convert.ToInt32(configuration["JWT:UserLockoutMinutes"]);
 
     private static readonly ConcurrentDictionary<string, string> RefreshTokens = new ConcurrentDictionary<string, string>();
 
@@ -33,14 +35,27 @@ public class AuthController(UserManager<IdentityUser> userManager, SignInManager
         {
             case "password" when (IsBasicHeaderValid(request.ClientId, request.ClientSecret) || IsBasicHeaderValid(request.Authorization!) || IsBasicHeaderValid(HttpContext)):
                 {
-                    string accessToken = GenerateApiUserToken(request.Username!);
-                    currentRefreshToken = GenerateRefreshToken(request.Username!);
+                    var user = await GetIdentityUser(request.Username!);
 
-                    var user = await userManager.FindByNameAsync(request.Username!);
+                    if (await userManager.IsLockedOutAsync(user!))
+                    {
+                        var lockoutEndDate = await userManager.GetLockoutEndDateAsync(user!);
+                        return Unauthorized(new
+                        {
+                            message = $"Account is still locked. Try again after {lockoutEndDate.ToString()}"
+                        });
+                    }
+
                     var signInResult = await signInManager.PasswordSignInAsync(user!, request.Password!, false, false);
-
                     if (signInResult.Succeeded)
                     {
+                        _ = userManager.ResetAccessFailedCountAsync(user!);
+                        _ = userManager.SetLockoutEnabledAsync(user!, false);
+                        _ = userManager.SetLockoutEndDateAsync(user!, null);
+
+                        string accessToken = GenerateApiUserToken(request.Username!);
+                        currentRefreshToken = GenerateRefreshToken(request.Username!);
+
                         return Ok(new TokenResponse
                         {
                             Message = "Login Successful.",
@@ -54,6 +69,21 @@ public class AuthController(UserManager<IdentityUser> userManager, SignInManager
                                 AccessToken = accessToken,
                                 TokenType = "Bearer"
                             }
+                        });
+                    }
+
+                    await userManager.AccessFailedAsync(user!);
+
+                    var accessFailedCount = await userManager.GetAccessFailedCountAsync(user!);
+                    if (accessFailedCount > 3)
+                    {
+                        await userManager.SetLockoutEnabledAsync(user!, true);
+
+                        var lockoutEndDate = DateTimeOffset.UtcNow.AddMinutes(_userLockoutMinutes);
+                        await userManager.SetLockoutEndDateAsync(user!, lockoutEndDate);
+                        return Unauthorized(new
+                        {
+                            message = $"Too many try with invalid credentials. Account is locked. Try again after {lockoutEndDate.ToString()}"
                         });
                     }
 
@@ -91,7 +121,7 @@ public class AuthController(UserManager<IdentityUser> userManager, SignInManager
                 }
             case "refresh_token":
                 {
-                    RefreshTokens.Remove(username!, out string? _);
+                    RefreshTokens.Remove(username, out string? _);
                     return Unauthorized(new
                     {
                         message = "Invalid Refresh Token."
@@ -99,7 +129,7 @@ public class AuthController(UserManager<IdentityUser> userManager, SignInManager
                 }
             default:
                 {
-                    RefreshTokens.Remove(username!, out string? _);
+                    RefreshTokens.Remove(username, out string? _);
                     return Unauthorized(new
                     {
                         message = "Invalid Request."
@@ -113,20 +143,64 @@ public class AuthController(UserManager<IdentityUser> userManager, SignInManager
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] User user)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
+        if (!ModelState.IsValid) return BadRequest(ModelState);
 
         IdentityUser identityUser = new IdentityUser
         {
-            UserName = user.Username
+            UserName = user.Username,
+            Email = user.Email
         };
 
-        return Ok(await userManager.CreateAsync(identityUser, user.Password));
+        var userResult = await userManager.CreateAsync(identityUser, user.Password);
+
+        return Ok(new
+        {
+            message = userResult.Succeeded ? "Registered Successfully." : "Registration Failed.",
+            errors = userResult.Errors
+        });
+    }
+
+    // POST api/Auth/release-lockout
+    [HttpPost("release-lockout")]
+    public async Task<IActionResult> ReleaseLockout([FromQuery] string username)
+    {
+        var user = await GetIdentityUser(username);
+        await userManager.ResetAccessFailedCountAsync(user!);
+        await userManager.SetLockoutEnabledAsync(user!, false);
+        await userManager.SetLockoutEndDateAsync(user!, null);
+
+        return Ok(new
+        {
+            message = "Released Lockout."
+        });
+    }
+
+    [HttpPost("lockout")]
+    public async Task<IActionResult> Lockout([FromQuery] string username)
+    {
+        var user = await GetIdentityUser(username);
+        await userManager.SetLockoutEnabledAsync(user!, true);
+        await userManager.SetLockoutEndDateAsync(user!, DateTimeOffset.UtcNow.AddMinutes(_userLockoutMinutes));
+
+        return Ok(new
+        {
+            message = "Locked Out."
+        });
     }
 
     #region Non Action Methods
+
+    private Task<IdentityUser?> GetIdentityUser(string username)
+    {
+        if (username.Contains('@') && username.Contains('.'))
+        {
+            return userManager.FindByEmailAsync(username);
+        }
+        else
+        {
+            return userManager.FindByNameAsync(username);
+        }
+    }
 
     private bool IsBasicHeaderValid(HttpContext context)
     {
