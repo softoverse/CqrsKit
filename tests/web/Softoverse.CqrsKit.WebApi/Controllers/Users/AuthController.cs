@@ -24,6 +24,23 @@ public class AuthController(UserManager<IdentityUser> userManager, SignInManager
 
     private static readonly ConcurrentDictionary<string, string> RefreshTokens = new ConcurrentDictionary<string, string>();
 
+#if DEBUG
+    [HttpPost("login")]
+    public async Task<IActionResult> Token(User user)
+    {
+        return await Token(new TokenRequest
+        {
+            Username = user.Username ?? user.Email,
+            Password = user.Password,
+            ClientId = configuration["JWT:ClientId"],
+            ClientSecret = configuration["JWT:ClientSecret"],
+            GrantType = "password",
+            Scope = "apiScope uiScope",
+            Authorization = "Basic " + Convert.ToBase64String(Encoding.UTF8.GetBytes($"{configuration["JWT:ClientId"]}:{configuration["JWT:ClientSecret"]}"))
+        });
+    }
+#endif
+
     // POST api/Auth/token
     [HttpPost("token")]
     public async Task<IActionResult> Token(TokenRequest request)

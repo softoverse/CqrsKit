@@ -14,6 +14,11 @@ public static class ScalarConfigurationExtension
         builder.Services.AddOpenApi("v1", options => { options.AddDocumentTransformer<BearerSecuritySchemeTransformer>(); });
         builder.Services.AddOpenApi("v1", options => { options.AddDocumentTransformer<OAuth2SecuritySchemeTransformer>(); });
 
+        builder.Services.AddOpenApi("v1", options =>
+        {
+            options.AddSchemaTransformer((schema, context, cancellationToken) => Task.CompletedTask);
+        });
+
         return builder;
     }
 
@@ -25,13 +30,13 @@ public static class ScalarConfigurationExtension
                    .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
                    .WithDownloadButton(true);
 
-            // options.WithPreferredScheme("Bearer");
             options.WithPreferredScheme("OAuth2")
                    .WithOAuth2Authentication(oauth =>
                    {
                        oauth.ClientId = "Softoverse";
                        oauth.Scopes = ["apiScope", "uiScope"];
                    });
+            options.WithPreferredScheme("Bearer");
         });
 
         return app;
