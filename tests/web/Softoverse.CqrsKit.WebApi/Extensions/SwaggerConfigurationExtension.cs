@@ -51,11 +51,11 @@ public static class SwaggerConfigurationExtension
                             Id = "oauth2"
                         }
                     },
-                    []
+                    ["apiScope", "uiScope"]
                 }
             });
         });
-        
+
         return builder;
     }
 

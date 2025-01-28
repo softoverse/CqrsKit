@@ -26,8 +26,17 @@ public class AuthController(UserManager<IdentityUser> userManager, SignInManager
 
 #if DEBUG
     [HttpPost("login")]
-    public async Task<IActionResult> Token(User user)
+    public async Task<IActionResult> Token([FromForm] User user)
     {
+        var username = user.Username ?? user.Email;
+        if (string.IsNullOrEmpty(username))
+        {
+            return Unauthorized(new
+            {
+                message = "Invalid Username or Password."
+            });
+        }
+        
         return await Token(new TokenRequest
         {
             Username = user.Username ?? user.Email,
@@ -45,6 +54,14 @@ public class AuthController(UserManager<IdentityUser> userManager, SignInManager
     [HttpPost("token")]
     public async Task<IActionResult> Token(TokenRequest request)
     {
+        if (string.IsNullOrEmpty(request.Username))
+        {
+            return Unauthorized(new
+            {
+                message = "Invalid Username or Password."
+            });
+        }
+        
         var username = GetUsernameFromRefreshToken(request.RefreshToken);
         string? currentRefreshToken;
 
