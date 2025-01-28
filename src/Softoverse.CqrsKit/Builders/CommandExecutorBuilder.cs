@@ -23,7 +23,7 @@ internal sealed class CommandExecutorBuilder<TCommand, TResponse> : CommandExecu
 
     private CommandExecutorBuilder(): base() { }
 
-    private CommandExecutorBuilder(IServiceProvider services) : base(services) { }
+    public CommandExecutorBuilder(IServiceProvider services) : base(services) { }
 
     public static ICommandExecutorBuilder<TCommand, TResponse> Initialize(IServiceProvider services) => new CommandExecutorBuilder<TCommand, TResponse>(services);
 

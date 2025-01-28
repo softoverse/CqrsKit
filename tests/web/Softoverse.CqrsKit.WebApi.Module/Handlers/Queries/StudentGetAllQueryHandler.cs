@@ -15,16 +15,14 @@ namespace Softoverse.CqrsKit.WebApi.Module.Handlers.Queries;
 [QueryAuthorize]
 public class StudentGetAllQueryHandler(ApplicationDbContext dbContext) : QueryHandler<StudentGetAllQuery, List<Student>>
 {
-    public override async Task<Result<List<Student>>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<List<Student>>> OnStartAsync(StudentGetAllQuery query, CqrsContext context, CancellationToken ct = default)
     {
         return await Task.FromResult(Result<List<Student>>.Success()
                                                           .WithMessage("Before execution Student"));
     }
 
-    public override async Task<Result<List<Student>>> HandleAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<List<Student>>> HandleAsync(StudentGetAllQuery query, CqrsContext context, CancellationToken ct = default)
     {
-        var query = context.RequestAs<StudentGetAllQuery>();
-
         var students = await dbContext.Students.Where(x => (!string.IsNullOrEmpty(x.Name) && x.Name == query.Name)
                                                          ||
                                                            (x.Age != null && x.Age == query.Age)
@@ -39,7 +37,7 @@ public class StudentGetAllQueryHandler(ApplicationDbContext dbContext) : QueryHa
                                     .WithErrorMessage("No data found");
     }
 
-    public override async Task<Result<List<Student>>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<List<Student>>> OnEndAsync(StudentGetAllQuery query, CqrsContext context, CancellationToken ct = default)
     {
         return await Task.FromResult(Result<List<Student>>.Success()
                                                           .WithMessage("After execution Student"));

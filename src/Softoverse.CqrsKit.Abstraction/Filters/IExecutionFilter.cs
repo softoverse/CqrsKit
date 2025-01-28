@@ -9,17 +9,17 @@ public interface IExecutionFilterMarker;
 public interface IExecutionFilter<in TRequest, TResponse> : IExecutionFilterMarker
     where TRequest : IRequest
 {
-    public Task<Result<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default);
+    public Task<Result<TResponse>> OnExecutingAsync(TRequest request, CqrsContext context, CancellationToken ct = default);
 
-    public Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
+    public Task<Result<TResponse>> OnExecutedAsync(TRequest request, CqrsContext context, CancellationToken ct = default);
 }
 
 public abstract class ExecutionFilterBase<TRequest, TResponse> : IExecutionFilter<TRequest, TResponse>
     where TRequest : IRequest
 {
-    public abstract Task<Result<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default);
+    public abstract Task<Result<TResponse>> OnExecutingAsync(TRequest request, CqrsContext context, CancellationToken ct = default);
 
-    public abstract Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
+    public abstract Task<Result<TResponse>> OnExecutedAsync(TRequest request, CqrsContext context, CancellationToken ct = default);
 }
 
 public abstract class CommandExecutionFilterBase<TCommand, TResponse> : ExecutionFilterBase<TCommand, TResponse>

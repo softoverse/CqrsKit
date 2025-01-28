@@ -16,10 +16,8 @@ namespace Softoverse.CqrsKit.WebApi.Module.Handlers.Commands;
 [CommandAuthorize]
 public class StudentCreateCommandHandler(ApplicationDbContext dbContext, IValidator<Student> validator) : CommandHandler<StudentCreateCommand, Student>
 {
-    public override async Task<Result<Student>> ValidateAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> ValidateAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
     {
-        var command = context.RequestAs<StudentCreateCommand>();
-
         var validationResult = await validator.ValidateAsync(command.Payload, ct);
 
         if (!validationResult.IsValid)
@@ -49,10 +47,8 @@ public class StudentCreateCommandHandler(ApplicationDbContext dbContext, IValida
                                                     .WithErrors(errors));
     }
 
-    public override async Task<Result<Student>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnStartAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
     {
-        var command = context.RequestAs<StudentCreateCommand>();
-
         command.Payload.AgeCategory = command.Payload.Age switch
         {
             < 2 => AgeCategory.Infant,
@@ -67,9 +63,8 @@ public class StudentCreateCommandHandler(ApplicationDbContext dbContext, IValida
                                                     .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Student>> HandleAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> HandleAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
     {
-        var command = context.RequestAs<StudentCreateCommand>();
         Student student = command.Payload;
         dbContext.Students.Add(student);
         // await dbContext.SaveChangesAsync(ct);
@@ -79,9 +74,8 @@ public class StudentCreateCommandHandler(ApplicationDbContext dbContext, IValida
                                                     .WithPayload(student));
     }
 
-    public override async Task<Result<Student>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnEndAsync(StudentCreateCommand command, CqrsContext context, CancellationToken ct = default)
     {
-        var command = context.RequestAs<StudentCreateCommand>();
         return await Task.FromResult(Result<Student>.Success()
                                                     .WithMessage("After execution Student")
                                                     .WithPayload(command.Payload));

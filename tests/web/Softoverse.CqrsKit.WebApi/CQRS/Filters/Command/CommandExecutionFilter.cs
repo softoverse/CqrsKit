@@ -10,12 +10,12 @@ namespace Softoverse.CqrsKit.WebApi.CQRS.Filters.Command;
 public class CommandExecutionFilter<TCommand, TResponse> : CommandExecutionFilterBase<TCommand, TResponse>
     where TCommand : ICommand
 {
-    public override Task<Result<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task<Result<TResponse>> OnExecutingAsync(TCommand command, CqrsContext context, CancellationToken ct = default)
     {
         return ResultDefaults.DefaultResult<TResponse>();
     }
 
-    public override Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task<Result<TResponse>> OnExecutedAsync(TCommand command, CqrsContext context, CancellationToken ct = default)
     {
         return ResultDefaults.DefaultResult<TResponse>();
     }

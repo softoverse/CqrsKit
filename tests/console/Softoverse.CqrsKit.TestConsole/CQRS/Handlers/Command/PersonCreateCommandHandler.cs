@@ -16,10 +16,9 @@ public class PersonCreateCommandHandler : CommandHandler<PersonCreateCommand, Pe
 {
     private readonly List<Person> _studentStore = Program.PersonStore;
 
-    public override async Task<Result<Person>> ValidateAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Person>> ValidateAsync(PersonCreateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.ValidateAsync)}");
-        var command = context.RequestAs<PersonCreateCommand>();
         if (_studentStore.Any(x => x.Name == command.Payload.Name))
         {
             string errorMessage = "Person name already exists";
@@ -37,19 +36,17 @@ public class PersonCreateCommandHandler : CommandHandler<PersonCreateCommand, Pe
                                                            .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Person>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Person>> OnStartAsync(PersonCreateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
-        var command = context.RequestAs<PersonCreateCommand>();
         return await Task.FromResult(Result<Person>.Success()
                                                            .WithMessage("Before execution Person")
                                                            .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Person>> HandleAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Person>> HandleAsync(PersonCreateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
-        var command = context.RequestAs<PersonCreateCommand>();
         Person person = command.Payload;
         _studentStore.Add(person);
 
@@ -58,10 +55,9 @@ public class PersonCreateCommandHandler : CommandHandler<PersonCreateCommand, Pe
                                                       .WithPayload(person));
     }
 
-    public override async Task<Result<Person>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Person>> OnEndAsync(PersonCreateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
-        var command = context.RequestAs<PersonCreateCommand>();
         return await Task.FromResult(Result<Person>.Success()
                                                       .WithMessage("After execution Person")
                                                       .WithPayload(command.Payload));

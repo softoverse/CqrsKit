@@ -10,12 +10,12 @@ namespace Softoverse.CqrsKit.WebApi.CQRS.Filters.Query;
 public class QueryExecutionFilter<TQuery, TResponse> : QueryExecutionFilterBase<TQuery, TResponse>
     where TQuery : IQuery
 {
-    public override Task<Result<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task<Result<TResponse>> OnExecutingAsync(TQuery query, CqrsContext context, CancellationToken ct = default)
     {
         return ResultDefaults.DefaultResult<TResponse>();
     }
 
-    public override Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task<Result<TResponse>> OnExecutedAsync(TQuery query, CqrsContext context, CancellationToken ct = default)
     {
         return ResultDefaults.DefaultResult<TResponse>();
     }

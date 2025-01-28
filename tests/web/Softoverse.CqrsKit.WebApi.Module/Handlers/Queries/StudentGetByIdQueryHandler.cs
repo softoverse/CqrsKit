@@ -14,18 +14,15 @@ namespace Softoverse.CqrsKit.WebApi.Module.Handlers.Queries;
 public class StudentGetByIdQueryHandler(ApplicationDbContext dbContext) : QueryHandler<StudentGetByIdQuery, Student>
 {
 
-    public override async Task<Result<Student>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnStartAsync(StudentGetByIdQuery query, CqrsContext context, CancellationToken ct = default)
     {
         return await Task.FromResult(Result<Student>.Success()
                                                     .WithMessage("Before execution Student"));
     }
 
-    public override async Task<Result<Student>> HandleAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> HandleAsync(StudentGetByIdQuery query, CqrsContext context, CancellationToken ct = default)
     {
-        var query = context.RequestAs<StudentGetByIdQuery>();
         var student = await dbContext.Students.FirstOrDefaultAsync(x => x.Id == query.Id, ct);
-
-
 
         return Result<Student>.Success()
                               .WithPayload(student!)
@@ -34,7 +31,7 @@ public class StudentGetByIdQueryHandler(ApplicationDbContext dbContext) : QueryH
                               .WithErrorMessage("No data found");
     }
 
-    public override async Task<Result<Student>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Student>> OnEndAsync(StudentGetByIdQuery query, CqrsContext context, CancellationToken ct = default)
     {
         return await Task.FromResult(Result<Student>.Success()
                                                     .WithMessage("After execution Student"));

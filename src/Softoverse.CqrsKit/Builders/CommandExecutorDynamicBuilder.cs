@@ -1,10 +1,13 @@
-﻿using System.Reflection;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Linq.Expressions;
+using System.Reflection;
 
 using Softoverse.CqrsKit.Abstraction.Builders;
 using Softoverse.CqrsKit.Abstraction.Executors;
+using Softoverse.CqrsKit.Abstraction.Handlers;
 using Softoverse.CqrsKit.Model.Abstraction;
 using Softoverse.CqrsKit.Model.Utility;
-
 using Softoverse.CqrsKit.Services;
 
 namespace Softoverse.CqrsKit.Builders;
@@ -12,6 +15,8 @@ namespace Softoverse.CqrsKit.Builders;
 internal sealed class CommandExecutorDynamicBuilder : ICommandExecutorBuilder
 {
     private static readonly Type CommandExecutorBuilderWithReturnType = typeof(CommandExecutorBuilder<,>);
+    private static readonly ConcurrentDictionary<(Type, Type), Func<object, ICommandExecutorDynamicBuilder>> BuilderCache = new();
+    private static readonly ConcurrentDictionary<(Type, Type), (ConstructorInfo, Type)> CommandExecutorBuilderConstructor = new();
 
     private readonly IServiceProvider _services;
 
@@ -60,34 +65,99 @@ internal sealed class CommandExecutorDynamicBuilder : ICommandExecutorBuilder
                                                                   object command,
                                                                   bool withApprovalFlow)
     {
-        // Create the generic CommandExecutorBuilder type
-        Type builderGenericType = CommandExecutorBuilderWithReturnType.MakeGenericType(commandType, responseType);
+        // Validate input types and ensure they implement the required interfaces
+        if (!typeof(ICommand).IsAssignableFrom(commandType))
+            throw new ArgumentException($"{commandType} must implement {nameof (ICommand)}.", nameof (commandType));
 
-        // Cache the method lookup to avoid repetitive reflection overhead
-        var initializeMethod = builderGenericType.GetMethod(nameof (CommandExecutorBuilder<ICommand, object>.Initialize), BindingFlags.Public | BindingFlags.Static)
-                            ?? throw new InvalidOperationException($"Could not find constructor of '{nameof (CommandExecutorDynamicBuilder)}'.");
+        if (!typeof(ICommandHandler<,>).MakeGenericType(commandType, responseType).IsAssignableFrom(commandHandlerType))
+            throw new ArgumentException($"{commandHandlerType} must implement ICommandHandler<{commandType.Name}, {responseType.Name}>.", nameof (commandHandlerType));
 
-        // Use a direct cast instead of repeated dynamic casting
-        if (initializeMethod.Invoke(null, [_services]) is not ICommandExecutorDynamicBuilder commandExecutorBuilderInstance)
-        {
-            throw new InvalidOperationException($"Failed to create an instance of {nameof (ICommandExecutorDynamicBuilder)}.");
-        }
+        if (withApprovalFlow && !typeof(IApprovalFlowHandler<,>).IsAssignableFrom(approvalFlowHandlerType))
+            throw new ArgumentException($"{approvalFlowHandlerType} must implement IApprovalFlowHandler.", nameof (approvalFlowHandlerType));
+
+
+        #region using Expression Tree
+
+        // Stopwatch sw1 = Stopwatch.StartNew();
+        // // Retrieve or create the factory delegate for CommandExecutorBuilder
+        // var builderFactory = BuilderCache.GetOrAdd((commandType, responseType), CreateBuilderFactory);
+        //
+        // // Create the CommandExecutorBuilder instance
+        // var commandExecutorBuilderWithExpressionTree = builderFactory(_services);
+        // var commandExecutorBuilder = commandExecutorBuilderWithExpressionTree;
+        // sw1.Stop();
+
+        #endregion using Expression Tree
+
+        #region using reflection
+
+        // Stopwatch sw2 = Stopwatch.StartNew();
+        (ConstructorInfo ConstructorInfo, Type BuilderType) commandExecutorBuilderConstructor = CommandExecutorBuilderConstructor.GetOrAdd((commandType, responseType), CreateCommandExecutorBuilderConstructorInfo);
+        var commandExecutorBuilderWithReflection = (ICommandExecutorDynamicBuilder)commandExecutorBuilderConstructor.ConstructorInfo.Invoke([_services]);
+        var commandExecutorBuilder = commandExecutorBuilderWithReflection;
+        // sw2.Stop();
+
+        #endregion using reflection
 
         // Consolidate chained method calls to reduce overhead
-        commandExecutorBuilderInstance.WithServiceProvider(_services)
-                                      .WithCommand(command)
-                                      .WithHandler(commandHandlerType)
-                                      .WithItems(context.Items);
+        commandExecutorBuilder.WithServiceProvider(_services)
+                              .WithCommand(command)
+                              .WithHandler(commandHandlerType)
+                              .WithItems(context.Items);
 
         if (withApprovalFlow)
-            commandExecutorBuilderInstance.WithApprovalFlow().WithApprovalFlowHandler(approvalFlowHandlerType);
+            commandExecutorBuilder.WithApprovalFlow()
+                                  .WithApprovalFlowHandler(approvalFlowHandlerType);
         else
-            commandExecutorBuilderInstance.WithoutApprovalFlow();
+            commandExecutorBuilder.WithoutApprovalFlow();
 
-        // Cache the result of the final Build call
-        var result = commandExecutorBuilderInstance.Build();
+        var result = commandExecutorBuilder.Build();
 
         return result as ICommandApprovalFlowEventExecutor
             ?? throw new InvalidOperationException($"Build process failed to return '{nameof (ICommandApprovalFlowEventExecutor)}'.");
+    }
+
+    private static Func<object, ICommandExecutorDynamicBuilder> CreateBuilderFactory((Type commandType, Type responseType) types)
+    {
+        // Precompute the generic type and validate it
+        var builderType = CommandExecutorBuilderWithReturnType.MakeGenericType(types.commandType, types.responseType);
+        var constructor = builderType.GetConstructor([typeof(IServiceProvider)])
+                       ?? throw new InvalidOperationException($"Constructor not found for {builderType}.");
+
+        // Build the delegate more efficiently
+        var serviceProviderParam = Expression.Parameter(typeof(object), "services");
+        var constructorCall = Expression.New(constructor, Expression.Convert(serviceProviderParam, typeof(IServiceProvider)));
+
+        // Eliminate intermediate Expression.Convert if unnecessary
+        var lambda = Expression.Lambda<Func<object, ICommandExecutorDynamicBuilder>>(
+                                                                                     Expression.Convert(constructorCall, typeof(ICommandExecutorDynamicBuilder)),
+                                                                                     serviceProviderParam);
+
+        return lambda.Compile();
+    }
+
+    private static (ConstructorInfo ConstructorInfo, Type BuilderType) CreateCommandExecutorBuilderConstructorInfo((Type CommandType, Type ResponseType) types)
+    {
+        // Create the generic CommandExecutorBuilder type
+        Type builderType = CommandExecutorBuilderWithReturnType.MakeGenericType(types.CommandType, types.ResponseType);
+
+        ConstructorInfo constructor = builderType.GetConstructor([typeof(IServiceProvider)])
+                                   ?? throw new InvalidOperationException($"Constructor not found for {builderType}.");
+
+        return (constructor, builderType);
+
+        // // Cache the method lookup to avoid repetitive reflection overhead
+        // var initializeMethod = builderType.GetMethod(nameof (CommandExecutorBuilder<ICommand, object>.Initialize), BindingFlags.Public | BindingFlags.Static)
+        //                     ?? throw new InvalidOperationException($"Could not find constructor of '{nameof (CommandExecutorDynamicBuilder)}'.");
+        //
+        //
+        //
+        // // Use a direct cast instead of repeated dynamic casting
+        // if (initializeMethod.Invoke(null, [services]) is not ICommandExecutorDynamicBuilder commandExecutorBuilderInstance)
+        // {
+        //     throw new InvalidOperationException($"Failed to create an instance of {nameof (ICommandExecutorDynamicBuilder)}.");
+        // }
+        //
+        // return commandExecutorBuilderInstance;
     }
 }

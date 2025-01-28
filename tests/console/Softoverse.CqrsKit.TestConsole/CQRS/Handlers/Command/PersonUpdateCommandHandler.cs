@@ -13,10 +13,9 @@ public class PersonUpdateCommandHandler : CommandHandler<PersonUpdateCommand, Pe
 {
     private readonly List<Person> _studentStore = Program.PersonStore;
 
-    public override async Task<Result<Person>> ValidateAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Person>> ValidateAsync(PersonUpdateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.ValidateAsync)}");
-        var command = context.RequestAs<PersonUpdateCommand>();
         Dictionary<string, string[]> errors = new Dictionary<string, string[]>();
 
         if (command.Id != command.Payload.Id)
@@ -36,19 +35,17 @@ public class PersonUpdateCommandHandler : CommandHandler<PersonUpdateCommand, Pe
                                                       .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Person>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Person>> OnStartAsync(PersonUpdateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
-        var command = context.RequestAs<PersonUpdateCommand>();
         return await Task.FromResult(Result<Person>.Success()
                                                       .WithMessage("Before execution Person")
                                                       .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Person>> HandleAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Person>> HandleAsync(PersonUpdateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
-        var command = context.RequestAs<PersonUpdateCommand>();
         var currentStudent = _studentStore.FirstOrDefault(x => x.Id == command.Id);
         _studentStore.Remove(currentStudent!);
         currentStudent = command.Payload;
@@ -59,10 +56,9 @@ public class PersonUpdateCommandHandler : CommandHandler<PersonUpdateCommand, Pe
                                                       .WithPayload(currentStudent));
     }
 
-    public override async Task<Result<Person>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Person>> OnEndAsync(PersonUpdateCommand command, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
-        var command = context.RequestAs<PersonUpdateCommand>();
         return await Task.FromResult(Result<Person>.Success()
                                                       .WithMessage("After execution Person")
                                                       .WithPayload(command.Payload));

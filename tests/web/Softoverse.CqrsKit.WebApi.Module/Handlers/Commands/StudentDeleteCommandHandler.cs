@@ -12,25 +12,22 @@ namespace Softoverse.CqrsKit.WebApi.Module.Handlers.Commands;
 [ScopedLifetime]
 public class StudentDeleteCommandHandler(ApplicationDbContext dbContext) : CommandHandler<StudentDeleteCommand, Guid>
 {
-    public override async Task<Result<Guid>> ValidateAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Guid>> ValidateAsync(StudentDeleteCommand command, CqrsContext context, CancellationToken ct = default)
     {
-        var command = context.RequestAs<StudentDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
                                                  .WithMessage("Valid Student")
                                                  .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Guid>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Guid>> OnStartAsync(StudentDeleteCommand command, CqrsContext context, CancellationToken ct = default)
     {
-        var command = context.RequestAs<StudentDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
                                                  .WithMessage("Before execution Student")
                                                  .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Guid>> HandleAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Guid>> HandleAsync(StudentDeleteCommand command, CqrsContext context, CancellationToken ct = default)
     {
-        var command = context.RequestAs<StudentDeleteCommand>();
         await dbContext.Students.Where(x => x.Id == command.Payload).ExecuteDeleteAsync(ct);
 
         return await Task.FromResult(Result<Guid>.Success()
@@ -38,9 +35,8 @@ public class StudentDeleteCommandHandler(ApplicationDbContext dbContext) : Comma
                                                  .WithPayload(command.Payload));
     }
 
-    public override async Task<Result<Guid>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
+    public override async Task<Result<Guid>> OnEndAsync(StudentDeleteCommand command, CqrsContext context, CancellationToken ct = default)
     {
-        var command = context.RequestAs<StudentDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
                                                  .WithMessage("After execution Student")
                                                  .WithPayload(command.Payload));

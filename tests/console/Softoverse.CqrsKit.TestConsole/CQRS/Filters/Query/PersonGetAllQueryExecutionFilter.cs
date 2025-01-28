@@ -11,13 +11,13 @@ namespace Softoverse.CqrsKit.TestConsole.CQRS.Filters.Query;
 [ScopedLifetime]
 public class PersonGetAllQueryExecutionFilter : QueryExecutionFilterBase<PersonGetAllQuery, List<Person>>
 {
-    public override Task<Result<List<Person>>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task<Result<List<Person>>> OnExecutingAsync(PersonGetAllQuery query, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)} - (Custom)");
         return ResultDefaults.DefaultResult<List<Person>>();
     }
 
-    public override Task<Result<List<Person>>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task<Result<List<Person>>> OnExecutedAsync(PersonGetAllQuery query, CqrsContext context, CancellationToken ct = default)
     {
         Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)} - (Custom)");
         return ResultDefaults.DefaultResult<List<Person>>();
