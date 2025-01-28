@@ -14,7 +14,6 @@ public class StudentDeleteCommandHandler(ApplicationDbContext dbContext) : Comma
 {
     public override async Task<Result<Guid>> ValidateAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.ValidateAsync)}");
         var command = context.RequestAs<StudentDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
                                                  .WithMessage("Valid Student")
@@ -23,7 +22,6 @@ public class StudentDeleteCommandHandler(ApplicationDbContext dbContext) : Comma
 
     public override async Task<Result<Guid>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
         var command = context.RequestAs<StudentDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
                                                  .WithMessage("Before execution Student")
@@ -32,7 +30,6 @@ public class StudentDeleteCommandHandler(ApplicationDbContext dbContext) : Comma
 
     public override async Task<Result<Guid>> HandleAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
         var command = context.RequestAs<StudentDeleteCommand>();
         await dbContext.Students.Where(x => x.Id == command.Payload).ExecuteDeleteAsync(ct);
 
@@ -43,7 +40,6 @@ public class StudentDeleteCommandHandler(ApplicationDbContext dbContext) : Comma
 
     public override async Task<Result<Guid>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
         var command = context.RequestAs<StudentDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
                                                  .WithMessage("After execution Student")

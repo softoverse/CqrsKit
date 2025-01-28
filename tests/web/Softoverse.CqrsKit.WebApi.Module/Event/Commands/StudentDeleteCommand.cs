@@ -11,7 +11,6 @@ public class StudentDeleteCommand(Guid payload) : Command<Guid>(payload),
 {
     public string GetUniqueIdentification()
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.GetUniqueIdentification)}");
         return Payload.ToString();
     }
 }

@@ -18,8 +18,6 @@ public class StudentCreateCommandHandler(ApplicationDbContext dbContext, IValida
 {
     public override async Task<Result<Student>> ValidateAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.ValidateAsync)}");
-        
         var command = context.RequestAs<StudentCreateCommand>();
 
         var validationResult = await validator.ValidateAsync(command.Payload, ct);
@@ -53,8 +51,6 @@ public class StudentCreateCommandHandler(ApplicationDbContext dbContext, IValida
 
     public override async Task<Result<Student>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
-        
         var command = context.RequestAs<StudentCreateCommand>();
 
         command.Payload.AgeCategory = command.Payload.Age switch
@@ -73,7 +69,6 @@ public class StudentCreateCommandHandler(ApplicationDbContext dbContext, IValida
 
     public override async Task<Result<Student>> HandleAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
         var command = context.RequestAs<StudentCreateCommand>();
         Student student = command.Payload;
         dbContext.Students.Add(student);
@@ -87,7 +82,6 @@ public class StudentCreateCommandHandler(ApplicationDbContext dbContext, IValida
     public override async Task<Result<Student>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
     {
         var command = context.RequestAs<StudentCreateCommand>();
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
         return await Task.FromResult(Result<Student>.Success()
                                                     .WithMessage("After execution Student")
                                                     .WithPayload(command.Payload));

@@ -3,7 +3,6 @@ using Softoverse.CqrsKit.Attributes;
 using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.Model.Abstraction;
 using Softoverse.CqrsKit.Model.Utility;
-using Softoverse.CqrsKit.Services;
 
 namespace Softoverse.CqrsKit.WebApi.CQRS.Filters.Command;
 
@@ -13,13 +12,11 @@ public class CommandExecutionFilter<TCommand, TResponse> : CommandExecutionFilte
 {
     public override Task<Result<TResponse>> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutingAsync)}");
         return ResultDefaults.DefaultResult<TResponse>();
     }
 
     public override Task<Result<TResponse>> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {UtilityHelper.GetFormattedTypeName(this.GetType())}.{nameof (this.OnExecutedAsync)}");
         return ResultDefaults.DefaultResult<TResponse>();
     }
 }

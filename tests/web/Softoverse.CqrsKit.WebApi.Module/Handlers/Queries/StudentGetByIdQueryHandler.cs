@@ -16,14 +16,12 @@ public class StudentGetByIdQueryHandler(ApplicationDbContext dbContext) : QueryH
 
     public override async Task<Result<Student>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
         return await Task.FromResult(Result<Student>.Success()
                                                     .WithMessage("Before execution Student"));
     }
 
     public override async Task<Result<Student>> HandleAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
         var query = context.RequestAs<StudentGetByIdQuery>();
         var student = await dbContext.Students.FirstOrDefaultAsync(x => x.Id == query.Id, ct);
 
@@ -38,7 +36,6 @@ public class StudentGetByIdQueryHandler(ApplicationDbContext dbContext) : QueryH
 
     public override async Task<Result<Student>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
         return await Task.FromResult(Result<Student>.Success()
                                                     .WithMessage("After execution Student"));
     }

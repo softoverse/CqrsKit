@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using Softoverse.CqrsKit.Builders;
+using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Models;
 using Softoverse.CqrsKit.WebApi.Module.Event.Commands;
 using Softoverse.CqrsKit.WebApi.Module.Event.Queries;
@@ -9,7 +10,7 @@ namespace Softoverse.CqrsKit.WebApi.Module;
 
 [Route("api/[controller]")]
 [ApiController]
-public class StudentsController(IServiceProvider services) : ControllerBase
+public class StudentsController(IServiceProvider services, ApplicationDbContext dbContext) : ControllerBase
 {
     // GET: api/Students
     [HttpGet]
@@ -39,7 +40,7 @@ public class StudentsController(IServiceProvider services) : ControllerBase
 
         return Ok(result);
     }
-    
+
     // POST api/Students/5
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] Student student, CancellationToken ct = default)

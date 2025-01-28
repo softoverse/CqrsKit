@@ -12,7 +12,6 @@ public class StudentCreateCommand(Student payload) : Command<Student>(payload),
 {
     public string GetUniqueIdentification()
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.GetUniqueIdentification)}");
         return $"{Payload.Name}_{Payload.Age}_{Payload.Gender}";
     }
 }

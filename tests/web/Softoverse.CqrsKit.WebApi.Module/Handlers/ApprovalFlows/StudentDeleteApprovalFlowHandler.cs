@@ -11,7 +11,6 @@ public class StudentDeleteApprovalFlowHandler : ApprovalFlowHandler<StudentDelet
 {
     public override async Task<Result<Guid>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
         var command = context.RequestAs<StudentDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
                                                  .WithMessage("Before Approval Flow Start Student")
@@ -20,7 +19,6 @@ public class StudentDeleteApprovalFlowHandler : ApprovalFlowHandler<StudentDelet
     
     public override async Task<Result<Guid>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
         var command = context.RequestAs<StudentDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
                                                  .WithMessage("After Approval Flow End Student")
@@ -29,7 +27,6 @@ public class StudentDeleteApprovalFlowHandler : ApprovalFlowHandler<StudentDelet
 
     public override async Task<Result<Guid>> AfterAcceptAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.AfterAcceptAsync)}");
         var command = context.RequestAs<StudentDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
                                                  .WithMessage("After Approval Flow Accept Student")
@@ -38,7 +35,6 @@ public class StudentDeleteApprovalFlowHandler : ApprovalFlowHandler<StudentDelet
 
     public override async Task<Result<Guid>> AfterRejectAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.AfterRejectAsync)}");
         var command = context.RequestAs<StudentDeleteCommand>();
         return await Task.FromResult(Result<Guid>.Success()
                                                  .WithMessage("After Approval Flow Reject Student")

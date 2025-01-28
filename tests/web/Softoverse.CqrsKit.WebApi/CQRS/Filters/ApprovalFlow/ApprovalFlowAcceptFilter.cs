@@ -10,14 +10,11 @@ public class ApprovalFlowAcceptFilter : ApprovalFlowAcceptFilterBase
 {
     public override Task<Result> OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnExecutingAsync)}");
-
         return ResultDefaults.DefaultResult();
     }
 
     public override Task<Result> OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
-    {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnExecutedAsync)}");
+    { 
         return ResultDefaults.DefaultResult();
     }
 }

@@ -14,7 +14,6 @@ public class StudentUpdateCommand(Guid id, Student payload) : Command<Student>(p
 
     public string GetUniqueIdentification()
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.GetUniqueIdentification)}");
         return Payload.Id.ToString();
     }
 }

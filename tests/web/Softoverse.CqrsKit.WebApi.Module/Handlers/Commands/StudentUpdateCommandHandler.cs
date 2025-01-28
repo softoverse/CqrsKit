@@ -16,7 +16,6 @@ public class StudentUpdateCommandHandler(ApplicationDbContext dbContext, IValida
 {
     public override async Task<Result<Student>> ValidateAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.ValidateAsync)}");
         var command = context.RequestAs<StudentUpdateCommand>();
         Dictionary<string, string[]> errors = new Dictionary<string, string[]>();
 
@@ -43,7 +42,6 @@ public class StudentUpdateCommandHandler(ApplicationDbContext dbContext, IValida
 
     public override async Task<Result<Student>> OnStartAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnStartAsync)}");
         var command = context.RequestAs<StudentUpdateCommand>();
         command.Payload.AgeCategory = command.Payload.Age switch
         {
@@ -61,7 +59,6 @@ public class StudentUpdateCommandHandler(ApplicationDbContext dbContext, IValida
 
     public override async Task<Result<Student>> HandleAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.HandleAsync)}");
         var command = context.RequestAs<StudentUpdateCommand>();
         Student currentStudent = command.Payload;
         dbContext.Students.Update(currentStudent);
@@ -74,7 +71,6 @@ public class StudentUpdateCommandHandler(ApplicationDbContext dbContext, IValida
 
     public override async Task<Result<Student>> OnEndAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnEndAsync)}");
         var command = context.RequestAs<StudentUpdateCommand>();
         return await Task.FromResult(Result<Student>.Success()
                                                     .WithMessage("After execution Person")
