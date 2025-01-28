@@ -14,10 +14,10 @@ public class TokenDetails
 public class TokenResponse : TokenDetails
 {
     [JsonPropertyName("expires_in")]
-    public decimal ExpiresIn { get; set; }
+    public double ExpiresIn { get; set; }
 
     [JsonPropertyName("refresh_expires_in")]
-    public decimal RefreshExpiresIn { get; set; }
+    public double RefreshExpiresIn { get; set; }
 
     [JsonPropertyName("refresh_token")]
     public string RefreshToken { get; set; }

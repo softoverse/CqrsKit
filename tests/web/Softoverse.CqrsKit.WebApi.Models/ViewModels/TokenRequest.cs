@@ -2,30 +2,32 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-namespace Softoverse.CqrsKit.WebApi.Models.ViewModels
-{
-    public class TokenRequest
-    {
-        [FromForm(Name = "username")]
-        public string? Username { get; set; }
-        
-        [FromForm(Name = "password")]
-        public string? Password { get; set; }
-        
-        [FromForm(Name = "refresh_token")]
-        public string? RefreshToken { get; set; }
+namespace Softoverse.CqrsKit.WebApi.Models.ViewModels;
 
-        [FromForm(Name = "scope")]
-        public string? Scope { get; set; } = "apiScope";
+public class TokenRequest
+{
+    [FromForm(Name = "username")]
+    public string? Username { get; set; }
         
-        [FromForm(Name = "client_id")]
-        public string? ClientId { get; set; }
+    [FromForm(Name = "password")]
+    public string? Password { get; set; }
         
-        [FromForm(Name = "client_secret")]
-        public string? ClientSecret { get; set; }
+    [FromForm(Name = "refresh_token")]
+    public string? RefreshToken { get; set; }
+
+    [FromForm(Name = "scope")]
+    public string? Scope { get; set; } = "apiScope";
         
-        [FromForm(Name = "grant_type")]
-        [RegularExpression("^(password|refresh_token)$", ErrorMessage = "Invalid grant type.")]
-        public string? GrantType { get; set; } = "password";
-    }
+    [FromForm(Name = "client_id")]
+    public string? ClientId { get; set; }
+        
+    [FromForm(Name = "client_secret")]
+    public string? ClientSecret { get; set; }
+    
+    [FromHeader(Name = "Authorization")]
+    public string? Authorization { get; set; }
+        
+    [FromForm(Name = "grant_type")]
+    [RegularExpression("^(password|refresh_token)$", ErrorMessage = "Invalid grant type.")]
+    public string? GrantType { get; set; } = "password";
 }

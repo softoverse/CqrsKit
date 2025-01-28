@@ -13,13 +13,13 @@ public static class DatabaseConfigurationExtension
                .AddEntityFrameworkStores<ApplicationDbContext>()
                .AddDefaultTokenProviders();
 
-        string? connectionString = connectionString = builder.Configuration.GetConnectionString("SqLiteDatabase");
+        string? connectionString = builder.Configuration.GetConnectionString("SqLiteDatabase");
 
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
         {
             options.UseSqlite(connectionString);
         });
-        
+
         return builder;
     }
 }

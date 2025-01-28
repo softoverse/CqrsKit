@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 using Softoverse.CqrsKit.Builders;
 using Softoverse.CqrsKit.WebApi.DataAccess;
@@ -10,6 +11,7 @@ namespace Softoverse.CqrsKit.WebApi.Module;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class StudentsController(IServiceProvider services, ApplicationDbContext dbContext) : ControllerBase
 {
     // GET: api/Students
