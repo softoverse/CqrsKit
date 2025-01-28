@@ -37,6 +37,14 @@ public class AuthController(UserManager<IdentityUser> userManager, SignInManager
                 {
                     var user = await GetIdentityUser(request.Username!);
 
+                    if (user is null)
+                    {
+                        return Unauthorized(new
+                        {
+                            message = "Invalid Username or Password."
+                        });
+                    }
+
                     if (await userManager.IsLockedOutAsync(user!))
                     {
                         var lockoutEndDate = await userManager.GetLockoutEndDateAsync(user!);

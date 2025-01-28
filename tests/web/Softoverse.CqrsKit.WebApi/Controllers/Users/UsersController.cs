@@ -44,7 +44,7 @@ public class UsersController(UserManager<IdentityUser> userManager) : Controller
         IdentityUser identityUser = new IdentityUser
         {
             UserName = user.Username,
-            // Email = user.Email
+            Email = user.Email
         };
 
         PasswordHasher<IdentityUser> passwordHasher = new PasswordHasher<IdentityUser>();

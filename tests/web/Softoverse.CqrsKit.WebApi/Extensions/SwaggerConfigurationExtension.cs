@@ -59,10 +59,9 @@ public static class SwaggerConfigurationExtension
         return builder;
     }
 
-    public static void UseSwaggerUi(this WebApplication app)
+    public static WebApplication UseSwaggerUi(this WebApplication app)
     {
         app.MapOpenApi();
-        app.MapScalarApiReference();
 
         app.UseSwagger();
         app.UseSwaggerUI(c =>
@@ -91,5 +90,7 @@ public static class SwaggerConfigurationExtension
             c.EnableTryItOutByDefault();
         });
         app.MapSwagger("{documentName}/swagger.json");
+
+        return app;
     }
 }

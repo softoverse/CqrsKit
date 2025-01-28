@@ -2,6 +2,8 @@ using FluentValidation;
 
 using Microsoft.AspNetCore.Identity;
 
+using Scalar.AspNetCore;
+
 using Softoverse.CqrsKit.Extensions;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Extensions;
@@ -24,6 +26,7 @@ public class Program
                });
 
         builder.AddSwaggerConfiguration()
+               .AddScalarAuthentication()
                .AddDatabaseConfiguration()
                .AddAuthorizationConfiguration();
 
@@ -51,7 +54,8 @@ public class Program
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            app.UseSwaggerUi();
+            app.UseSwaggerUi()
+               .MapScalar();
         }
 
         app.UseHttpsRedirection();
@@ -61,8 +65,11 @@ public class Program
 
         app.MapControllers();
 
-        app.MapGet("/", () => "Hello world")
-           .RequireAuthorization();
+        app.MapGet("/", async (HttpContext httpContext) =>
+        {
+            var user = httpContext.User.Identity;
+            await httpContext.Response.WriteAsync(user?.Name ?? "Not Authenticated");
+        });
 
         await app.RunAsync();
     }
