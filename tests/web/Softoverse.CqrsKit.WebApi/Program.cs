@@ -1,9 +1,5 @@
 using FluentValidation;
 
-using Microsoft.AspNetCore.Identity;
-
-using Scalar.AspNetCore;
-
 using Softoverse.CqrsKit.Extensions;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Extensions;

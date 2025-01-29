@@ -12,12 +12,25 @@ namespace Softoverse.CqrsKit.WebApi.Module;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
 public class StudentsController(IServiceProvider services, ApplicationDbContext dbContext) : ControllerBase
 {
     // GET: api/Students
     [HttpGet]
+    [Authorize, Authorize(Constants.ApiKeyPolicy)]
     public async Task<ActionResult<Result<List<Student>>>> Get([FromQuery] StudentGetAllQuery query, CancellationToken ct = default)
+    {
+        var studentGetAllQuery = QueryBuilder.Initialize<StudentGetAllQuery, List<Student>>(services)
+                                             .WithQuery(query)
+                                             .Build();
+
+        var result = await studentGetAllQuery.ExecuteAsync(ct);
+
+        return Ok(result);
+    }
+    
+    [HttpGet("free")]
+    [Authorize(Constants.ApiKeyPolicy)]
+    public async Task<ActionResult<Result<List<Student>>>> GetFree([FromQuery] StudentGetAllQuery query, CancellationToken ct = default)
     {
         var studentGetAllQuery = QueryBuilder.Initialize<StudentGetAllQuery, List<Student>>(services)
                                              .WithQuery(query)

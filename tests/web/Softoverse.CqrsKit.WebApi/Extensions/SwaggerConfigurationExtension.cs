@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
-using Scalar.AspNetCore;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace Softoverse.CqrsKit.WebApi.Extensions;
 
@@ -54,6 +54,31 @@ public static class SwaggerConfigurationExtension
                     ["apiScope", "uiScope"]
                 }
             });
+            
+            // Add API Key Authentication to Swagger
+            c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+            {
+                Description = "API Key Authentication",
+                Name = "X-API-KEY",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "ApiKey"
+            });
+            
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "ApiKey"
+                        }
+                    },
+                    []
+                }
+            });
         });
 
         return builder;
@@ -74,7 +99,7 @@ public static class SwaggerConfigurationExtension
                 var version = versions[i];
                 c.SwaggerEndpoint($"v{version}/swagger.json", $"API V{version}");
             }
-
+            
             c.OAuthClientId(app.Configuration["JWT:ClientId"]);
             c.OAuthClientSecret(app.Configuration["JWT:ClientSecret"]);
             c.OAuthAppName("Softoverse.CqrsKit.WebApi Swagger UI");
@@ -84,8 +109,8 @@ public static class SwaggerConfigurationExtension
             c.EnableFilter();
 
             c.DisplayRequestDuration();
-            c.DefaultModelRendering(Swashbuckle.AspNetCore.SwaggerUI.ModelRendering.Model);
-            c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
+            c.DefaultModelRendering(ModelRendering.Model);
+            c.DocExpansion(DocExpansion.List);
             c.EnableValidator();
             c.EnableTryItOutByDefault();
         });

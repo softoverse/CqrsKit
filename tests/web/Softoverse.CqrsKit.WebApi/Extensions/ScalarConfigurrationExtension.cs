@@ -4,8 +4,6 @@ using Microsoft.OpenApi.Models;
 
 using Scalar.AspNetCore;
 
-using Softoverse.CqrsKit.WebApi.Controllers.Users;
-
 namespace Softoverse.CqrsKit.WebApi.Extensions;
 
 public static class ScalarConfigurationExtension
@@ -14,13 +12,9 @@ public static class ScalarConfigurationExtension
     public static WebApplicationBuilder AddScalarAuthentication(this WebApplicationBuilder builder)
     {
         builder.Services.AddOpenApi("v1", options => { options.AddDocumentTransformer<BearerSecuritySchemeTransformer>(); });
-        builder.Services.AddOpenApi("v1", options => { options.AddDocumentTransformer<OAuth2SecuritySchemeTransformer>(); });
-
-        builder.Services.AddOpenApi("v1", options =>
-        {
-            options.AddSchemaTransformer((schema, context, cancellationToken) => Task.CompletedTask);
-        });
-
+        builder.Services.AddOpenApi("v1", options => { options.AddDocumentTransformer<ApiKeySecuritySchemeTransformer>(); });
+        // builder.Services.AddOpenApi("v1", options => { options.AddDocumentTransformer<OAuth2SecuritySchemeTransformer>(); });
+        
         return builder;
     }
 
@@ -31,14 +25,22 @@ public static class ScalarConfigurationExtension
             options.WithTheme(ScalarTheme.BluePlanet)
                    .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
                    .WithDownloadButton(true);
-
-            options.WithPreferredScheme("OAuth2")
-                   .WithOAuth2Authentication(oauth =>
-                   {
-                       oauth.ClientId = "Softoverse";
-                       oauth.Scopes = ["apiScope", "uiScope"];
-                   });
+            
             options.WithPreferredScheme("Bearer");
+            
+            options
+                .WithPreferredScheme("ApiKey") // Optional. Security scheme name from the OpenAPI document
+                .WithApiKeyAuthentication(apiKey =>
+                {
+                    apiKey.Token = app.Configuration["ApiKey"];
+                });
+
+            // options.WithPreferredScheme("OAuth2")
+            //        .WithOAuth2Authentication(oauth =>
+            //        {
+            //            oauth.ClientId = "Softoverse";
+            //            oauth.Scopes = ["apiScope", "uiScope"];
+            //        });
         });
 
         return app;
@@ -80,6 +82,33 @@ internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvi
                 });
             }
         }
+    }
+}
+
+public class ApiKeySecuritySchemeTransformer : IOpenApiDocumentTransformer
+{
+    public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
+    {
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes ??= new Dictionary<string, OpenApiSecurityScheme>();
+
+        document.Components.SecuritySchemes["ApiKey"] = new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.ApiKey,
+            In = ParameterLocation.Header,
+            Name = "X-API-Key",
+            Description = "API Key Authentication"
+        };
+
+        foreach (var operation in document.Paths.Values.SelectMany(path => path.Operations))
+        {
+            operation.Value.Security.Add(new OpenApiSecurityRequirement
+            {
+                [new OpenApiSecurityScheme { Reference = new OpenApiReference { Id = "ApiKey", Type = ReferenceType.SecurityScheme } }] = new List<string>()
+            });
+        }
+
+        return Task.CompletedTask;
     }
 }
 
