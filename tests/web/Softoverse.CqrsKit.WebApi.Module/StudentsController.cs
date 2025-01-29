@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using Softoverse.CqrsKit.Builders;
+using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Models;
 using Softoverse.CqrsKit.WebApi.Module.Event.Commands;
@@ -16,7 +17,7 @@ public class StudentsController(IServiceProvider services, ApplicationDbContext 
 {
     // GET: api/Students
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] StudentGetAllQuery query, CancellationToken ct = default)
+    public async Task<ActionResult<Result<List<Student>>>> Get([FromQuery] StudentGetAllQuery query, CancellationToken ct = default)
     {
         var studentGetAllQuery = QueryBuilder.Initialize<StudentGetAllQuery, List<Student>>(services)
                                              .WithQuery(query)
