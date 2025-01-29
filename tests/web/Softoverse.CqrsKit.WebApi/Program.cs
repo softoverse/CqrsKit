@@ -65,12 +65,6 @@ public class Program
 
         app.MapControllers();
 
-        app.MapGet("/", async (HttpContext httpContext) =>
-        {
-            var user = httpContext.User.Identity;
-            await httpContext.Response.WriteAsync(user?.Name ?? "Not Authenticated");
-        });
-
         await app.RunAsync();
     }
 }

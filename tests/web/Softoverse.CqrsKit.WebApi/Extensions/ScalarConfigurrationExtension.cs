@@ -4,6 +4,8 @@ using Microsoft.OpenApi.Models;
 
 using Scalar.AspNetCore;
 
+using Softoverse.CqrsKit.WebApi.Controllers.Users;
+
 namespace Softoverse.CqrsKit.WebApi.Extensions;
 
 public static class ScalarConfigurationExtension

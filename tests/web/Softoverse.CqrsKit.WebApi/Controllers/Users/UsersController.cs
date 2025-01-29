@@ -39,16 +39,16 @@ public class UsersController(UserManager<IdentityUser> userManager) : Controller
 
     // PUT api/Users/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> Put(string id, [FromBody] User user)
+    public async Task<IActionResult> Put(string id, [FromBody] UserRegistration userRegistration)
     {
         IdentityUser identityUser = new IdentityUser
         {
-            UserName = user.Username,
-            Email = user.Email
+            UserName = userRegistration.Username,
+            Email = userRegistration.Email
         };
 
         PasswordHasher<IdentityUser> passwordHasher = new PasswordHasher<IdentityUser>();
-        identityUser.PasswordHash = passwordHasher.HashPassword(identityUser, user.Password);
+        identityUser.PasswordHash = passwordHasher.HashPassword(identityUser, userRegistration.Password);
 
 
         IdentityResult updateResult = await userManager.UpdateAsync(identityUser);
