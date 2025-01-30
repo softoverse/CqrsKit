@@ -102,7 +102,7 @@ public static class SwaggerConfigurationExtension
             
             c.OAuthClientId(app.Configuration["JWT:ClientId"]);
             c.OAuthClientSecret(app.Configuration["JWT:ClientSecret"]);
-            c.OAuthAppName("Softoverse.CqrsKit.WebApi Swagger UI");
+            c.OAuthAppName("Softoverse.CqrsKit");
             c.OAuthUseBasicAuthenticationWithAccessCodeGrant();
 
             c.EnablePersistAuthorization();

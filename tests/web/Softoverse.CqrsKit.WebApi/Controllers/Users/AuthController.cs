@@ -43,7 +43,7 @@ public class AuthController(UserManager<IdentityUser> userManager, SignInManager
             _ = userManager.ResetAccessFailedCountAsync(user!);
             _ = userManager.SetLockoutEnabledAsync(user!, false);
             _ = userManager.SetLockoutEndDateAsync(user!, null);
-            string accessToken = GenerateApiUserToken(request.Username!);
+            string accessToken = GenerateJwtToken(request.Username!);
             return Ok(accessToken);
         }
 
@@ -86,6 +86,7 @@ public class AuthController(UserManager<IdentityUser> userManager, SignInManager
 
     #region Non Action Methods
 
+    [NonAction]
     private Task<IdentityUser?> GetIdentityUser(string username)
     {
         if (username.Contains('@') && username.Contains('.'))
@@ -98,9 +99,10 @@ public class AuthController(UserManager<IdentityUser> userManager, SignInManager
         }
     }
 
-    private string GenerateApiUserToken(string username)
+    [NonAction]
+    private string GenerateJwtToken(string username)
     {
-        return AuthenticationController.GenerateApiUserToken(username, configuration["JWT:Key"], configuration["JWT:Issuer"], configuration["JWT:Audience"], _accessTokenExpiresIn);
+        return AuthenticationController.GenerateJwtToken(username, configuration["JWT:Key"], configuration["JWT:Issuer"], configuration["JWT:Audience"], _accessTokenExpiresIn);
     }
 
     #endregion Non Action Methods

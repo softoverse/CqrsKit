@@ -4,6 +4,8 @@ using Microsoft.OpenApi.Models;
 
 using Scalar.AspNetCore;
 
+using Softoverse.CqrsKit.WebApi.Controllers.Users;
+
 namespace Softoverse.CqrsKit.WebApi.Extensions;
 
 public static class ScalarConfigurationExtension
@@ -14,7 +16,7 @@ public static class ScalarConfigurationExtension
         builder.Services.AddOpenApi("v1", options => { options.AddDocumentTransformer<BearerSecuritySchemeTransformer>(); });
         builder.Services.AddOpenApi("v1", options => { options.AddDocumentTransformer<ApiKeySecuritySchemeTransformer>(); });
         // builder.Services.AddOpenApi("v1", options => { options.AddDocumentTransformer<OAuth2SecuritySchemeTransformer>(); });
-        
+
         return builder;
     }
 
@@ -24,9 +26,8 @@ public static class ScalarConfigurationExtension
         {
             options.WithTheme(ScalarTheme.BluePlanet)
                    .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
-                   .WithDownloadButton(true);
-            
-            options.WithPreferredScheme("Bearer");
+                   .WithDownloadButton(true)
+                   .WithSearchHotKey("K");
             
             options
                 .WithPreferredScheme("ApiKey") // Optional. Security scheme name from the OpenAPI document
@@ -34,6 +35,15 @@ public static class ScalarConfigurationExtension
                 {
                     apiKey.Token = app.Configuration["ApiKey"];
                 });
+
+            options.WithPreferredScheme("Bearer")
+                   .WithHttpBearerAuthentication(bearerOptions =>
+                   {
+                       bearerOptions.Token = GenerateApiUserToken(app.Configuration["JWT:Username"],
+                                                                  app.Configuration["JWT:Key"],
+                                                                  app.Configuration["JWT:Issuer"],
+                                                                  app.Configuration["JWT:Audience"]);
+                   });
 
             // options.WithPreferredScheme("OAuth2")
             //        .WithOAuth2Authentication(oauth =>
@@ -44,6 +54,11 @@ public static class ScalarConfigurationExtension
         });
 
         return app;
+    }
+
+    private static string GenerateApiUserToken(string? username, string? key, string? issuer, string? audience, int accessTokenExpiresIn = Int32.MaxValue)
+    {
+        return AuthenticationController.GenerateJwtToken(username!, key, issuer, audience, accessTokenExpiresIn);
     }
 }
 
@@ -104,7 +119,14 @@ public class ApiKeySecuritySchemeTransformer : IOpenApiDocumentTransformer
         {
             operation.Value.Security.Add(new OpenApiSecurityRequirement
             {
-                [new OpenApiSecurityScheme { Reference = new OpenApiReference { Id = "ApiKey", Type = ReferenceType.SecurityScheme } }] = new List<string>()
+                [new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Id = "ApiKey",
+                        Type = ReferenceType.SecurityScheme
+                    }
+                }] = new List<string>()
             });
         }
 

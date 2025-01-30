@@ -67,7 +67,7 @@ public class AuthenticationController(UserManager<IdentityUser> userManager, Sig
                         _ = userManager.SetLockoutEnabledAsync(user, false);
                         _ = userManager.SetLockoutEndDateAsync(user, null);
 
-                        string accessToken = GenerateApiUserToken(user.UserName!);
+                        string accessToken = GenerateJwtToken(user.UserName!);
                         currentRefreshToken = GenerateRefreshToken(user.UserName!);
 
                         return Ok(new TokenResponse
@@ -109,7 +109,7 @@ public class AuthenticationController(UserManager<IdentityUser> userManager, Sig
                 }
             case "refresh_token" when RefreshTokens.TryGetValue(username, out currentRefreshToken):
                 {
-                    string accessToken = GenerateApiUserToken(username);
+                    string accessToken = GenerateJwtToken(username);
                     return Ok(new TokenResponse
                     {
                         Message = "Token Refresh Successful.",
@@ -244,12 +244,12 @@ public class AuthenticationController(UserManager<IdentityUser> userManager, Sig
         return clientId == configuration["JWT:ClientId"] && clientSecret == configuration["JWT:ClientSecret"];
     }
 
-    private string GenerateApiUserToken(string username)
+    private string GenerateJwtToken(string username)
     {
-        return GenerateApiUserToken(username, configuration["JWT:Key"], configuration["JWT:Issuer"], configuration["JWT:Audience"], _accessTokenExpiresIn);
+        return GenerateJwtToken(username, configuration["JWT:Key"], configuration["JWT:Issuer"], configuration["JWT:Audience"], _accessTokenExpiresIn);
     }
 
-    public static string GenerateApiUserToken(string username, string? signingKey, string? issuer, string? audience, int accessTokenExpiresIn)
+    public static string GenerateJwtToken(string username, string? signingKey, string? issuer, string? audience, int accessTokenExpiresIn)
     {
         DateTime expireDateTime = DateTime.UtcNow.AddMinutes(accessTokenExpiresIn);
 
