@@ -141,21 +141,15 @@ public class CustomAuthorizationPolicyProvider(IOptions<AuthorizationOptions> op
 
     public override async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
-        if (policyName == Constants.ApiKeyPolicy)
+        AuthorizationPolicy? authorizationPolicy = policyName.Trim() switch
         {
-            AuthorizationPolicyBuilder authorizationPolicyBuilder = new AuthorizationPolicyBuilder()
-                                                                    .RequireAuthenticatedUser() // Ensures JWT is validated first
-                                                                    .AddRequirements(new ApiKeyRequirement()); // Adds API key check
+            Constants.ApiKeyPolicy => new AuthorizationPolicyBuilder().AddRequirements(new ApiKeyRequirement()).Build(),
+            Constants.ApiKeyAndJwtPolicy => new AuthorizationPolicyBuilder().RequireAuthenticatedUser().AddRequirements(new ApiKeyRequirement()).Build(),
+            null or "" => await base.GetPolicyAsync(policyName),
+            _ => await base.GetPolicyAsync(policyName)
+        };
 
-// #if !DEBUG
-//           authorizationPolicyBuilder.AddRequirements(new ApiKeyRequirement()); // Adds API key check
-// #endif
-
-            var policy = authorizationPolicyBuilder.Build();
-            return policy;
-        }
-
-        return await base.GetPolicyAsync(policyName);
+        return authorizationPolicy;
     }
 }
 
