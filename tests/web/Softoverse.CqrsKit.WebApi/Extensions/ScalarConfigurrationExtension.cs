@@ -69,31 +69,38 @@ internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvi
         var authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync();
         if (authenticationSchemes.Any(authScheme => authScheme.Name == "Bearer"))
         {
-            var requirements = new Dictionary<string, OpenApiSecurityScheme>
+            var securitySchemeRequirement = new OpenApiSecurityScheme
             {
-                ["Bearer"] = new OpenApiSecurityScheme
+                // for using in the operation.Value.Security
+                Reference = new OpenApiReference
                 {
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    In = ParameterLocation.Header,
-                    BearerFormat = "Json Web Token"
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
                 }
             };
+            
+            var requirements = new Dictionary<string, OpenApiSecurityScheme>
+            {
+                ["Bearer"] = securitySchemeRequirement
+            };
+            
             document.Components ??= new OpenApiComponents();
             document.Components.SecuritySchemes = requirements;
 
             foreach (var operation in document.Paths.Values.SelectMany(path => path.Operations))
             {
+                var securitySchemeRef = new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Id = "Bearer",
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+                
                 operation.Value.Security.Add(new OpenApiSecurityRequirement
                 {
-                    [new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Id = "Bearer",
-                            Type = ReferenceType.SecurityScheme
-                        }
-                    }] = Array.Empty<string>()
+                    [securitySchemeRef] = ["apiScope", "uiScope"]
                 });
             }
         }
@@ -149,8 +156,8 @@ internal sealed class OAuth2SecuritySchemeTransformer(IAuthenticationSchemeProvi
                 {
                     AuthorizationCode = new OpenApiOAuthFlow
                     {
-                        AuthorizationUrl = new Uri(configuration["JWT:TokenUrl"]),
-                        TokenUrl = new Uri(configuration["JWT:TokenRefreshUrl"]),
+                        AuthorizationUrl = new Uri(configuration["JWT:TokenUrl"]!),
+                        TokenUrl = new Uri(configuration["JWT:TokenRefreshUrl"]!),
                         Scopes = new Dictionary<string, string>
                         {
                             {

@@ -25,7 +25,7 @@ public class AuthenticationController(UserManager<IdentityUser> userManager, Sig
 
     // POST api/Auth/token
     [HttpPost("token")]
-    public async Task<IActionResult> Token(TokenRequest request)
+    public async Task<ActionResult<TokenResponse>> Token(TokenRequest request)
     {
         if (string.IsNullOrEmpty(request.Username))
         {
