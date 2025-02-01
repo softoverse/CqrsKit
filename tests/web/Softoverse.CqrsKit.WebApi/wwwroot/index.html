@@ -1,10 +1,12 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+<!-- Previous head content remains the same -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>API Documentation Portal</title>
     <style>
+        /* Previous styles remain the same until the option-card styles */
         * {
             margin: 0;
             padding: 0;
@@ -19,13 +21,14 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
+            perspective: 1000px;
         }
 
         .container {
             text-align: center;
             color: white;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(20px) rotateX(20deg);
             animation: fadeInUp 0.8s ease forwards;
         }
 
@@ -33,14 +36,29 @@
             font-size: 2.5rem;
             margin-bottom: 2rem;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4a90e2, #63b3ed);
+            animation: lineGrow 1s ease-out 0.8s forwards;
         }
 
         .options {
             display: flex;
             gap: 2rem;
             justify-content: center;
+            perspective: 1000px;
         }
 
+        /* Updated option-card styles with faster hover-out transitions */
         .option-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -48,18 +66,35 @@
             border-radius: 15px;
             width: 250px;
             cursor: pointer;
-            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            transform-style: preserve-3d;
+            /* Different timing for hover-in and hover-out */
+            transition: transform 0.3s ease-in,
+            background-color 0.3s ease-in,
+            box-shadow 0.3s ease-in;
         }
 
         .option-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) rotateY(10deg);
             background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-out,
+            background-color 0.15s ease-out,
+            box-shadow 0.15s ease-out;
+        }
+
+        /* Faster return to original state */
+        .option-card:not(:hover) {
+            transform: translateY(0) rotateY(0);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+            transition: all 0.15s ease-out;
         }
 
         .option-card:active {
-            transform: scale(0.98);
+            transform: scale(0.98) rotateY(0deg);
+            transition: transform 0.1s ease-out;
         }
 
         .option-card::before {
@@ -75,22 +110,49 @@
                     rgba(255, 255, 255, 0.2),
                     transparent
             );
-            transition: 0.5s;
+            transition: 0.3s ease-in;
         }
 
         .option-card:hover::before {
             left: 100%;
+            transition: 0.3s ease-out;
         }
 
+        /* Updated pulse animation with faster fade-out */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(74, 144, 226, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(74, 144, 226, 0);
+            }
+        }
+
+        .option-card:hover {
+            animation: pulse 1.2s infinite;
+        }
+
+        .option-card:not(:hover) {
+            animation: none;
+        }
+
+        /* Rest of the previous styles remain the same */
         h2 {
             font-size: 1.5rem;
             margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
         p {
             font-size: 1rem;
-            opacity: 0.8;
+            opacity: 0;
             line-height: 1.5;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards 1s;
         }
 
         .background-animation {
@@ -108,17 +170,36 @@
             border-radius: 50%;
             background: radial-gradient(circle, #4a90e2, transparent);
             animation: float 20s infinite linear;
+            opacity: 0;
         }
 
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Previous keyframes and other styles remain the same */
         @keyframes float {
             0% {
-                transform: translate(0, 0) scale(1);
+                transform: translate(0, 0) scale(1) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
             }
             50% {
-                transform: translate(100px, 50px) scale(1.1);
+                transform: translate(100px, 50px) scale(1.1) rotate(180deg);
+            }
+            90% {
+                opacity: 0.5;
             }
             100% {
-                transform: translate(0, 0) scale(1);
+                transform: translate(0, 0) scale(1) rotate(360deg);
+                opacity: 0;
             }
         }
 
@@ -133,6 +214,26 @@
             }
         }
 
+        @keyframes lineGrow {
+            from {
+                width: 0;
+            }
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(100px) rotate3d(1, 0, 0, 90deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotate3d(1, 0, 0, 0);
+            }
+        }
+
         .page-transition {
             position: fixed;
             top: 0;
@@ -144,8 +245,19 @@
             z-index: 999;
         }
 
+        .mouse-trail {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+            background: rgba(255, 255, 255, 0.5);
+            transition: 0.1s;
+            z-index: 10000;
+        }
     </style>
 </head>
+<!-- Previous body content remains exactly the same -->
 <body>
 <div class="background-animation" id="backgroundAnimation"></div>
 <div class="container">
@@ -163,10 +275,11 @@
 </div>
 <div class="page-transition"></div>
 
+<!-- Previous JavaScript remains exactly the same -->
 <script>
     // Create floating circles in the background
     const backgroundAnimation = document.getElementById('backgroundAnimation');
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 8; i++) {
         const circle = document.createElement('div');
         circle.classList.add('circle');
         circle.style.width = Math.random() * 300 + 100 + 'px';
@@ -176,6 +289,85 @@
         circle.style.animationDelay = Math.random() * 5 + 's';
         backgroundAnimation.appendChild(circle);
     }
+
+    // Mouse trail effect
+    const trails = [];
+    const trailCount = 12;
+
+    for (let i = 0; i < trailCount; i++) {
+        const trail = document.createElement('div');
+        trail.className = 'mouse-trail';
+        document.body.appendChild(trail);
+        trails.push({
+            element: trail,
+            x: 0,
+            y: 0,
+            delay: i * 2
+        });
+    }
+
+    let mouseX = 0;
+    let mouseY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    function updateTrails() {
+        trails.forEach((trail, index) => {
+            const currentX = trail.x;
+            const currentY = trail.y;
+
+            const dx = mouseX - currentX;
+            const dy = mouseY - currentY;
+
+            trail.x += dx * 0.2;
+            trail.y += dy * 0.2;
+
+            trail.element.style.transform = `translate(${trail.x}px, ${trail.y}px)`;
+            trail.element.style.opacity = (trailCount - index) / trailCount;
+        });
+        requestAnimationFrame(updateTrails);
+    }
+
+    updateTrails();
+
+    // Particle explosion on click
+    function createParticles(x, y) {
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            document.body.appendChild(particle);
+
+            const angle = (Math.PI * 2 * i) / 20;
+            const velocity = 5;
+            const vx = Math.cos(angle) * velocity;
+            const vy = Math.sin(angle) * velocity;
+
+            let posX = x;
+            let posY = y;
+
+            const animate = () => {
+                posX += vx;
+                posY += vy;
+                particle.style.transform = `translate(${posX}px, ${posY}px)`;
+                particle.style.opacity = parseFloat(particle.style.opacity || 1) - 0.02;
+
+                if (parseFloat(particle.style.opacity) > 0) {
+                    requestAnimationFrame(animate);
+                } else {
+                    particle.remove();
+                }
+            };
+
+            requestAnimationFrame(animate);
+        }
+    }
+
+    document.addEventListener('click', (e) => {
+        createParticles(e.clientX, e.clientY);
+    });
 
     // Page transition animation
     function navigate(path) {
