@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
+using Softoverse.CqrsKit.Abstraction.Executors;
 using Softoverse.CqrsKit.Builders;
 using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.WebApi.DataAccess;
@@ -17,12 +18,12 @@ public class StudentsController(IServiceProvider services, ApplicationDbContext 
 {
     // GET: api/Students
     [HttpGet]
-    // [Authorize, Authorize(Constants.ApiKeyPolicy)]
+    [Authorize, Authorize(Constants.ApiKeyPolicy)]
     public async Task<ActionResult<Result<List<Student>>>> Get([FromQuery] StudentGetAllQuery query, CancellationToken ct = default)
     {
-        var studentGetAllQuery = QueryBuilder.Initialize<StudentGetAllQuery, List<Student>>(services)
-                                             .WithQuery(query)
-                                             .Build();
+        var studentGetAllQuery = CqrsBuilder.Query<StudentGetAllQuery, List<Student>>(services)
+                                            .WithQuery(query)
+                                            .Build();
 
         var result = await studentGetAllQuery.ExecuteAsync(ct);
 
@@ -30,7 +31,7 @@ public class StudentsController(IServiceProvider services, ApplicationDbContext 
     }
 
     [HttpGet("free")]
-    // [Authorize(Constants.ApiKeyPolicy)]
+    [Authorize(Constants.ApiKeyPolicy)]
     public async Task<ActionResult<Result<List<Student>>>> GetFree([FromQuery] StudentGetAllQuery query, CancellationToken ct = default)
     {
         var students = await dbContext.Students.Where(x => (!string.IsNullOrEmpty(x.Name) && x.Name == query.Name)
@@ -51,12 +52,12 @@ public class StudentsController(IServiceProvider services, ApplicationDbContext 
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(Guid id, CancellationToken ct = default)
     {
-        var studentGetByIdQuery = QueryBuilder.Initialize<StudentGetByIdQuery, Student>(services)
-                                              .WithQuery(new StudentGetByIdQuery
-                                              {
-                                                  Id = id
-                                              })
-                                              .Build();
+        var studentGetByIdQuery = CqrsBuilder.Query<StudentGetByIdQuery, Student>(services)
+                                             .WithQuery(new StudentGetByIdQuery
+                                             {
+                                                 Id = id
+                                             })
+                                             .Build();
 
         var result = await studentGetByIdQuery.ExecuteAsync(ct);
 
@@ -67,9 +68,9 @@ public class StudentsController(IServiceProvider services, ApplicationDbContext 
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] Student student, CancellationToken ct = default)
     {
-        var studentCreateCommand = CommandBuilder.Initialize<StudentCreateCommand, Student>(services)
-                                                 .WithCommand(new StudentCreateCommand(student))
-                                                 .Build();
+        var studentCreateCommand = CqrsBuilder.Command<StudentCreateCommand, Student>(services)
+                                              .WithCommand(new StudentCreateCommand(student))
+                                              .Build();
 
         var result = await studentCreateCommand.ExecuteAsync(ct);
 
@@ -80,9 +81,9 @@ public class StudentsController(IServiceProvider services, ApplicationDbContext 
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(Guid id, [FromBody] Student student, CancellationToken ct = default)
     {
-        var studentUpdateCommand = CommandBuilder.Initialize<StudentUpdateCommand, Student>(services)
-                                                 .WithCommand(new StudentUpdateCommand(id, student))
-                                                 .Build();
+        var studentUpdateCommand = CqrsBuilder.Command<StudentUpdateCommand, Student>(services)
+                                              .WithCommand(new StudentUpdateCommand(id, student))
+                                              .Build();
 
         var result = await studentUpdateCommand.ExecuteAsync(ct);
 
@@ -93,9 +94,9 @@ public class StudentsController(IServiceProvider services, ApplicationDbContext 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct = default)
     {
-        var studentDeleteCommand = CommandBuilder.Initialize<StudentDeleteCommand, Student>(services)
-                                                 .WithCommand(new StudentDeleteCommand(id))
-                                                 .Build();
+        var studentDeleteCommand = CqrsBuilder.Command<StudentDeleteCommand, Student>(services)
+                                              .WithCommand(new StudentDeleteCommand(id))
+                                              .Build();
 
         var result = await studentDeleteCommand.ExecuteAsync(ct);
 

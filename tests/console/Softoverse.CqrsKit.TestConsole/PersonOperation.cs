@@ -19,8 +19,8 @@ public class PersonOperation(IServiceProvider services)
     public async Task GetPerson(PersonGetAllQuery request, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(GetPerson), startsWith: Green, endsWith: Normal);
-        
+        PrintBlock(nameof (GetPerson), startsWith: Green, endsWith: Normal);
+
         var sw = Stopwatch.StartNew();
 
         var query = CqrsBuilder.Query<PersonGetAllQuery, List<Person>>(services)
@@ -43,13 +43,13 @@ public class PersonOperation(IServiceProvider services)
     public async Task GetPersonById(PersonGetByIdQuery request, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(GetPersonById), startsWith: Green, endsWith: Normal);
+        PrintBlock(nameof (GetPersonById), startsWith: Green, endsWith: Normal);
 
         var sw = Stopwatch.StartNew();
 
-        var query = QueryBuilder.Initialize<PersonGetByIdQuery, Person>(services)
-                                .WithQuery(request)
-                                .Build();
+        var query = CqrsBuilder.Query<PersonGetByIdQuery, Person>(services)
+                               .WithQuery(request)
+                               .Build();
 
         var person = await query.ExecuteDefaultAsync(ct);
 
@@ -67,13 +67,13 @@ public class PersonOperation(IServiceProvider services)
     public async Task CreatePerson(PersonCreateCommand request, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(CreatePerson), startsWith: Green, endsWith: Normal);
+        PrintBlock(nameof (CreatePerson), startsWith: Green, endsWith: Normal);
 
         var sw = Stopwatch.StartNew();
 
-        var command = CommandBuilder.Initialize<PersonCreateCommand, Person>(services)
-                                    .WithCommand(request)
-                                    .Build();
+        var command = CqrsBuilder.Command<PersonCreateCommand, Person>(services)
+                                 .WithCommand(request)
+                                 .Build();
 
         var personCreateResponse = await command.ExecuteAsync(ct);
 
@@ -91,14 +91,14 @@ public class PersonOperation(IServiceProvider services)
     public async Task UpdatePerson(PersonUpdateCommand request, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(UpdatePerson), startsWith: Green, endsWith: Normal);
+        PrintBlock(nameof (UpdatePerson), startsWith: Green, endsWith: Normal);
         var student = request.Payload;
 
         var sw = Stopwatch.StartNew();
 
-        var command = CommandBuilder.Initialize<PersonUpdateCommand, Person>(services)
-                                    .WithCommand(request)
-                                    .Build();
+        var command = CqrsBuilder.Command<PersonUpdateCommand, Person>(services)
+                                 .WithCommand(request)
+                                 .Build();
 
         var personUpdateResponse = await command.ExecuteAsync(ct);
 
@@ -116,7 +116,7 @@ public class PersonOperation(IServiceProvider services)
     public async Task DeletePerson(PersonDeleteCommand request, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(DeletePerson), startsWith: Green, endsWith: Normal);
+        PrintBlock(nameof (DeletePerson), startsWith: Green, endsWith: Normal);
 
         var sw = Stopwatch.StartNew();
 
@@ -141,13 +141,13 @@ public class PersonOperation(IServiceProvider services)
     public async Task ApproveDeletePerson(string approvalFlowId, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(ApproveDeletePerson), startsWith: Green, endsWith: Normal);
+        PrintBlock(nameof (ApproveDeletePerson), startsWith: Green, endsWith: Normal);
 
         var sw = Stopwatch.StartNew();
 
-        var approvalFlow = ApprovalFlowBuilder.Initialize<BaseApprovalFlowPendingTask>(services)
-                                              .WithId(approvalFlowId)
-                                              .Build();
+        var approvalFlow = CqrsBuilder.ApprovalFlow<BaseApprovalFlowPendingTask>(services)
+                                      .WithId(approvalFlowId)
+                                      .Build();
 
         var approveDeletePersonResponse = await approvalFlow.AcceptAsync(ct);
 
@@ -165,7 +165,7 @@ public class PersonOperation(IServiceProvider services)
     public async Task RejectDeletePerson(string approvalFlowId, CancellationToken ct = default)
     {
         StartBlock();
-        PrintBlock(nameof(RejectDeletePerson), startsWith: Green, endsWith: Normal);
+        PrintBlock(nameof (RejectDeletePerson), startsWith: Green, endsWith: Normal);
 
         var sw = Stopwatch.StartNew();
 

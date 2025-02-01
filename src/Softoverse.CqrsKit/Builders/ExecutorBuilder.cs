@@ -4,25 +4,25 @@ using Softoverse.CqrsKit.Model.Entity;
 
 namespace Softoverse.CqrsKit.Builders;
 
-public static class QueryBuilder
+internal static class QueryBuilder
 {
-    public static IQueryExecutorBuilder<TQuery, TResponse> Initialize<TQuery, TResponse>(IServiceProvider services) where TQuery : IQuery
+    public static IQueryExecutorBuilder<TQuery, TResponse> Initialize<TQuery, TResponse>(this IServiceProvider services) where TQuery : IQuery
     {
         return QueryExecutorBuilder<TQuery, TResponse>.Initialize(services);
     }
 }
 
-public static class CommandBuilder
+internal static class CommandBuilder
 {
-    public static ICommandExecutorBuilder<TCommand, TResponse> Initialize<TCommand, TResponse>(IServiceProvider services) where TCommand : ICommand
+    public static ICommandExecutorBuilder<TCommand, TResponse> Initialize<TCommand, TResponse>(this IServiceProvider services) where TCommand : ICommand
     {
         return CommandExecutorBuilder<TCommand, TResponse>.Initialize(services);
     }
 }
 
-public static class ApprovalFlowBuilder
+internal static class ApprovalFlowBuilder
 {
-    public static IApprovalFlowExecutorBuilder<T> Initialize<T>(IServiceProvider services) where T : BaseApprovalFlowPendingTask
+    public static IApprovalFlowExecutorBuilder<T> Initialize<T>(this IServiceProvider services) where T : BaseApprovalFlowPendingTask
     {
         return ApprovalFlowExecutorBuilder<T>.Initialize(services);
     }
@@ -32,16 +32,16 @@ public static class CqrsBuilder
 {
     public static IQueryExecutorBuilder<TQuery, TResponse> Query<TQuery, TResponse>(IServiceProvider services) where TQuery : IQuery
     {
-        return QueryBuilder.Initialize<TQuery, TResponse>(services);
+        return services.Initialize<TQuery, TResponse>();
     }
-    
+
     public static ICommandExecutorBuilder<TCommand, TResponse> Command<TCommand, TResponse>(IServiceProvider services) where TCommand : ICommand
     {
-        return CommandBuilder.Initialize<TCommand, TResponse>(services);
+        return services.Initialize<TCommand, TResponse>();
     }
-    
+
     public static IApprovalFlowExecutorBuilder<T> ApprovalFlow<T>(IServiceProvider services) where T : BaseApprovalFlowPendingTask
     {
-        return ApprovalFlowBuilder.Initialize<T>(services);
+        return services.Initialize<T>();
     }
 }
