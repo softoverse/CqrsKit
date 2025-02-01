@@ -24,13 +24,13 @@ public static class ServiceCollectionExtension
 
         var types = CqrsHelper.ConsumerAssemblies.SelectMany(x => x.GetTypes()).ToList();
 
-        services.AddApprovalFlowService(types)
-                .AddQueryHandlers(types)
+        services.AddQueryHandlers(types)
                 .AddQueryAsyncExecutionFilter(types)
                 .AddQueryExecutionFilter(types)
                 .AddCommandHandlers(types)
                 .AddCommandAsyncExecutionFilter(types)
                 .AddCommandExecutionFilter(types)
+                .AddApprovalFlowService(types)
                 .AddApprovalFlowExecutionFilter(types)
                 .AddApprovalFlowHandlers(types)
                 .AddApprovalFlowAcceptFilter(types)

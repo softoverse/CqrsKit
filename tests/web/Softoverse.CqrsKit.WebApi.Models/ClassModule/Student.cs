@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Softoverse.CqrsKit.WebApi.Models;
+namespace Softoverse.CqrsKit.WebApi.Models.ClassModule;
 
 public class Student
 {

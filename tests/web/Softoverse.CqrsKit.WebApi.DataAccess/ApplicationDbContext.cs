@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 using Softoverse.CqrsKit.WebApi.Models;
+using Softoverse.CqrsKit.WebApi.Models.ClassModule;
 using Softoverse.CqrsKit.WebApi.Models.CQRS;
 using Softoverse.CqrsKit.WebApi.Models.CQRS.Custom;
 using Softoverse.CqrsKit.WebApi.Models.CQRS.MappingModels;

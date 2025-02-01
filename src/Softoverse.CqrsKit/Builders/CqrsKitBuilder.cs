@@ -22,7 +22,7 @@ public class CqrsKitBuilder
         CqrsKitOptions options = new CqrsKitOptions();
         configureOptions(options);
 
-        if (!options.Assemblies.Any())
+        if (options.Assemblies.Count == 0)
             throw new ArgumentException("No assemblies found to scan. Supply at least one assembly to scan for handlers.");
 
         _services.BuildCqrsKit(options.Assemblies);

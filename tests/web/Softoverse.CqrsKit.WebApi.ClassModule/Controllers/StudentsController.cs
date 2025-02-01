@@ -2,15 +2,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-using Softoverse.CqrsKit.Abstraction.Executors;
 using Softoverse.CqrsKit.Builders;
 using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Models;
+using Softoverse.CqrsKit.WebApi.Models.ClassModule;
 using Softoverse.CqrsKit.WebApi.Module.Event.Commands;
 using Softoverse.CqrsKit.WebApi.Module.Event.Queries;
 
-namespace Softoverse.CqrsKit.WebApi.Module;
+namespace Softoverse.CqrsKit.WebApi.Module.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -30,6 +30,7 @@ public class StudentsController(IServiceProvider services, ApplicationDbContext 
         return Ok(result);
     }
 
+    // GET: api/Students/free
     [HttpGet("free")]
     [Authorize(Constants.ApiKeyPolicy)]
     public async Task<ActionResult<Result<List<Student>>>> GetFree([FromQuery] StudentGetAllQuery query, CancellationToken ct = default)

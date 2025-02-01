@@ -3,6 +3,7 @@
 using Softoverse.CqrsKit.Model.Abstraction;
 using Softoverse.CqrsKit.Model.Command;
 using Softoverse.CqrsKit.WebApi.Models;
+using Softoverse.CqrsKit.WebApi.Models.ClassModule;
 
 namespace Softoverse.CqrsKit.WebApi.Module.Event.Commands;
 

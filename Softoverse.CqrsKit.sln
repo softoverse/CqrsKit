@@ -29,7 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{2E0BB830-674
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Softoverse.CqrsKit.WebApi", "tests\web\Softoverse.CqrsKit.WebApi\Softoverse.CqrsKit.WebApi.csproj", "{E18F74DE-AE2B-451D-8FF6-B93876D8AABB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Softoverse.CqrsKit.WebApi.Module", "tests\web\Softoverse.CqrsKit.WebApi.Module\Softoverse.CqrsKit.WebApi.Module.csproj", "{DFF36EE6-7EC1-4E73-B791-05E935A25EFB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Softoverse.CqrsKit.WebApi.ClassModule", "tests\web\Softoverse.CqrsKit.WebApi.ClassModule\Softoverse.CqrsKit.WebApi.ClassModule.csproj", "{DFF36EE6-7EC1-4E73-B791-05E935A25EFB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Softoverse.CqrsKit.WebApi.DataAccess", "tests\web\Softoverse.CqrsKit.WebApi.DataAccess\Softoverse.CqrsKit.WebApi.DataAccess.csproj", "{893A140F-D071-4C6E-9443-E7FB778FC6ED}"
 EndProject

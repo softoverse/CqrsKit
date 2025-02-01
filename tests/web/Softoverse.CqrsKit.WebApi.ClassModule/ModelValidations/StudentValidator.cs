@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 
 using Softoverse.CqrsKit.WebApi.Models;
+using Softoverse.CqrsKit.WebApi.Models.ClassModule;
 
 namespace Softoverse.CqrsKit.WebApi.Module.ModelValidations;
 

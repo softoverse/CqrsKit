@@ -6,6 +6,7 @@ using Softoverse.CqrsKit.Model;
 using Softoverse.CqrsKit.Model.Utility;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Models;
+using Softoverse.CqrsKit.WebApi.Models.ClassModule;
 using Softoverse.CqrsKit.WebApi.Module.Event.Queries;
 
 namespace Softoverse.CqrsKit.WebApi.Module.Handlers.Queries;

@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0a192f 0%, #0d2f4a 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            color: white;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .options {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 15px;
+            width: 250px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .option-card:active {
+            transform: scale(0.98);
+        }
+
+        .option-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent
+            );
+            transition: 0.5s;
+        }
+
+        .option-card:hover::before {
+            left: 100%;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1rem;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.5;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, #4a90e2, transparent);
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            50% {
+                transform: translate(100px, 50px) scale(1.1);
+            }
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a192f;
+            transform: translateX(100%);
+            z-index: 999;
+        }
+
+    </style>
+</head>
+<body>
+<div class="background-animation" id="backgroundAnimation"></div>
+<div class="container">
+    <h1>Choose Your Documentation</h1>
+    <div class="options">
+        <div class="option-card" onclick="navigate('swagger')">
+            <h2>Swagger</h2>
+            <p>Interactive API documentation with OpenAPI specification. Perfect for testing and exploring endpoints.</p>
+        </div>
+        <div class="option-card" onclick="navigate('scalar')">
+            <h2>Scalar</h2>
+            <p>Modern, beautiful API reference documentation with rich features and customization options.</p>
+        </div>
+    </div>
+</div>
+<div class="page-transition"></div>
+
+<script>
+    // Create floating circles in the background
+    const backgroundAnimation = document.getElementById('backgroundAnimation');
+    for (let i = 0; i < 5; i++) {
+        const circle = document.createElement('div');
+        circle.classList.add('circle');
+        circle.style.width = Math.random() * 300 + 100 + 'px';
+        circle.style.height = circle.style.width;
+        circle.style.left = Math.random() * 100 + '%';
+        circle.style.top = Math.random() * 100 + '%';
+        circle.style.animationDelay = Math.random() * 5 + 's';
+        backgroundAnimation.appendChild(circle);
+    }
+
+    // Page transition animation
+    function navigate(path) {
+        const transition = document.querySelector('.page-transition');
+        transition.style.transition = 'transform 0.5s ease-in-out';
+        transition.style.transform = 'translateX(0)';
+
+        setTimeout(() => {
+            // In a real application, replace with actual URLs
+            window.location.href = `/${path}`;
+        }, 500);
+    }
+</script>
+</body>
+</html>

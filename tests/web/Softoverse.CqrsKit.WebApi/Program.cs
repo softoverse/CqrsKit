@@ -54,6 +54,7 @@ public class Program
                .MapScalar();
         }
 
+        app.UseStaticFiles();
         app.UseHttpsRedirection();
 
         app.UseAuthentication();

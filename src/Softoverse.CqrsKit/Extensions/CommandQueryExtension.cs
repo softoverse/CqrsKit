@@ -16,6 +16,22 @@ namespace Softoverse.CqrsKit.Extensions;
 
 public static class CommandQueryExtension
 {
+    internal static IServiceCollection AddBuilders(this IServiceCollection services, IList<Type> types)
+    {
+        foreach (var implementationType in types.GetQueryHandlerTypes())
+        {
+            var interfaceType = implementationType.GetInterfaces()
+                                                  .FirstOrDefault(type =>
+                                                                      typeof(IQueryHandlerMarker).IsAssignableFrom(type)
+                                                                    &&
+                                                                      type != typeof(IQueryHandlerMarker));
+
+            ServiceCollectionExtension.RegisterToService(services, interfaceType, implementationType);
+        }
+
+        return services;
+    }
+    
     internal static IServiceCollection AddQueryHandlers(this IServiceCollection services, IList<Type> types)
     {
         foreach (var implementationType in types.GetQueryHandlerTypes())
