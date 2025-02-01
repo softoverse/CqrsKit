@@ -1,4 +1,9 @@
+using System.Text;
+
 using FluentValidation;
+
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 using Softoverse.CqrsKit.Extensions;
 using Softoverse.CqrsKit.WebApi.DataAccess;
@@ -49,28 +54,41 @@ public class Program
 
         app.Use(async (context, next) =>
         {
-            var apiKey = context.RequestServices.GetRequiredService<IConfiguration>()["ApiKey"];
+            var configuration = context.RequestServices.GetRequiredService<IConfiguration>();
 
-            if (context.Request.Path.StartsWithSegments("/swagger/index.html") || context.Request.Path.StartsWithSegments("/scalar/v1"))
+            if (context.Request.Path.StartsWithSegments("/swagger") || context.Request.Path.StartsWithSegments("/scalar"))
             {
-                if (!context.Request.Query.TryGetValue("apiKey", out var extractedApiKey) || extractedApiKey != apiKey)
+                string basicHeader = context.Request.Headers.Authorization.ToString();
+
+                if (string.IsNullOrEmpty(basicHeader))
                 {
-                    // Redirect to another API endpoint (e.g., "/unauthorized")
-                    context.Response.Redirect("/unauthorized");
+                    context.Response.StatusCode = 401;
+                    context.Response.Headers["WWW-Authenticate"] = "Basic realm=\"http://localhost:5001\"";
                     return;
                 }
-                // if (context.Request.Path.StartsWithSegments("/swagger"))
-                // {
-                //     context.Response.Redirect("/swagger");
-                //     return;
-                // }
-                // if (context.Request.Path.StartsWithSegments("/scalar"))
-                // {
-                //     context.Response.Redirect("/scalar");
-                //     return;
-                // }
 
+                if (basicHeader.Contains(' '))
+                {
+                    basicHeader = basicHeader.Split(' ')[1];
+                }
 
+                var bytes = Convert.FromBase64String(basicHeader);
+                var decodedString = Encoding.UTF8.GetString(bytes);
+
+                // splitting decodeAuthToken using ':'
+                var splitText = decodedString.Split([':']);
+
+                string clientId = splitText[0];
+                string clientSecret = splitText[1];
+
+                var isValidBasicHeader = clientId == configuration["JWT:ClientId"] && clientSecret == configuration["JWT:ClientSecret"];
+
+                if (!isValidBasicHeader)
+                {
+                    context.Response.StatusCode = 401;
+                    context.Response.Headers["WWW-Authenticate"] = "Basic realm=\"http://localhost:5001\"";
+                    return;
+                }
             }
 
             await next();
@@ -83,11 +101,20 @@ public class Program
             app.MapScalar();
         }
 
-        app.UseStaticFiles();
-        app.MapGet("/doc", () => Results.Redirect("/doc.html"));
-        app.MapGet("/unauthorized", () => Results.Redirect("/unauthorized.html"));
-        // app.MapGet("/swagger", () => Results.Redirect("/swagger/index.html"));
-        // app.MapGet("/scalar", () => Results.Redirect("/scalar/v1"));
+        // app.UseStaticFiles();
+
+        app.MapGet("/doc", async () =>
+        {
+            var filePath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "doc.html");
+            var fileContent = await File.ReadAllTextAsync(filePath);
+            return Results.Content(fileContent, "text/html");
+        });
+        app.MapGet("/unauthorized", async () =>
+        {
+            var filePath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "unauthorized.html");
+            var fileContent = await File.ReadAllTextAsync(filePath);
+            return Results.Content(fileContent, "text/html");
+        });
 
         app.UseHttpsRedirection();
 

@@ -378,28 +378,19 @@
         transition.style.transition = 'transform 0.5s ease-in-out';
         transition.style.transform = 'translateX(0)';
 
-        const apiKey = prompt('Enter your API key to access the documentation:');
-        if (!apiKey) {
-            alert('No API key provided. Please try again.');
-            document.location.reload();
-            return;
-        }
-        
-        setTimeout(() => {            
-            window.location.href = `/${path}?apiKey=${apiKey}`;
+        setTimeout(() => {
+            window.location.href = `/${path}`;
 
-            // setTimeout(() => {
-                transition = document.querySelector('.page-transition');
-                // First remove the transition temporarily
-                transition.style.transition = 'none';
-                // Reset the transform
-                transition.style.transform = 'translateX(100%)';
-                // Force a reflow to ensure the 'none' transition is applied
-                transition.offsetHeight;
-                // Re-enable transitions
-                transition.style.transition = 'transform 0.5s ease-in-out';
-            // }, 0);
-        }, 0);
+            transition = document.querySelector('.page-transition');
+            // First remove the transition temporarily
+            transition.style.transition = 'none';
+            // Reset the transform
+            transition.style.transform = 'translateX(100%)';
+            // Force a reflow to ensure the 'none' transition is applied
+            transition.offsetHeight;
+            // Re-enable transitions
+            transition.style.transition = 'transform 0.5s ease-in-out';
+        }, 400);
     }
 
 
