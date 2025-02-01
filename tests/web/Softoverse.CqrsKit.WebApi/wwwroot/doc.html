@@ -263,11 +263,13 @@
 <div class="container">
     <h1>Choose Your Documentation</h1>
     <div class="options">
-        <div class="option-card" onclick="navigate('swagger')">
+        <div class="option-card" onclick="navigate('swagger/index.html')">
             <h2>Swagger</h2>
-            <p>Interactive API documentation with OpenAPI specification. Perfect for testing and exploring endpoints.</p>
+            <p>Interactive API documentation with OpenAPI specification.
+                Perfect for testing and exploring
+                endpoints.</p>
         </div>
-        <div class="option-card" onclick="navigate('scalar')">
+        <div class="option-card" onclick="navigate('scalar/v1')">
             <h2>Scalar</h2>
             <p>Modern, beautiful API reference documentation with rich features and customization options.</p>
         </div>
@@ -283,103 +285,124 @@
         const circle = document.createElement('div');
         circle.classList.add('circle');
         circle.style.width = Math.random() * 300 + 100 + 'px';
-        circle.style.height = circle.style.width;
+        circle.style.height = Math.random() * 300 + 100 + 'px';
         circle.style.left = Math.random() * 100 + '%';
         circle.style.top = Math.random() * 100 + '%';
         circle.style.animationDelay = Math.random() * 5 + 's';
         backgroundAnimation.appendChild(circle);
     }
 
-    // Mouse trail effect
-    const trails = [];
-    const trailCount = 12;
-
-    for (let i = 0; i < trailCount; i++) {
-        const trail = document.createElement('div');
-        trail.className = 'mouse-trail';
-        document.body.appendChild(trail);
-        trails.push({
-            element: trail,
-            x: 0,
-            y: 0,
-            delay: i * 2
-        });
-    }
-
-    let mouseX = 0;
-    let mouseY = 0;
-
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
-
-    function updateTrails() {
-        trails.forEach((trail, index) => {
-            const currentX = trail.x;
-            const currentY = trail.y;
-
-            const dx = mouseX - currentX;
-            const dy = mouseY - currentY;
-
-            trail.x += dx * 0.2;
-            trail.y += dy * 0.2;
-
-            trail.element.style.transform = `translate(${trail.x}px, ${trail.y}px)`;
-            trail.element.style.opacity = (trailCount - index) / trailCount;
-        });
-        requestAnimationFrame(updateTrails);
-    }
-
-    updateTrails();
-
-    // Particle explosion on click
-    function createParticles(x, y) {
-        for (let i = 0; i < 20; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            document.body.appendChild(particle);
-
-            const angle = (Math.PI * 2 * i) / 20;
-            const velocity = 5;
-            const vx = Math.cos(angle) * velocity;
-            const vy = Math.sin(angle) * velocity;
-
-            let posX = x;
-            let posY = y;
-
-            const animate = () => {
-                posX += vx;
-                posY += vy;
-                particle.style.transform = `translate(${posX}px, ${posY}px)`;
-                particle.style.opacity = parseFloat(particle.style.opacity || 1) - 0.02;
-
-                if (parseFloat(particle.style.opacity) > 0) {
-                    requestAnimationFrame(animate);
-                } else {
-                    particle.remove();
-                }
-            };
-
-            requestAnimationFrame(animate);
-        }
-    }
-
-    document.addEventListener('click', (e) => {
-        createParticles(e.clientX, e.clientY);
-    });
+    // // Mouse trail effect
+    // const trails = [];
+    // const trailCount = 12;
+    //
+    // for (let i = 0; i < trailCount; i++) {
+    //     const trail = document.createElement('div');
+    //     trail.className = 'mouse-trail';
+    //     document.body.appendChild(trail);
+    //     trails.push({
+    //         element: trail,
+    //         x: 0,
+    //         y: 0,
+    //         delay: i * 2
+    //     });
+    // }
+    //
+    // let mouseX = 0;
+    // let mouseY = 0;
+    //
+    // document.addEventListener('mousemove', (e) => {
+    //     mouseX = e.clientX;
+    //     mouseY = e.clientY;
+    // });
+    //
+    // function updateTrails() {
+    //     trails.forEach((trail, index) => {
+    //         const currentX = trail.x;
+    //         const currentY = trail.y;
+    //
+    //         const dx = mouseX - currentX;
+    //         const dy = mouseY - currentY;
+    //
+    //         trail.x += dx;
+    //         trail.y += dy;
+    //
+    //         trail.element.style.transform = `translate(${trail.x}px, ${trail.y}px)`;
+    //         trail.element.style.opacity = (trailCount - index) / trailCount;
+    //     });
+    //     requestAnimationFrame(updateTrails);
+    // }
+    //
+    // updateTrails();
+    //
+    // // Particle explosion on click
+    // function createParticles(x, y) {
+    //     for (let i = 0; i < 20; i++) {
+    //         const particle = document.createElement('div');
+    //         particle.className = 'particle';
+    //         document.body.appendChild(particle);
+    //
+    //         const angle = (Math.PI * 2 * i) / 20;
+    //         const velocity = 5;
+    //         const vx = Math.cos(angle) * velocity;
+    //         const vy = Math.sin(angle) * velocity;
+    //
+    //         let posX = x;
+    //         let posY = y;
+    //
+    //         const animate = () => {
+    //             posX += vx;
+    //             posY += vy;
+    //             particle.style.transform = `translate(${posX}px, ${posY}px)`;
+    //             particle.style.opacity = parseFloat(particle.style.opacity || 1) - 0.02;
+    //
+    //             if (parseFloat(particle.style.opacity) > 0) {
+    //                 requestAnimationFrame(animate);
+    //             } else {
+    //                 particle.remove();
+    //             }
+    //         };
+    //
+    //         requestAnimationFrame(animate);
+    //     }
+    // }
+    //
+    // document.addEventListener('click', (e) => {
+    //     createParticles(e.clientX, e.clientY);
+    // });
 
     // Page transition animation
     function navigate(path) {
-        const transition = document.querySelector('.page-transition');
+        let transition = document.querySelector('.page-transition');
+        transition.hidden = false;
         transition.style.transition = 'transform 0.5s ease-in-out';
         transition.style.transform = 'translateX(0)';
 
-        setTimeout(() => {
-            // In a real application, replace with actual URLs
-            window.location.href = `/${path}`;
-        }, 500);
+        const apiKey = prompt('Enter your API key to access the documentation:');
+        if (!apiKey) {
+            alert('No API key provided. Please try again.');
+            document.location.reload();
+            return;
+        }
+        
+        setTimeout(() => {            
+            window.location.href = `/${path}?apiKey=${apiKey}`;
+
+            // setTimeout(() => {
+                transition = document.querySelector('.page-transition');
+                // First remove the transition temporarily
+                transition.style.transition = 'none';
+                // Reset the transform
+                transition.style.transform = 'translateX(100%)';
+                // Force a reflow to ensure the 'none' transition is applied
+                transition.offsetHeight;
+                // Re-enable transitions
+                transition.style.transition = 'transform 0.5s ease-in-out';
+            // }, 0);
+        }, 0);
     }
+
+
 </script>
 </body>
 </html>

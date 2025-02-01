@@ -54,7 +54,7 @@ public static class SwaggerConfigurationExtension
                     ["apiScope", "uiScope"]
                 }
             });
-            
+
             // Add API Key Authentication to Swagger
             c.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
             {
@@ -64,7 +64,7 @@ public static class SwaggerConfigurationExtension
                 Type = SecuritySchemeType.ApiKey,
                 Scheme = "ApiKey"
             });
-            
+
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -99,7 +99,7 @@ public static class SwaggerConfigurationExtension
                 var version = versions[i];
                 c.SwaggerEndpoint($"v{version}/swagger.json", $"API V{version}");
             }
-            
+
             c.OAuthClientId(app.Configuration["JWT:ClientId"]);
             c.OAuthClientSecret(app.Configuration["JWT:ClientSecret"]);
             c.OAuthAppName("Softoverse.CqrsKit");
@@ -114,6 +114,7 @@ public static class SwaggerConfigurationExtension
             c.EnableValidator();
             c.EnableTryItOutByDefault();
         });
+
         app.MapSwagger("{documentName}/swagger.json");
 
         return app;

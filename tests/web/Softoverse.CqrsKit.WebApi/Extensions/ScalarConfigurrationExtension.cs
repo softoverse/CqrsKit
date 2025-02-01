@@ -28,7 +28,7 @@ public static class ScalarConfigurationExtension
                    .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
                    .WithDownloadButton(true)
                    .WithSearchHotKey("K");
-            
+
             options
                 .WithPreferredScheme("ApiKey") // Optional. Security scheme name from the OpenAPI document
                 .WithApiKeyAuthentication(apiKey =>
@@ -78,12 +78,12 @@ internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvi
                     Type = ReferenceType.SecurityScheme
                 }
             };
-            
+
             var requirements = new Dictionary<string, OpenApiSecurityScheme>
             {
                 ["Bearer"] = securitySchemeRequirement
             };
-            
+
             document.Components ??= new OpenApiComponents();
             document.Components.SecuritySchemes = requirements;
 
@@ -97,7 +97,7 @@ internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvi
                         Type = ReferenceType.SecurityScheme
                     }
                 };
-                
+
                 operation.Value.Security.Add(new OpenApiSecurityRequirement
                 {
                     [securitySchemeRef] = ["apiScope", "uiScope"]

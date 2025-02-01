@@ -47,14 +47,48 @@ public class Program
 
         await app.SeedApplicationBaseDataAsync();
 
+        app.Use(async (context, next) =>
+        {
+            var apiKey = context.RequestServices.GetRequiredService<IConfiguration>()["ApiKey"];
+
+            if (context.Request.Path.StartsWithSegments("/swagger/index.html") || context.Request.Path.StartsWithSegments("/scalar/v1"))
+            {
+                if (!context.Request.Query.TryGetValue("apiKey", out var extractedApiKey) || extractedApiKey != apiKey)
+                {
+                    // Redirect to another API endpoint (e.g., "/unauthorized")
+                    context.Response.Redirect("/unauthorized");
+                    return;
+                }
+                // if (context.Request.Path.StartsWithSegments("/swagger"))
+                // {
+                //     context.Response.Redirect("/swagger");
+                //     return;
+                // }
+                // if (context.Request.Path.StartsWithSegments("/scalar"))
+                // {
+                //     context.Response.Redirect("/scalar");
+                //     return;
+                // }
+
+
+            }
+
+            await next();
+        });
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            app.UseSwaggerUi()
-               .MapScalar();
+            app.UseSwaggerUi();
+            app.MapScalar();
         }
 
         app.UseStaticFiles();
+        app.MapGet("/doc", () => Results.Redirect("/doc.html"));
+        app.MapGet("/unauthorized", () => Results.Redirect("/unauthorized.html"));
+        // app.MapGet("/swagger", () => Results.Redirect("/swagger/index.html"));
+        // app.MapGet("/scalar", () => Results.Redirect("/scalar/v1"));
+
         app.UseHttpsRedirection();
 
         app.UseAuthentication();
