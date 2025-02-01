@@ -55,13 +55,13 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
         HandlerStep<TResponse>[] steps =
         [
             HandlerStep<TResponse>.New(() => ExecutionFilter.OnExecutingAsync(Command, Context, ct), StepBehavior.MustCall),
-            HandlerStep<TResponse>.New(() => ExecuteAsyncExecutionFilterActionAsync(() => AsyncExecutionFilter?.OnActionExecutingAsync(Context, ct)!), isAsyncExecutionFilterAvailable ? StepBehavior.MustCall : StepBehavior.Skip),
+            HandlerStep<TResponse>.New(() => ExecuteAsyncExecutionFilterActionAsync(() => AsyncExecutionFilter?.OnExecutingAsync(Context, ct)!), isAsyncExecutionFilterAvailable ? StepBehavior.MustCall : StepBehavior.Skip),
             HandlerStep<TResponse>.New(() => ExecuteApprovalFlowAsync(ct), isApprovalFlowRequired ? StepBehavior.FinalOutput : StepBehavior.Skip),
             HandlerStep<TResponse>.New(() => CommandHandler.ValidateAsync(Command, Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
             HandlerStep<TResponse>.New(() => CommandHandler.OnStartAsync(Command, Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
             HandlerStep<TResponse>.New(() => CommandHandler.HandleAsync(Command, Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.FinalOutput),
             HandlerStep<TResponse>.New(() => CommandHandler.OnEndAsync(Command, Context, ct), isApprovalFlowRequired ? StepBehavior.Skip : StepBehavior.Mandatory),
-            HandlerStep<TResponse>.New(() => ExecuteAsyncExecutionFilterActionAsync(() => AsyncExecutionFilter?.OnActionExecutedAsync(Context, ct)!), isAsyncExecutionFilterAvailable ? StepBehavior.MustCall : StepBehavior.Skip),
+            HandlerStep<TResponse>.New(() => ExecuteAsyncExecutionFilterActionAsync(() => AsyncExecutionFilter?.OnExecutedAsync(Context, ct)!), isAsyncExecutionFilterAvailable ? StepBehavior.MustCall : StepBehavior.Skip),
             HandlerStep<TResponse>.New(() => ExecutionFilter.OnExecutedAsync(Command, Context, ct), StepBehavior.MustCall)
         ];
 

@@ -38,11 +38,11 @@ public sealed class QueryExecutor<TQuery, TResponse> : IQueryExecutor<TQuery, TR
         HandlerStep<TResponse>[] steps =
         [
             HandlerStep<TResponse>.New(() => ExecutionFilter.OnExecutingAsync(Query, Context, ct), StepBehavior.MustCall),
-            HandlerStep<TResponse>.New(() => ExecuteAsyncExecutionFilterActionAsync(() => AsyncExecutionFilter?.OnActionExecutingAsync(Context, ct)!), isAsyncExecutionFilterAvailable ? StepBehavior.MustCall : StepBehavior.Skip),
+            HandlerStep<TResponse>.New(() => ExecuteAsyncExecutionFilterActionAsync(() => AsyncExecutionFilter?.OnExecutingAsync(Context, ct)!), isAsyncExecutionFilterAvailable ? StepBehavior.MustCall : StepBehavior.Skip),
             HandlerStep<TResponse>.New(() => QueryHandler.OnStartAsync(Query, Context, ct)),
             HandlerStep<TResponse>.New(() => QueryHandler.HandleAsync(Query, Context, ct), StepBehavior.FinalOutput),
             HandlerStep<TResponse>.New(() => QueryHandler.OnEndAsync(Query, Context, ct)),
-            HandlerStep<TResponse>.New(() => ExecuteAsyncExecutionFilterActionAsync(() => AsyncExecutionFilter?.OnActionExecutedAsync(Context, ct)!), isAsyncExecutionFilterAvailable ? StepBehavior.MustCall : StepBehavior.Skip),
+            HandlerStep<TResponse>.New(() => ExecuteAsyncExecutionFilterActionAsync(() => AsyncExecutionFilter?.OnExecutedAsync(Context, ct)!), isAsyncExecutionFilterAvailable ? StepBehavior.MustCall : StepBehavior.Skip),
             HandlerStep<TResponse>.New(() => ExecutionFilter.OnExecutedAsync(Query, Context, ct), StepBehavior.MustCall)
         ];
 

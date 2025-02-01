@@ -5,9 +5,9 @@ namespace Softoverse.CqrsKit.Abstraction.Filters;
 
 public interface IAsyncExecutionFilter
 {
-    public Task OnActionExecutingAsync(CqrsContext context, CancellationToken ct = default);
+    public Task OnExecutingAsync(CqrsContext context, CancellationToken ct = default);
 
-    public Task OnActionExecutedAsync(CqrsContext context, CancellationToken ct = default);
+    public Task OnExecutedAsync(CqrsContext context, CancellationToken ct = default);
 }
 
 public interface IAsyncExecutionFilter<TRequest, TResponse> : IAsyncExecutionFilter
@@ -21,20 +21,20 @@ public abstract class AsyncExecutionFilterBase<TRequest, TResponse>(List<IAsyncE
 {
     internal readonly List<IAsyncExecutionFilter> AsyncExecutionFilters = asyncExecutionFilters;
 
-    public virtual async Task OnActionExecutingAsync(CqrsContext context, CancellationToken ct = default)
+    public virtual async Task OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
         foreach (var asyncExecutionFilter in AsyncExecutionFilters)
         {
-            await asyncExecutionFilter.OnActionExecutingAsync(context, ct);
+            await asyncExecutionFilter.OnExecutingAsync(context, ct);
         }
     }
 
-    public virtual async Task OnActionExecutedAsync(CqrsContext context, CancellationToken ct = default)
+    public virtual async Task OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
         AsyncExecutionFilters.Reverse();
         foreach (var asyncExecutionFilter in AsyncExecutionFilters)
         {
-            await asyncExecutionFilter.OnActionExecutedAsync(context, ct);
+            await asyncExecutionFilter.OnExecutedAsync(context, ct);
         }
     }
 }

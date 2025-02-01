@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using Softoverse.CqrsKit.Builders;
 using Softoverse.CqrsKit.Model;
@@ -16,7 +17,7 @@ public class StudentsController(IServiceProvider services, ApplicationDbContext 
 {
     // GET: api/Students
     [HttpGet]
-    [Authorize, Authorize(Constants.ApiKeyPolicy)]
+    // [Authorize, Authorize(Constants.ApiKeyPolicy)]
     public async Task<ActionResult<Result<List<Student>>>> Get([FromQuery] StudentGetAllQuery query, CancellationToken ct = default)
     {
         var studentGetAllQuery = QueryBuilder.Initialize<StudentGetAllQuery, List<Student>>(services)
@@ -27,18 +28,23 @@ public class StudentsController(IServiceProvider services, ApplicationDbContext 
 
         return Ok(result);
     }
-    
+
     [HttpGet("free")]
-    [Authorize(Constants.ApiKeyPolicy)]
+    // [Authorize(Constants.ApiKeyPolicy)]
     public async Task<ActionResult<Result<List<Student>>>> GetFree([FromQuery] StudentGetAllQuery query, CancellationToken ct = default)
     {
-        var studentGetAllQuery = QueryBuilder.Initialize<StudentGetAllQuery, List<Student>>(services)
-                                             .WithQuery(query)
-                                             .Build();
+        var students = await dbContext.Students.Where(x => (!string.IsNullOrEmpty(x.Name) && x.Name == query.Name)
+                                                         ||
+                                                           (x.Age != null && x.Age == query.Age)
+                                                         ||
+                                                           (!string.IsNullOrEmpty(x.Gender) && x.Gender == query.Gender))
+                                      .ToListAsync(ct);
 
-        var result = await studentGetAllQuery.ExecuteAsync(ct);
-
-        return Ok(result);
+        return Ok(Result<List<Student>>.Success()
+                                       .WithPayload(students)
+                                       .WithMessageLogic(x => x.Payload?.Count > 0)
+                                       .WithSuccessMessage("Found Student data")
+                                       .WithErrorMessage("No data found"));
     }
 
     // GET api/Students/5

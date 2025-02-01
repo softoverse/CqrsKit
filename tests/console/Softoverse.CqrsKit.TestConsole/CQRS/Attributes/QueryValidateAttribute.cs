@@ -5,15 +5,15 @@ namespace Softoverse.CqrsKit.TestConsole.CQRS.Attributes;
 
 public class QueryAuthorizeAttribute : ExecutionFilterAttribute
 {
-    public override Task OnActionExecutingAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnActionExecutingAsync)}");
-        return base.OnActionExecutingAsync(context, ct);
+        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnExecutingAsync)}");
+        return base.OnExecutingAsync(context, ct);
     }
 
-    public override Task OnActionExecutedAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
-        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnActionExecutedAsync)}");
-        return base.OnActionExecutedAsync(context, ct);
+        Console.WriteLine($"Method Call: {this.GetType().Name}.{nameof (this.OnExecutedAsync)}");
+        return base.OnExecutedAsync(context, ct);
     }
 }

@@ -5,13 +5,13 @@ namespace Softoverse.CqrsKit.WebApi.Module.Attributes;
 
 public class QueryAuthorizeAttribute : ExecutionFilterAttribute
 {
-    public override Task OnActionExecutingAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task OnExecutingAsync(CqrsContext context, CancellationToken ct = default)
     {
-        return base.OnActionExecutingAsync(context, ct);
+        return base.OnExecutingAsync(context, ct);
     }
 
-    public override Task OnActionExecutedAsync(CqrsContext context, CancellationToken ct = default)
+    public override Task OnExecutedAsync(CqrsContext context, CancellationToken ct = default)
     {
-        return base.OnActionExecutedAsync(context, ct);
+        return base.OnExecutedAsync(context, ct);
     }
 }
