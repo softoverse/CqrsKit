@@ -164,17 +164,30 @@
 </div>
 
 <script>
+    // Background circles with fixed positions
+    const circleConfigs = [
+        { size: 200, left: '10%', top: '10%', delay: 0 },
+        { size: 300, left: '70%', top: '20%', delay: 1 },
+        { size: 250, left: '20%', top: '60%', delay: 2 },
+        { size: 180, left: '80%', top: '70%', delay: 0 },
+        { size: 220, left: '40%', top: '30%', delay: 2 },
+        { size: 280, left: '60%', top: '50%', delay: 1 },
+        { size: 150, left: '30%', top: '80%', delay: 0 },
+        { size: 190, left: '90%', top: '40%', delay: 2 }
+    ];
+
     const backgroundAnimation = document.getElementById('backgroundAnimation');
-    for (let i = 0; i < 8; i++) {
+
+    circleConfigs.forEach(config => {
         const circle = document.createElement('div');
         circle.classList.add('circle');
-        circle.style.width = Math.random() * 300 + 100 + 'px';
-        circle.style.height = Math.random() * 300 + 100 + 'px';
-        circle.style.left = Math.random() * 100 + '%';
-        circle.style.top = Math.random() * 100 + '%';
-        circle.style.animationDelay = Math.random() * 5 + 's';
+        circle.style.width = config.size + 'px';
+        circle.style.height = config.size + 'px';
+        circle.style.left = config.left;
+        circle.style.top = config.top;
+        circle.style.animationDelay = config.delay + 's';
         backgroundAnimation.appendChild(circle);
-    }
+    });
 </script>
 </body>
 </html>

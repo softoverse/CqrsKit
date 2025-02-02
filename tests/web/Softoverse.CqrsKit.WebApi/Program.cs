@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Softoverse.CqrsKit.Extensions;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Extensions;
+using Softoverse.CqrsKit.WebApi.Middlewares;
 using Softoverse.CqrsKit.WebApi.Models;
 using Softoverse.CqrsKit.WebApi.Module;
 
@@ -25,6 +26,8 @@ public class Program
                {
                    options.ModelValidatorProviders.Clear(); // Disable default asp.net core model state validation
                });
+
+        builder.Services.AddScoped<DocumentationAuthorizeMiddleware>();
 
         builder.AddSwaggerConfiguration()
                .AddScalarAuthentication()
@@ -51,48 +54,8 @@ public class Program
         var app = builder.Build();
 
         await app.SeedApplicationBaseDataAsync();
-
-        app.Use(async (context, next) =>
-        {
-            var configuration = context.RequestServices.GetRequiredService<IConfiguration>();
-
-            if (context.Request.Path.StartsWithSegments("/swagger") || context.Request.Path.StartsWithSegments("/scalar"))
-            {
-                string basicHeader = context.Request.Headers.Authorization.ToString();
-
-                if (string.IsNullOrEmpty(basicHeader))
-                {
-                    context.Response.StatusCode = 401;
-                    context.Response.Headers["WWW-Authenticate"] = "Basic realm=\"http://localhost:5001\"";
-                    return;
-                }
-
-                if (basicHeader.Contains(' '))
-                {
-                    basicHeader = basicHeader.Split(' ')[1];
-                }
-
-                var bytes = Convert.FromBase64String(basicHeader);
-                var decodedString = Encoding.UTF8.GetString(bytes);
-
-                // splitting decodeAuthToken using ':'
-                var splitText = decodedString.Split([':']);
-
-                string clientId = splitText[0];
-                string clientSecret = splitText[1];
-
-                var isValidBasicHeader = clientId == configuration["JWT:ClientId"] && clientSecret == configuration["JWT:ClientSecret"];
-
-                if (!isValidBasicHeader)
-                {
-                    context.Response.StatusCode = 401;
-                    context.Response.Headers["WWW-Authenticate"] = "Basic realm=\"http://localhost:5001\"";
-                    return;
-                }
-            }
-
-            await next();
-        });
+        
+        app.UseMiddleware<DocumentationAuthorizeMiddleware>();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -101,7 +64,7 @@ public class Program
             app.MapScalar();
         }
 
-        // app.UseStaticFiles();
+        app.UseStaticFiles();
 
         app.MapGet("/doc", async () =>
         {

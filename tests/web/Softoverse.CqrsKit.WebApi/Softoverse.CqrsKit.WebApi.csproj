@@ -29,8 +29,4 @@
         <ProjectReference Include="..\Softoverse.CqrsKit.WebApi.ClassModule\Softoverse.CqrsKit.WebApi.ClassModule.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Controllers\Classes\" />
-    </ItemGroup>
-
 </Project>
