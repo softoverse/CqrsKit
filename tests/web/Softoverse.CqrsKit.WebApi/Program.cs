@@ -1,9 +1,4 @@
-using System.Text;
-
 using FluentValidation;
-
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 using Softoverse.CqrsKit.Extensions;
 using Softoverse.CqrsKit.WebApi.DataAccess;
@@ -54,7 +49,7 @@ public class Program
         var app = builder.Build();
 
         await app.SeedApplicationBaseDataAsync();
-        
+
         app.UseMiddleware<DocumentationAuthorizeMiddleware>();
 
         // Configure the HTTP request pipeline.
