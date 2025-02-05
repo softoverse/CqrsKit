@@ -94,7 +94,7 @@ public sealed class CommandExecutor<TCommand, TResponse> : ICommandExecutor<TCom
         var approvalFlowUniqueResponse = Result<TResponse>.Create(isApprovalFlowPendingTaskUnique)
                                                             .WithErrorMessage("This command is already in approval flow");
         
-        return !approvalFlowUniqueResponse.IsSuccessful ? approvalFlowUniqueResponse : Result<TResponse>.Success();
+        return approvalFlowUniqueResponse.IsFailure ? approvalFlowUniqueResponse : Result<TResponse>.Success();
     }
 
     public async Task<object> ExecuteDynamicAsync(CancellationToken ct)

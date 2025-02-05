@@ -32,7 +32,7 @@ public class PersonOperation(IServiceProvider services)
         sw.Stop();
         PrintElapsedTime(sw);
 
-        // if (!students.IsSuccessful) PrintErrors(students.Errors);
+        // if (students.IsFailure) PrintErrors(students.Errors);
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(request);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);
@@ -56,7 +56,7 @@ public class PersonOperation(IServiceProvider services)
         sw.Stop();
         PrintElapsedTime(sw);
 
-        // if (!student.IsSuccessful) PrintErrors(student.Errors);
+        // if (student.IsFailure) PrintErrors(student.Errors);
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(request);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);
@@ -80,7 +80,7 @@ public class PersonOperation(IServiceProvider services)
         sw.Stop();
         PrintElapsedTime(sw);
 
-        if (!personCreateResponse.IsSuccessful) PrintErrors(personCreateResponse.Errors);
+        if (personCreateResponse.IsFailure) PrintErrors(personCreateResponse.Errors);
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(request.Payload);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);
@@ -105,7 +105,7 @@ public class PersonOperation(IServiceProvider services)
         sw.Stop();
         PrintElapsedTime(sw);
 
-        if (!personUpdateResponse.IsSuccessful) PrintErrors(personUpdateResponse.Errors);
+        if (personUpdateResponse.IsFailure) PrintErrors(personUpdateResponse.Errors);
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(request.Payload);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);
@@ -130,7 +130,7 @@ public class PersonOperation(IServiceProvider services)
         sw.Stop();
         PrintElapsedTime(sw);
 
-        if (!personDeleteResponse.IsSuccessful) PrintErrors(personDeleteResponse.Errors);
+        if (personDeleteResponse.IsFailure) PrintErrors(personDeleteResponse.Errors);
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(request.Payload);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);
@@ -154,7 +154,7 @@ public class PersonOperation(IServiceProvider services)
         sw.Stop();
         PrintElapsedTime(sw);
 
-        if (!approveDeletePersonResponse.IsSuccessful) PrintErrors(approveDeletePersonResponse.Errors);
+        if (approveDeletePersonResponse.IsFailure) PrintErrors(approveDeletePersonResponse.Errors);
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(approvalFlowId);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);
@@ -178,7 +178,7 @@ public class PersonOperation(IServiceProvider services)
         sw.Stop();
         PrintElapsedTime(sw);
 
-        if (!approveDeletePersonResponse.IsSuccessful) PrintErrors(approveDeletePersonResponse.Errors);
+        if (approveDeletePersonResponse.IsFailure) PrintErrors(approveDeletePersonResponse.Errors);
         PrintBlock($"\nRequest:", startsWith: Green, endsWith: Normal);
         PrintPayload(approvalFlowId);
         PrintBlock($"\nResponse:", startsWith: Green, endsWith: Normal);

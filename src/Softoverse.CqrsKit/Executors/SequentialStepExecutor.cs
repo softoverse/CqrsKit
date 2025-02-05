@@ -19,7 +19,7 @@ internal static class SequentialStepExecutor
             var result = await step.Delegate();
             context.Result = result;
 
-            if (result.IsSuccessful)
+            if (result.IsSuccess)
             {
                 if (step.Behavior == StepBehavior.FinalOutput)
                 {
@@ -84,7 +84,7 @@ internal static class SequentialStepExecutor
             var result = await stepDelegate(step);
             context.Result = result;
 
-            if (result.IsSuccessful)
+            if (result.IsSuccess)
             {
                 if (step.Behavior == StepBehavior.FinalOutput)
                 {

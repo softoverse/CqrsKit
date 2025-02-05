@@ -14,12 +14,12 @@ public class Result<TResponse> : Result
 
     private Result() : this(default!, false, "", new Dictionary<string, object>(), new Dictionary<string, string[]>()) { }
 
-    private Result(TResponse payload = default!, bool isSuccessful = true, string? message = null, IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
+    private Result(TResponse payload = default!, bool isSuccess = true, string? message = null, IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
     {
         Payload = payload;
 
         Message = message;
-        IsSuccessful = isSuccessful;
+        IsSuccess = isSuccess;
         AdditionalProperties = additionalProperties;
         Errors = errors;
     }
@@ -29,7 +29,7 @@ public class Result<TResponse> : Result
         Payload = payload;
 
         _isSuccessful = isSuccessful;
-        IsSuccessful = isSuccessful(this);
+        IsSuccess = isSuccessful(this);
         Message = message;
         AdditionalProperties = additionalProperties;
         Errors = errors;
@@ -105,7 +105,7 @@ public class Result<TResponse> : Result
         if (_isSuccessful != null!)
         {
             _isSuccessMessage = _isSuccessful(this);
-            IsSuccessful = _isSuccessful(this);
+            IsSuccess = _isSuccessful(this);
         }
 
         this.Message = _isSuccessMessage ? _successMessage : _errorMessage;

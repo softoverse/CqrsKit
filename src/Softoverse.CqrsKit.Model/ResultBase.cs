@@ -3,7 +3,8 @@
 public class ResultBase
 {
     public string? Message { get; set; }
-    public bool IsSuccessful { get; set; } = true;
+    public bool IsSuccess { get; set; } = true;
+    public bool IsFailure => !IsSuccess;
     public IDictionary<string, object>? AdditionalProperties { get; set; }
     public IDictionary<string, string[]>? Errors { get; set; }
 }
