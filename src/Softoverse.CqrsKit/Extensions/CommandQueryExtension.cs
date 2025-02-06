@@ -386,6 +386,6 @@ public static class CommandQueryExtension
                                                                                  &&
                                                                                    typeof(IApprovalFlowService).IsAssignableFrom(type)
                                                                                  &&
-                                                                                   type != typeof(IApprovalFlowService)) : throw new Exception("There is zero or more than one 'ApprovalFlowService'");
+                                                                                   type != typeof(IApprovalFlowService)) : null;// throw new Exception("There is zero or more than one 'ApprovalFlowService'");
     }
 }
