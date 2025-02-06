@@ -1,91 +1,79 @@
-using System.Text;
-
 using FluentValidation;
 
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Http.HttpResults;
-
 using Softoverse.CqrsKit.Extensions;
+using Softoverse.CqrsKit.WebApi;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Extensions;
 using Softoverse.CqrsKit.WebApi.Middlewares;
 using Softoverse.CqrsKit.WebApi.Models;
 using Softoverse.CqrsKit.WebApi.Module;
 
-namespace Softoverse.CqrsKit.WebApi;
+var builder = WebApplication.CreateBuilder(args);
 
-public class Program
+// Add services to the container.
+builder.Services
+       .AddControllers(options =>
+       {
+           options.ModelValidatorProviders.Clear(); // Disable default asp.net core model state validation
+       });
+
+builder.Services.AddScoped<DocumentationAuthorizeMiddleware>();
+
+builder.AddSwaggerConfiguration()
+       .AddScalarAuthentication()
+       .AddDatabaseConfiguration()
+       .AddAuthorizationConfiguration();
+
+// FluentValidation validators need to be registered as singleton
+builder.Services
+       .AddValidatorsFromAssemblyContaining<IWebApiAssemblyMarker>(ServiceLifetime.Singleton)
+       .AddValidatorsFromAssemblyContaining<IWebApiDataAccessAssemblyMarker>(ServiceLifetime.Singleton)
+       .AddValidatorsFromAssemblyContaining<IWebApiModelsAssemblyMarker>(ServiceLifetime.Singleton)
+       .AddValidatorsFromAssemblyContaining<IWebApiModuleAssemblyMarker>(ServiceLifetime.Singleton);
+
+builder.Services.AddCqrsKit(op =>
 {
-    public static async Task Main(string[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
+    op.EnableLogging = true;
 
-        // Add services to the container.
-        builder.Services
-               .AddControllers(options =>
-               {
-                   options.ModelValidatorProviders.Clear(); // Disable default asp.net core model state validation
-               });
+    op.RegisterServicesFromAssemblyContaining<IWebApiAssemblyMarker>()
+      .RegisterServicesFromAssemblyContaining<IWebApiDataAccessAssemblyMarker>()
+      .RegisterServicesFromAssemblyContaining<IWebApiModelsAssemblyMarker>()
+      .RegisterServicesFromAssemblyContaining<IWebApiModuleAssemblyMarker>();
+});
 
-        builder.Services.AddScoped<DocumentationAuthorizeMiddleware>();
+var app = builder.Build();
 
-        builder.AddSwaggerConfiguration()
-               .AddScalarAuthentication()
-               .AddDatabaseConfiguration()
-               .AddAuthorizationConfiguration();
+await app.SeedApplicationBaseDataAsync();
 
-        // FluentValidation validators need to be registered as singleton
-        builder.Services
-               .AddValidatorsFromAssemblyContaining<IWebApiAssemblyMarker>(ServiceLifetime.Singleton)
-               .AddValidatorsFromAssemblyContaining<IWebApiDataAccessAssemblyMarker>(ServiceLifetime.Singleton)
-               .AddValidatorsFromAssemblyContaining<IWebApiModelsAssemblyMarker>(ServiceLifetime.Singleton)
-               .AddValidatorsFromAssemblyContaining<IWebApiModuleAssemblyMarker>(ServiceLifetime.Singleton);
+app.UseMiddleware<DocumentationAuthorizeMiddleware>();
 
-        builder.Services.AddCqrsKit(op =>
-        {
-            op.EnableLogging = true;
-
-            op.RegisterServicesFromAssemblyContaining<IWebApiAssemblyMarker>()
-              .RegisterServicesFromAssemblyContaining<IWebApiDataAccessAssemblyMarker>()
-              .RegisterServicesFromAssemblyContaining<IWebApiModelsAssemblyMarker>()
-              .RegisterServicesFromAssemblyContaining<IWebApiModuleAssemblyMarker>();
-        });
-
-        var app = builder.Build();
-
-        await app.SeedApplicationBaseDataAsync();
-        
-        app.UseMiddleware<DocumentationAuthorizeMiddleware>();
-
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwaggerUi();
-            app.MapScalar();
-        }
-
-        app.UseStaticFiles();
-
-        app.MapGet("/doc", async () =>
-        {
-            var filePath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "doc.html");
-            var fileContent = await File.ReadAllTextAsync(filePath);
-            return Results.Content(fileContent, "text/html");
-        });
-        app.MapGet("/unauthorized", async () =>
-        {
-            var filePath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "unauthorized.html");
-            var fileContent = await File.ReadAllTextAsync(filePath);
-            return Results.Content(fileContent, "text/html");
-        });
-
-        app.UseHttpsRedirection();
-
-        app.UseAuthentication();
-        app.UseAuthorization();
-
-        app.MapControllers();
-
-        await app.RunAsync();
-    }
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwaggerUi();
+    app.MapScalar();
 }
+
+app.UseStaticFiles();
+
+app.MapGet("/doc", async () =>
+{
+    var filePath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "doc.html");
+    var fileContent = await File.ReadAllTextAsync(filePath);
+    return Results.Content(fileContent, "text/html");
+});
+app.MapGet("/unauthorized", async () =>
+{
+    var filePath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot", "unauthorized.html");
+    var fileContent = await File.ReadAllTextAsync(filePath);
+    return Results.Content(fileContent, "text/html");
+});
+
+app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+await app.RunAsync();

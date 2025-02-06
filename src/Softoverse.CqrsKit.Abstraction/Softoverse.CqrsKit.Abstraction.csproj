@@ -21,6 +21,10 @@
         <Version>1.0.0</Version>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    </PropertyGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\Softoverse.CqrsKit.Model\Softoverse.CqrsKit.Model.csproj"/>
     </ItemGroup>
