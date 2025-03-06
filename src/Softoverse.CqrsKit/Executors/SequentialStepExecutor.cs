@@ -28,7 +28,7 @@ internal static class SequentialStepExecutor
             }
             else
             {
-                if (step.Behavior is StepBehavior.Mandatory or StepBehavior.FinalOutput)
+                if (step.Behavior is StepBehavior.Mandatory or StepBehavior.FinalOutput or StepBehavior.MustCall)
                 {
                     var anyMustCallStep = steps.Any(x => x is
                                                     {
