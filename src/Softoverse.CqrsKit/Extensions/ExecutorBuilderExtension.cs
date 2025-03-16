@@ -1,7 +1,7 @@
-﻿using Softoverse.CqrsKit.Abstraction.Handlers;
-using Softoverse.CqrsKit.Model.Abstraction;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-using Microsoft.Extensions.DependencyInjection;
+using Softoverse.CqrsKit.Abstractions.Handlers;
+using Softoverse.CqrsKit.Models.Abstraction;
 
 namespace Softoverse.CqrsKit.Extensions;
 

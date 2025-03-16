@@ -1,9 +1,7 @@
-﻿using System.Reflection;
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 using Softoverse.CqrsKit.Extensions;
-using Softoverse.CqrsKit.Model.Utility;
+using Softoverse.CqrsKit.Models.Utility;
 using Softoverse.CqrsKit.Services;
 
 namespace Softoverse.CqrsKit.Builders;

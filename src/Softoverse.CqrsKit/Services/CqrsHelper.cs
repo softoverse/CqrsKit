@@ -3,9 +3,9 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Text.Json;
 
-using Softoverse.CqrsKit.Abstraction.Handlers;
-using Softoverse.CqrsKit.Abstraction.Handlers.Markers;
-using Softoverse.CqrsKit.Model.Entity;
+using Softoverse.CqrsKit.Abstractions.Handlers;
+using Softoverse.CqrsKit.Abstractions.Handlers.Markers;
+using Softoverse.CqrsKit.Models.Entity;
 
 namespace Softoverse.CqrsKit.Services;
 

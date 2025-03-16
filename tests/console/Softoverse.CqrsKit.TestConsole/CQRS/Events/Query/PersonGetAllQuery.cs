@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-using Softoverse.CqrsKit.Model.Abstraction;
+using Softoverse.CqrsKit.Models.Abstraction;
 
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Events.Query;
 

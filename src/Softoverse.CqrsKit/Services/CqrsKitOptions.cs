@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-using Softoverse.CqrsKit.Model.Utility;
+using Softoverse.CqrsKit.Models.Utility;
 
 namespace Softoverse.CqrsKit.Services;
 

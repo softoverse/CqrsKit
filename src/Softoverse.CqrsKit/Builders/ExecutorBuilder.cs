@@ -1,6 +1,6 @@
-﻿using Softoverse.CqrsKit.Abstraction.Builders;
-using Softoverse.CqrsKit.Model.Abstraction;
-using Softoverse.CqrsKit.Model.Entity;
+﻿using Softoverse.CqrsKit.Abstractions.Builders;
+using Softoverse.CqrsKit.Models.Abstraction;
+using Softoverse.CqrsKit.Models.Entity;
 
 namespace Softoverse.CqrsKit.Builders;
 

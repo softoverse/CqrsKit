@@ -1,14 +1,12 @@
-﻿using Softoverse.CqrsKit.Abstraction.Builders;
-using Softoverse.CqrsKit.Abstraction.Executors;
-using Softoverse.CqrsKit.Abstraction.Filters;
-using Softoverse.CqrsKit.Abstraction.Services;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-using Softoverse.CqrsKit.Model.Entity;
-using Softoverse.CqrsKit.Model.Utility;
-
-using Microsoft.Extensions.DependencyInjection;
-
+using Softoverse.CqrsKit.Abstractions.Builders;
+using Softoverse.CqrsKit.Abstractions.Executors;
+using Softoverse.CqrsKit.Abstractions.Filters;
+using Softoverse.CqrsKit.Abstractions.Services;
 using Softoverse.CqrsKit.Executors;
+using Softoverse.CqrsKit.Models.Entity;
+using Softoverse.CqrsKit.Models.Utility;
 
 namespace Softoverse.CqrsKit.Builders;
 

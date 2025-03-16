@@ -1,8 +1,8 @@
-﻿using Softoverse.CqrsKit.Abstraction.Filters;
+﻿using Softoverse.CqrsKit.Abstractions.Filters;
 using Softoverse.CqrsKit.Attributes;
-using Softoverse.CqrsKit.Model;
-using Softoverse.CqrsKit.Model.Abstraction;
-using Softoverse.CqrsKit.Model.Utility;
+using Softoverse.CqrsKit.Models;
+using Softoverse.CqrsKit.Models.Abstraction;
+using Softoverse.CqrsKit.Models.Utility;
 
 namespace Softoverse.CqrsKit.WebApi.CQRS.Filters.ApprovalFlow;
 

@@ -1,14 +1,12 @@
-﻿using Softoverse.CqrsKit.Abstraction.Executors;
-using Softoverse.CqrsKit.Abstraction.Filters;
-using Softoverse.CqrsKit.Abstraction.Handlers;
-using Softoverse.CqrsKit.Abstraction.Services;
-
-using Softoverse.CqrsKit.Extensions;
-using Softoverse.CqrsKit.Model;
-using Softoverse.CqrsKit.Model.Abstraction;
-using Softoverse.CqrsKit.Model.Utility;
-
+﻿using Softoverse.CqrsKit.Abstractions.Executors;
+using Softoverse.CqrsKit.Abstractions.Filters;
+using Softoverse.CqrsKit.Abstractions.Handlers;
+using Softoverse.CqrsKit.Abstractions.Services;
 using Softoverse.CqrsKit.Builders;
+using Softoverse.CqrsKit.Extensions;
+using Softoverse.CqrsKit.Models;
+using Softoverse.CqrsKit.Models.Abstraction;
+using Softoverse.CqrsKit.Models.Utility;
 
 namespace Softoverse.CqrsKit.Executors;
 

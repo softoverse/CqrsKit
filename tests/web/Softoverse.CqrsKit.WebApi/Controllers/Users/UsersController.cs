@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-using Softoverse.CqrsKit.Model;
+using Softoverse.CqrsKit.Models;
 using Softoverse.CqrsKit.WebApi.Models.ViewModels;
 
 namespace Softoverse.CqrsKit.WebApi.Controllers.Users;

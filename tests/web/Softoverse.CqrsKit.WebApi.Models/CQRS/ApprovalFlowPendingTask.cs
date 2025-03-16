@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using Softoverse.CqrsKit.Model.Entity;
+using Softoverse.CqrsKit.Models.Entity;
 
 namespace Softoverse.CqrsKit.WebApi.Models.CQRS;
 

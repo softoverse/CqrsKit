@@ -3,13 +3,12 @@ using System.Reflection;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using Softoverse.CqrsKit.Abstraction.Filters;
-using Softoverse.CqrsKit.Abstraction.Handlers;
-using Softoverse.CqrsKit.Abstraction.Handlers.Markers;
-using Softoverse.CqrsKit.Abstraction.Services;
+using Softoverse.CqrsKit.Abstractions.Filters;
+using Softoverse.CqrsKit.Abstractions.Handlers;
+using Softoverse.CqrsKit.Abstractions.Handlers.Markers;
+using Softoverse.CqrsKit.Abstractions.Services;
 using Softoverse.CqrsKit.Filters;
-using Softoverse.CqrsKit.Filters.Attributes;
-using Softoverse.CqrsKit.Model.Abstraction;
+using Softoverse.CqrsKit.Models.Abstraction;
 using Softoverse.CqrsKit.Services;
 
 namespace Softoverse.CqrsKit.Extensions;

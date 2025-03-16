@@ -1,6 +1,5 @@
-﻿using Softoverse.CqrsKit.Abstraction.Filters;
-using Softoverse.CqrsKit.Model.Abstraction;
-using Softoverse.CqrsKit.Model.Utility;
+﻿using Softoverse.CqrsKit.Abstractions.Filters;
+using Softoverse.CqrsKit.Models.Abstraction;
 
 namespace Softoverse.CqrsKit.Filters;
 

@@ -2,8 +2,7 @@ using System.Diagnostics;
 using System.Text.Json;
 
 using Softoverse.CqrsKit.Builders;
-using Softoverse.CqrsKit.Model;
-using Softoverse.CqrsKit.Model.Entity;
+using Softoverse.CqrsKit.Models.Entity;
 using Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
 using Softoverse.CqrsKit.TestConsole.CQRS.Events.Query;
 using Softoverse.CqrsKit.TestConsole.Models;

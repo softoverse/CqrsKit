@@ -1,10 +1,6 @@
-using System.ComponentModel.Design;
-
-using Microsoft.Extensions.DependencyInjection;
-
-using Softoverse.CqrsKit.Abstraction.Builders;
-using Softoverse.CqrsKit.Model.Abstraction;
-using Softoverse.CqrsKit.Model.Utility;
+using Softoverse.CqrsKit.Abstractions.Builders;
+using Softoverse.CqrsKit.Models.Abstraction;
+using Softoverse.CqrsKit.Models.Utility;
 
 namespace Softoverse.CqrsKit.Builders;
 

@@ -1,16 +1,14 @@
 ﻿using System.Text;
 using System.Text.Json;
 
-using Softoverse.CqrsKit.Abstraction.Executors;
-using Softoverse.CqrsKit.Abstraction.Filters;
-using Softoverse.CqrsKit.Abstraction.Services;
-
-using Softoverse.CqrsKit.Model;
-using Softoverse.CqrsKit.Model.Entity;
-using Softoverse.CqrsKit.Model.Errors;
-using Softoverse.CqrsKit.Model.Utility;
-
+using Softoverse.CqrsKit.Abstractions.Executors;
+using Softoverse.CqrsKit.Abstractions.Filters;
+using Softoverse.CqrsKit.Abstractions.Services;
 using Softoverse.CqrsKit.Builders;
+using Softoverse.CqrsKit.Models;
+using Softoverse.CqrsKit.Models.Entity;
+using Softoverse.CqrsKit.Models.Errors;
+using Softoverse.CqrsKit.Models.Utility;
 using Softoverse.CqrsKit.Services;
 
 namespace Softoverse.CqrsKit.Executors;

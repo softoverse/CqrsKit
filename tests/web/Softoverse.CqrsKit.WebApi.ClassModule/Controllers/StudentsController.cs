@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 using Softoverse.CqrsKit.Builders;
-using Softoverse.CqrsKit.Model;
+using Softoverse.CqrsKit.Models;
 using Softoverse.CqrsKit.WebApi.DataAccess;
 using Softoverse.CqrsKit.WebApi.Models;
 using Softoverse.CqrsKit.WebApi.Models.ClassModule;

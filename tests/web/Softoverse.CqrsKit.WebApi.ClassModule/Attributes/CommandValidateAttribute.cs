@@ -1,5 +1,5 @@
-﻿using Softoverse.CqrsKit.Filters.Attributes;
-using Softoverse.CqrsKit.Model.Utility;
+﻿using Softoverse.CqrsKit.Filters;
+using Softoverse.CqrsKit.Models.Utility;
 
 namespace Softoverse.CqrsKit.WebApi.Module.Attributes;
 

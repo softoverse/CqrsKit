@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 
-using Softoverse.CqrsKit.Model.Abstraction;
-using Softoverse.CqrsKit.Model.Command;
+using Softoverse.CqrsKit.Models.Abstraction;
+using Softoverse.CqrsKit.Models.Command;
 
 namespace Softoverse.CqrsKit.WebApi.Module.Event.Commands;
 

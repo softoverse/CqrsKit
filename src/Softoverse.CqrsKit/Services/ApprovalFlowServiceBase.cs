@@ -1,8 +1,8 @@
-﻿using Softoverse.CqrsKit.Abstraction.Services;
-using Softoverse.CqrsKit.Model;
-using Softoverse.CqrsKit.Model.Abstraction;
-using Softoverse.CqrsKit.Model.Entity;
-using Softoverse.CqrsKit.Model.Utility;
+﻿using Softoverse.CqrsKit.Abstractions.Services;
+using Softoverse.CqrsKit.Models;
+using Softoverse.CqrsKit.Models.Abstraction;
+using Softoverse.CqrsKit.Models.Entity;
+using Softoverse.CqrsKit.Models.Utility;
 
 namespace Softoverse.CqrsKit.Services;
 

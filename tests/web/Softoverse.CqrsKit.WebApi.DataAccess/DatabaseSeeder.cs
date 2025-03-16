@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using Softoverse.CqrsKit.Model.Entity;
+using Softoverse.CqrsKit.Models.Entity;
 using Softoverse.CqrsKit.Services;
 using Softoverse.CqrsKit.WebApi.Models.CQRS;
 

@@ -1,10 +1,10 @@
 ﻿using System.Text;
 using System.Text.Json;
 
-using Softoverse.CqrsKit.Abstraction.Handlers;
-using Softoverse.CqrsKit.Model.Abstraction;
-using Softoverse.CqrsKit.Model.Entity;
-using Softoverse.CqrsKit.Model.Utility;
+using Softoverse.CqrsKit.Abstractions.Handlers;
+using Softoverse.CqrsKit.Models.Abstraction;
+using Softoverse.CqrsKit.Models.Entity;
+using Softoverse.CqrsKit.Models.Utility;
 using Softoverse.CqrsKit.Services;
 using Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
 

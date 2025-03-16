@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 
-using Softoverse.CqrsKit.Abstraction.Handlers;
+using Softoverse.CqrsKit.Abstractions.Handlers;
 using Softoverse.CqrsKit.Attributes;
-using Softoverse.CqrsKit.Model;
-using Softoverse.CqrsKit.Model.Utility;
+using Softoverse.CqrsKit.Models;
+using Softoverse.CqrsKit.Models.Utility;
 using Softoverse.CqrsKit.TestConsole.CQRS.Attributes;
 using Softoverse.CqrsKit.TestConsole.CQRS.Events.Query;
 using Softoverse.CqrsKit.TestConsole.Models;

@@ -1,4 +1,4 @@
-﻿using Softoverse.CqrsKit.Model.Entity;
+﻿using Softoverse.CqrsKit.Models.Entity;
 using Softoverse.CqrsKit.WebApi.Models.CQRS.MappingModels;
 
 namespace Softoverse.CqrsKit.WebApi.Models.CQRS;
