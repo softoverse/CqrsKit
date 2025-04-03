@@ -49,6 +49,7 @@ public class Result<TResponse> : Result
 
     public new Result<TResponse> AddAdditionalProperty(KeyValuePair<string, object> additionalProperty)
     {
+        this.AdditionalProperties ??= new Dictionary<string, object>();
         this.AdditionalProperties?.Add(additionalProperty.Key, additionalProperty.Value);
         return this;
     }

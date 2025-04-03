@@ -18,7 +18,7 @@
         <IncludeSymbols>True</IncludeSymbols>
         <SymbolPackageFormat>symbols.nupkg</SymbolPackageFormat>
         <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-        <Version>5.0.0</Version>
+        <Version>5.0.1</Version>
     </PropertyGroup>
 
     <PropertyGroup>
