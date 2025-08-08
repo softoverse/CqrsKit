@@ -1,10 +1,12 @@
 ﻿using System.Collections.Concurrent;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text.Json;
 
 using Softoverse.CqrsKit.Abstractions.Handlers;
 using Softoverse.CqrsKit.Abstractions.Handlers.Markers;
+using Softoverse.CqrsKit.Attributes;
 using Softoverse.CqrsKit.Models.Entity;
 
 namespace Softoverse.CqrsKit.Services;
@@ -154,6 +156,7 @@ public static class CqrsHelper
         try
         {
             DescriptionAttribute? descriptionAttribute = commandQueryType?.GetCustomAttribute<DescriptionAttribute>();
+            GroupAttribute? groupAttribute = commandQueryType?.GetCustomAttribute<GroupAttribute>();
 
             BaseCommandQuery baseCommandQuery = new BaseCommandQuery()
             {
@@ -164,6 +167,7 @@ public static class CqrsHelper
                 ResponseNamespace = responseType?.Namespace,
                 ResponseFullName = responseType?.FullName,
                 Description = descriptionAttribute?.Description,
+                Group = groupAttribute?.Name,
                 IsCommand = isCommand,
                 IsApprovalFlowRequired = false
             };

@@ -1,11 +1,10 @@
 ﻿using Bogus;
 
-using Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
-using Softoverse.CqrsKit.TestConsole.CQRS.Events.Query;
-
 using Microsoft.Extensions.DependencyInjection;
 
 using Softoverse.CqrsKit.Extensions;
+using Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
+using Softoverse.CqrsKit.TestConsole.CQRS.Events.Query;
 
 using static Softoverse.CqrsKit.TestConsole.Utility.ConsoleColor;
 

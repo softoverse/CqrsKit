@@ -1,11 +1,13 @@
 using System.ComponentModel;
 
+using Softoverse.CqrsKit.Attributes;
 using Softoverse.CqrsKit.Models.Abstraction;
 using Softoverse.CqrsKit.Models.Command;
 
 namespace Softoverse.CqrsKit.TestConsole.CQRS.Events.Command;
 
-[Description("Delete student command")]
+[Group("Person")]
+[Description("Delete person command")]
 public class PersonDeleteCommand(Guid payload) : Command<Guid>(payload),
                                                   IUniqueCommand
 {

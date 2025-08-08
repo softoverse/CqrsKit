@@ -25,6 +25,7 @@ public class BaseCommandQuery
     #endregion Response
 
     public string? Description { get; set; }
+    public string? Group { get; set; }
 
     [Required]
     public bool IsCommand { get; set; }

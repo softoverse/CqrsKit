@@ -12,8 +12,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Bogus" Version="35.6.2" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3"/>
+        <PackageReference Include="Bogus" Version="35.6.3" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
 <!--        <PackageReference Include="Softoverse.CqrsKit" Version="2.0.0"/>-->
     </ItemGroup>
 

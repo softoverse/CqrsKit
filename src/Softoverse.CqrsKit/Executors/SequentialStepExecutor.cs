@@ -1,4 +1,5 @@
 using Softoverse.CqrsKit.Models;
+using Softoverse.CqrsKit.Models.Errors;
 using Softoverse.CqrsKit.Models.Utility;
 
 namespace Softoverse.CqrsKit.Executors;
