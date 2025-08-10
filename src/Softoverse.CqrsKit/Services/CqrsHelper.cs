@@ -61,20 +61,20 @@ public static class CqrsHelper
         CachedTypes[fullName] = type;
     }
 
-    public static IEnumerable<BaseCommandQuery> GetAllCommandQueryTypes()
+    public static IEnumerable<BaseCommandQuery<TKey>> GetAllCommandQueryTypes<TKey>() where TKey : IEquatable<TKey>
     {
-        List<BaseCommandQuery> commands =  new List<BaseCommandQuery>();
-        List<BaseCommandQuery> queries =  new List<BaseCommandQuery>();
-        
+        List<BaseCommandQuery<TKey>> commands = new List<BaseCommandQuery<TKey>>();
+        List<BaseCommandQuery<TKey>> queries = new List<BaseCommandQuery<TKey>>();
+
         foreach (var assembly in ConsumerAssemblies)
         {
-            commands.AddRange(GetAllCommandTypes(assembly));
-            queries.AddRange(GetAllQueryTypes(assembly));
+            commands.AddRange(GetAllCommandTypes<TKey>(assembly));
+            queries.AddRange(GetAllQueryTypes<TKey>(assembly));
         }
         return commands.Concat(queries);
     }
 
-    public static IEnumerable<BaseCommandQuery> GetAllCommandTypes(Assembly assembly)
+    public static IEnumerable<BaseCommandQuery<TKey>> GetAllCommandTypes<TKey>(Assembly assembly) where TKey : IEquatable<TKey>
     {
         IEnumerable<Type> allCommandHandlerTypes = assembly.GetTypes()
                                                            .Where(type =>
@@ -85,17 +85,17 @@ public static class CqrsHelper
                                                                     &&
                                                                       type.Name != typeof(ICommandHandler<,>).Name);
 
-        IEnumerable<BaseCommandQuery> commands = allCommandHandlerTypes.Select(x =>
+        IEnumerable<BaseCommandQuery<TKey>> commands = allCommandHandlerTypes.Select(x =>
         {
             (Type? commandQueryType, Type? responseType) = GetCommandOrQueryAndResponseType(GetHandlerGenerics<ICommandHandlerMarker>(x));
 
-            return ToBaseCommand(commandQueryType, responseType);
+            return ToBaseCommand<TKey>(commandQueryType, responseType);
         });
 
         return commands;
     }
 
-    public static IEnumerable<BaseCommandQuery> GetAllQueryTypes(Assembly assembly)
+    public static IEnumerable<BaseCommandQuery<TKey>> GetAllQueryTypes<TKey>(Assembly assembly) where TKey : IEquatable<TKey>
     {
         IEnumerable<Type> allCommandHandlerTypes = assembly.GetTypes()
                                                            .Where(type =>
@@ -106,11 +106,11 @@ public static class CqrsHelper
                                                                     &&
                                                                       type.Name != typeof(ICommandHandler<,>).Name);
 
-        IEnumerable<BaseCommandQuery> queries = allCommandHandlerTypes.Select(x =>
+        IEnumerable<BaseCommandQuery<TKey>> queries = allCommandHandlerTypes.Select(x =>
         {
             (Type? commandQueryType, Type? responseType) = GetCommandOrQueryAndResponseType(GetHandlerGenerics<IQueryHandlerMarker>(x));
 
-            return ToBaseQuery(commandQueryType, responseType);
+            return ToBaseQuery<TKey>(commandQueryType, responseType);
         });
 
         return queries;
@@ -141,24 +141,24 @@ public static class CqrsHelper
         return (commandQueryType, responseType);
     }
 
-    private static BaseCommandQuery ToBaseCommand(Type? commandQueryType, Type? responseType)
+    private static BaseCommandQuery<TKey> ToBaseCommand<TKey>(Type? commandQueryType, Type? responseType) where TKey : IEquatable<TKey>
     {
-        return ToBaseCommandQuery(commandQueryType, responseType, isCommand: true)!;
+        return ToBaseCommandQuery<TKey>(commandQueryType, responseType, isCommand: true)!;
     }
 
-    private static BaseCommandQuery ToBaseQuery(Type? commandQueryType, Type? responseType)
+    private static BaseCommandQuery<TKey> ToBaseQuery<TKey>(Type? commandQueryType, Type? responseType) where TKey : IEquatable<TKey>
     {
-        return ToBaseCommandQuery(commandQueryType, responseType, isCommand: false)!;
+        return ToBaseCommandQuery<TKey>(commandQueryType, responseType, isCommand: false)!;
     }
 
-    private static BaseCommandQuery? ToBaseCommandQuery(Type? commandQueryType, Type? responseType, bool isCommand)
+    private static BaseCommandQuery<TKey>? ToBaseCommandQuery<TKey>(Type? commandQueryType, Type? responseType, bool isCommand) where TKey : IEquatable<TKey>
     {
         try
         {
             DescriptionAttribute? descriptionAttribute = commandQueryType?.GetCustomAttribute<DescriptionAttribute>();
             GroupAttribute? groupAttribute = commandQueryType?.GetCustomAttribute<GroupAttribute>();
 
-            BaseCommandQuery baseCommandQuery = new BaseCommandQuery()
+            BaseCommandQuery<TKey> baseCommandQuery = new BaseCommandQuery<TKey>()
             {
                 Name = commandQueryType?.Name!,
                 Namespace = commandQueryType?.Namespace!,
@@ -180,7 +180,7 @@ public static class CqrsHelper
         }
     }
 
-    public static TChild ToChildOfBaseCommandQuery<TChild>(BaseCommandQuery baseCommandQuery) where TChild : BaseCommandQuery, new()
+    public static TChild ToChildOfBaseCommandQuery<TChild, TKey>(BaseCommandQuery<TKey> baseCommandQuery) where TChild : BaseCommandQuery<TKey>, new() where TKey : IEquatable<TKey>
     {
         try
         {
@@ -208,6 +208,6 @@ public static class CqrsHelper
 
     public static JsonSerializerOptions GetDefaultSerializerOption()
     {
-       return new JsonSerializerOptions();
+        return new JsonSerializerOptions();
     }
 }

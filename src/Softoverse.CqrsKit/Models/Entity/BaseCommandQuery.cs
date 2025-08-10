@@ -2,10 +2,12 @@
 
 namespace Softoverse.CqrsKit.Models.Entity;
 
-public class BaseCommandQuery
+public class BaseCommandQuery : BaseCommandQuery<long>;
+
+public class BaseCommandQuery<TKey> where TKey : IEquatable<TKey>
 {
     [Key]
-    public long Id { get; set; }
+    public TKey Id { get; set; }
 
     [Required]
     public string Name { get; set; }

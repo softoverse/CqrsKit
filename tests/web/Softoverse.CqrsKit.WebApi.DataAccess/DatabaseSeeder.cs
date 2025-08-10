@@ -70,7 +70,7 @@ public static class DatabaseSeeder
     {
         try
         {
-            IEnumerable<BaseCommandQuery> commandQueries = CqrsHelper.GetAllCommandQueryTypes();
+            IEnumerable<BaseCommandQuery<long>> commandQueries = CqrsHelper.GetAllCommandQueryTypes<long>();
             IEnumerable<CommandQuery> commandQueriesFromDb = dbContext.CommandQueries;
             List<CommandQuery> commandQueriesToInsert = new List<CommandQuery>();
 
@@ -80,7 +80,7 @@ public static class DatabaseSeeder
 
                 if (!hasInDb)
                 {
-                    CommandQuery command = CqrsHelper.ToChildOfBaseCommandQuery<CommandQuery>(baseCommandQuery);
+                    CommandQuery command = CqrsHelper.ToChildOfBaseCommandQuery<CommandQuery, long>(baseCommandQuery);
                     // Set extra values property of a command object if needed
                     commandQueriesToInsert.Add(command);
                 }
@@ -99,14 +99,14 @@ public static class DatabaseSeeder
         }
     }
 
-    private static readonly Func<CommandQuery, BaseCommandQuery, bool> GetCommandQueryCriteria = (commandQuery, baseCommandQuery) =>
+    private static readonly Func<CommandQuery, BaseCommandQuery<long>, bool> GetCommandQueryCriteria = (commandQuery, baseCommandQuery) =>
         commandQuery.Name == baseCommandQuery.Name
       &&
         commandQuery.Namespace == baseCommandQuery.Namespace
       &&
         commandQuery.FullName == baseCommandQuery.FullName;
 
-    private static readonly Func<CommandQuery, BaseCommandQuery, bool> GetCommandQueryResponseCriteria = (commandQuery, baseCommandQuery) =>
+    private static readonly Func<CommandQuery, BaseCommandQuery<long>, bool> GetCommandQueryResponseCriteria = (commandQuery, baseCommandQuery) =>
         commandQuery.ResponseName == baseCommandQuery.ResponseName
       &&
         commandQuery.ResponseNamespace == baseCommandQuery.ResponseNamespace
