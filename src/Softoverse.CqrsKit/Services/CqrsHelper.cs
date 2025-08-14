@@ -194,6 +194,7 @@ public static class CqrsHelper
                 ResponseNamespace = baseCommandQuery.ResponseNamespace,
                 ResponseFullName = baseCommandQuery.ResponseFullName,
                 Description = baseCommandQuery.Description,
+                Group = baseCommandQuery.Group,
                 IsCommand = baseCommandQuery.IsCommand,
                 IsApprovalFlowRequired = baseCommandQuery.IsApprovalFlowRequired
             };
