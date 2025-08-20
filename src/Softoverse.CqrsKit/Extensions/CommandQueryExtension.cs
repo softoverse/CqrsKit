@@ -340,6 +340,18 @@ public static class CommandQueryExtension
         return lambda.Compile();
     }
 
+    private static Func<List<IExecutionFilter<IRequest, object>>, object> CreateExecutionFilterFactory(Type targetType, Type parameterType)
+    {
+        // Find the constructor that takes a single IExecutionFilter parameter
+        var constructor = targetType.GetConstructor([parameterType]) ?? throw new InvalidOperationException($"No suitable constructor found for type {targetType.Name}.");
+
+        // Compile a factory delegate for the constructor
+        var parameter = Expression.Parameter(parameterType, "executionFilters");
+        var newExpression = Expression.New(constructor, parameter);
+        var lambda = Expression.Lambda<Func<List<IExecutionFilter<IRequest, object>>, object>>(newExpression, parameter);
+        return lambda.Compile();
+    }
+
     private static IEnumerable<Type> GetQueryHandlerTypes(this IList<Type> types)
     {
         return types.Where(type =>
