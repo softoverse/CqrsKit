@@ -73,7 +73,7 @@ public static class CommandQueryExtension
             var asyncExecutionFilterImplType = typeof(AsyncExecutionFilter<,>).MakeGenericType(genericArguments);
 
             // Cache the factory delegate for the AsyncExecutionFilter implementation
-            Func<List<IAsyncExecutionFilter>, object> factory = CreateFactory(asyncExecutionFilterImplType, typeof(List<IAsyncExecutionFilter>));
+            Func<List<IAsyncExecutionFilter>, object> factory = CreateAsyncExecutionFilterFactory(asyncExecutionFilterImplType, typeof(List<IAsyncExecutionFilter>));
 
             var executionFilterAttributeTypes = executionFilterAttributes.Select(attribute => attribute.GetType());
 
@@ -174,7 +174,7 @@ public static class CommandQueryExtension
             var asyncExecutionFilterImplType = typeof(AsyncExecutionFilter<,>).MakeGenericType(genericArguments);
 
             // Cache the factory delegate for the AsyncExecutionFilter implementation
-            Func<List<IAsyncExecutionFilter>, object> factory = CreateFactory(asyncExecutionFilterImplType, typeof(List<IAsyncExecutionFilter>));
+            Func<List<IAsyncExecutionFilter>, object> factory = CreateAsyncExecutionFilterFactory(asyncExecutionFilterImplType, typeof(List<IAsyncExecutionFilter>));
 
             var executionFilterAttributeTypes = executionFilterAttributes.Select(attribute => attribute.GetType());
 
@@ -328,7 +328,7 @@ public static class CommandQueryExtension
         return services;
     }
 
-    private static Func<List<IAsyncExecutionFilter>, object> CreateFactory(Type targetType, Type parameterType)
+    private static Func<List<IAsyncExecutionFilter>, object> CreateAsyncExecutionFilterFactory(Type targetType, Type parameterType)
     {
         // Find the constructor that takes a single IAsyncExecutionFilter parameter
         var constructor = targetType.GetConstructor([parameterType]) ?? throw new InvalidOperationException($"No suitable constructor found for type {targetType.Name}.");
