@@ -9,7 +9,9 @@ public class Result : ResultBase
     private string _errorMessage;
     private string _successMessage;
 
-    public Result() : this(false, "", new Dictionary<string, object>(), new Dictionary<string, string[]>()) { }
+    public Result() : this(false, "", new Dictionary<string, object>(), new Dictionary<string, string[]>())
+    {
+    }
 
     internal Result(bool isSuccess = true, string? message = null, IDictionary<string, object>? additionalProperties = null, IDictionary<string, string[]>? errors = null)
     {
@@ -76,11 +78,11 @@ public class Result : ResultBase
         }
         return this;
     }
-    
+
     public Result WithMessageLogic(bool logic)
     {
         _isSuccessMessage = logic;
-        return WithMessage(_isSuccessMessage ? _successMessage : _errorMessage);;
+        return WithMessage(_isSuccessMessage ? _successMessage : _errorMessage);
     }
 
     public Result WithSuccessMessage(string message)
