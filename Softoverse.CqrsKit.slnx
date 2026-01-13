@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Softoverse.CqrsKit/Softoverse.CqrsKit.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/console/">
+    <Project Path="tests/console/Softoverse.CqrsKit.TestConsole/Softoverse.CqrsKit.TestConsole.csproj" />
+  </Folder>
+  <Folder Name="/tests/web/">
+    <Project Path="tests/web/Softoverse.CqrsKit.WebApi.ClassModule/Softoverse.CqrsKit.WebApi.ClassModule.csproj" />
+    <Project Path="tests/web/Softoverse.CqrsKit.WebApi.DataAccess/Softoverse.CqrsKit.WebApi.DataAccess.csproj" />
+    <Project Path="tests/web/Softoverse.CqrsKit.WebApi.Models/Softoverse.CqrsKit.WebApi.Models.csproj" />
+    <Project Path="tests/web/Softoverse.CqrsKit.WebApi/Softoverse.CqrsKit.WebApi.csproj" />
+  </Folder>
+</Solution>
